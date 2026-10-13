@@ -135,3 +135,15 @@ export const aboutSchema = z.object({
     paragraph: nonEmpty("paragraph"),
 });
 export type AboutInput = z.infer<typeof aboutSchema>;
+
+// ── Recruiter assistant (Fase 1) ─────────────────────────────────────────────
+const assistantMessageSchema = z.object({
+    role: z.enum(["user", "assistant"]),
+    content: z.string().trim().min(1).max(2000),
+});
+
+export const assistantSchema = z.object({
+    messages: z.array(assistantMessageSchema).min(1).max(20),
+    lang: z.enum(["en", "es"]).default("en"),
+});
+export type AssistantInput = z.infer<typeof assistantSchema>;

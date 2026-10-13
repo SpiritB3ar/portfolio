@@ -126,3 +126,13 @@ export type EducationType = {
     createdAt: Date;
     updatedAt: Date;
 };
+
+export type AssistantChatMessage = {
+    role: 'user' | 'assistant';
+    content: string;
+};
+
+export type AssistantReply = {
+    reply: string;
+    model: string;
+};

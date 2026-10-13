@@ -3,6 +3,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Header from "./header";
 import SiteAtmosphere from "./SiteAtmosphere";
+import RecruiterChat from "./assistant/RecruiterChat";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -58,6 +59,8 @@ export default function MainLayout({ children }: MainLayoutProps) {
           {children}
         </div>
       </div>
+
+      <RecruiterChat />
     </div>
   );
 }

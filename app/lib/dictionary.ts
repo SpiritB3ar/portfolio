@@ -71,6 +71,22 @@ export const dictionary = {
             viewResource: "View Resource",
             minRead: "min read",
         },
+        assistant: {
+            title: "Ask about my profile",
+            subtitle: "I answer directly about my experience",
+            placeholder: "e.g. How many years of experience with Next.js?",
+            send: "Send",
+            open: "Chat",
+            close: "Close",
+            thinking: "Thinking…",
+            error: "Something went wrong. Please try again.",
+            unavailable: "Assistant is not available right now. Please use the contact links.",
+            suggestions: [
+                "How many years of experience do you have?",
+                "What is your frontend stack?",
+                "Tell me about your recent projects",
+            ],
+        },
     },
     es: {
         common: {
@@ -141,6 +157,22 @@ export const dictionary = {
             },
             viewResource: "Ver Recurso",
             minRead: "min de lectura",
+        },
+        assistant: {
+            title: "Pregunta sobre mi perfil",
+            subtitle: "Te respondo directo sobre mi experiencia",
+            placeholder: "Ej. ¿Cuántos años de experiencia con Next.js?",
+            send: "Enviar",
+            open: "Chat",
+            close: "Cerrar",
+            thinking: "Pensando…",
+            error: "Algo salió mal. Inténtalo de nuevo.",
+            unavailable: "El asistente no está disponible ahora. Usa los enlaces de contacto.",
+            suggestions: [
+                "¿Cuántos años de experiencia tienes?",
+                "¿Cuál es tu stack frontend?",
+                "Cuéntame sobre tus proyectos recientes",
+            ],
         },
     },
 };
