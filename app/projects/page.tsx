@@ -2,9 +2,10 @@ import React from 'react'
 import ProjectCard from '../components/ProjectCard'
 import { getProjectsV2 } from '../requests/requests'
 import { ProjectsHeader } from '../components/ProjectsHeader'
+import { serverT } from '../lib/server-i18n'
 
 const Projects = async () => {
-
+    const t = serverT()
     const projects = await getProjectsV2()
 
     // Compute dynamic stats
@@ -12,16 +13,16 @@ const Projects = async () => {
     const allTechs = new Set<string>();
     const allCategories = new Set<string>();
     projects?.forEach(p => {
-        (p.technologies || []).forEach(t => allTechs.add(t));
-        (p.tools || []).forEach(t => { if (t?.name) allTechs.add(t.name); });
+        (p.technologies || []).forEach(tech => allTechs.add(tech));
+        (p.tools || []).forEach(tool => { if (tool?.name) allTechs.add(tool.name); });
         if (p.category) allCategories.add(p.category);
     });
 
     const stats = [
-        { value: `${totalProjects}`, label: 'Proyectos', color: 'from-brand-green to-emerald-500' },
-        { value: `${allTechs.size}+`, label: 'Tecnologías', color: 'from-blue-500 to-cyan-500' },
-        { value: `${allCategories.size}`, label: 'Categorías', color: 'from-violet-500 to-purple-500' },
-        { value: '4+', label: 'Años Exp', color: 'from-amber-500 to-orange-500' },
+        { value: `${totalProjects}`, label: t.projects.statProjects },
+        { value: `${allTechs.size}+`, label: t.projects.technologies },
+        { value: `${allCategories.size}`, label: t.projects.statCategories },
+        { value: '4+', label: t.projects.statYears },
     ];
 
     return (
@@ -30,17 +31,11 @@ const Projects = async () => {
             <ProjectsHeader />
 
             {/* Stats */}
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
+            <div className="grid grid-cols-2 gap-y-8 md:grid-cols-4 md:divide-x md:divide-border">
                 {stats.map((stat) => (
-                    <div
-                        key={stat.label}
-                        className="group relative overflow-hidden rounded-2xl border border-gray-200/60 bg-white/80 backdrop-blur-sm p-5 sm:p-6 text-center shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-brand-green/10 hover:border-brand-green/30 dark:border-white/10 dark:bg-white/5"
-                    >
-                        <div className={`inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${stat.color} mb-3 shadow-md`}>
-                            <span className="text-lg font-bold text-white">{stat.value.charAt(0)}</span>
-                        </div>
-                        <p className="font-poiret text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
-                        <p className="mt-1.5 font-mono text-[10px] sm:text-xs uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400">
+                    <div key={stat.label} className="px-2 text-center md:px-6">
+                        <p className="text-2xl font-bold text-foreground sm:text-3xl">{stat.value}</p>
+                        <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                             {stat.label}
                         </p>
                     </div>
@@ -50,29 +45,32 @@ const Projects = async () => {
             {/* Projects Grid */}
             <div className="space-y-8">
                 <div className="flex items-end justify-between">
-                    <div>
-                        <div className="mb-3 flex items-center gap-4">
-                            <span className="font-mono text-xs font-medium text-brand-medium dark:text-brand-green">02</span>
-                            <span className="h-px w-12 bg-brand-green/50" />
-                        </div>
-                        <h2 className="font-poiret text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
-                            Todos los Proyectos
+                    <div className="flex items-center gap-4">
+                        <span className="h-px w-12 bg-border" />
+                        <h2 className="font-poiret text-3xl font-bold text-foreground sm:text-4xl">
+                            {t.projects.allTitle}
                         </h2>
                     </div>
-                    <p className="font-mono text-xs text-gray-500 dark:text-gray-400">
-                        {totalProjects} projects
+                    <p className="font-mono text-xs text-muted-foreground">
+                        {totalProjects} {t.projects.countLabel}
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2">
-                    {projects?.map((item, i) => (
-                        <ProjectCard key={item.id || i} project={item} index={i} isNew={i === 0} />
-                    ))}
-                </div>
+                {projects && projects.length > 0 && (
+                    <ProjectCard project={projects[0]} index={0} isNew featured />
+                )}
+
+                {projects && projects.length > 1 && (
+                    <div className="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2">
+                        {projects.slice(1).map((item, i) => (
+                            <ProjectCard key={item.id || i + 1} project={item} index={i + 1} />
+                        ))}
+                    </div>
+                )}
 
                 {totalProjects === 0 && (
-                    <div className="text-center py-16 rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
-                        <p className="text-gray-400 dark:text-gray-500">No projects yet. Add them from the admin panel.</p>
+                    <div className="rounded-2xl border border-dashed border-border py-16 text-center">
+                        <p className="text-muted-foreground">{t.projects.empty}</p>
                     </div>
                 )}
             </div>

@@ -10,37 +10,35 @@
     --font-open-sans: 'Open Sans Variable', system-ui, sans-serif;
     --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
 
-    /* Base Colors */
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Base Colors — cool neutrals (off-white / off-black teal) */
+    --background: 180 20% 97%; /* #F6F9F9 cool off-white */
+    --foreground: 180 30% 8%; /* #0E1A1A cool near-black */
 
     /* Brand Colors - HSL values for Tailwind usage */
     /* Deep Teal #024441 -> HSL(177, 94%, 14%) */
     --brand-dark: 177 94% 14%;
-    
+
     /* Medium Teal #036661 (Hover) -> HSL(177, 94%, 21%) */
     --brand-medium: 177 94% 21%;
 
-    /* Brand Green (Bright) - used for highlights */
-    --brand-green: 177 94% 14%; 
+    /* Accent — light mode uses a deep teal for AA contrast on off-white;
+       dark mode flips to a bright teal for AA contrast on near-black. */
+    --brand-green: 177 94% 17%;
 
     /* Light Mint #DBEEED -> HSL(177, 43%, 90%) */
     --brand-light: 177 43% 90%;
 
-    /* Cream #FFF8ED -> HSL(36, 100%, 96%) */
-    --brand-cream: 36 100% 96%;
-
     /* Standard UI Colors */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 180 30% 8%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 180 30% 8%;
     --primary: 177 94% 14%;
     --primary-foreground: 210 40% 98%;
     --secondary: 177 43% 90%;
     --secondary-foreground: 222.2 47.4% 11.2%;
     --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted-foreground: 215 18% 42%;
     --accent: 177 43% 90%;
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
@@ -52,7 +50,7 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 171 68% 4%; /* #03100E off-black teal */
     --foreground: 210 40% 98%;
     
     /* Dark Mode Brand Colors */
@@ -60,7 +58,6 @@
     --brand-medium: 177 60% 40%;
     --brand-green: 177 70% 50%; /* Brighter in dark mode */
     --brand-light: 177 30% 20%;
-    --brand-cream: 220 20% 10%; /* Dark Gray/Blue for background */
 
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
@@ -94,7 +91,7 @@
 @layer components {
   /* Shared visible focus ring for cinematic dark/light interactive elements */
   .focus-ring {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-2 focus-visible:ring-offset-[#FBF6EA] dark:focus-visible:ring-offset-[#03100E];
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
 }
 
@@ -121,15 +118,6 @@
     mix-blend-mode: soft-light;
   }
 
-  /* Luminous mint text glow for accent words (dark theme leans in) */
-  .text-glow {
-    text-shadow: 0 0 28px hsl(var(--brand-green) / 0.35);
-  }
-  .dark .text-glow {
-    text-shadow: 0 0 34px hsl(var(--brand-green) / 0.55),
-      0 0 70px hsl(var(--brand-green) / 0.25);
-  }
-
   /* Edge fade for the tech marquee */
   .marquee-mask {
     -webkit-mask-image: linear-gradient(
@@ -151,40 +139,6 @@
   .pause-hover:hover {
     animation-play-state: paused;
   }
-
-  /* Animated mint→teal gradient text for accent words */
-  .text-gradient {
-    background-image: linear-gradient(
-      100deg,
-      hsl(var(--brand-green)),
-      hsl(var(--brand-medium)),
-      hsl(var(--brand-green))
-    );
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  /* Light sweep that crosses an element on hover (modern button sheen) */
-  .sheen::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: linear-gradient(
-      110deg,
-      transparent 25%,
-      rgba(255, 255, 255, 0.45) 50%,
-      transparent 75%
-    );
-    transform: translateX(-150%);
-    transition: transform 0.7s ease;
-    pointer-events: none;
-  }
-  .sheen:hover::before {
-    transform: translateX(150%);
-  }
 }
 
 html {
@@ -197,17 +151,12 @@ html {
   }
   .animate-marquee,
   .animate-marquee-reverse,
-  .animate-glow-pulse,
   .animate-float,
   .animate-drift-slow,
   .animate-aurora,
-  .animate-shimmer {
+  .animate-pulse,
+  .animate-spin,
+  .animate-ping {
     animation: none !important;
-  }
-  .text-gradient {
-    background-size: 100% auto;
-  }
-  .sheen::before {
-    display: none;
   }
 }

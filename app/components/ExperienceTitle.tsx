@@ -5,5 +5,5 @@ import { PageHeader } from './PageHeader';
 export const ExperienceTitle = () => {
     const { t } = useLanguage();
 
-    return <PageHeader index="01" title={t.experience.title} />;
+    return <PageHeader title={t.experience.title} subtitle={t.experience.pageSubtitle} />;
 };

@@ -2,15 +2,17 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { MessageCircle, Send, X } from "lucide-react";
 import { useLanguage } from "@/app/providers/LanguageProvider";
 import type { AssistantChatMessage, AssistantReply } from "@/app/components/types/types";
+import { listenOpenChat } from "./chat-events";
 
 const MAX_HISTORY = 12;
 
-/** Minimal markdown renderer for model replies: **bold** + [label](https://url).
- *  Keeps the widget dependency-free and XSS-safe (no dangerouslySetInnerHTML;
- *  only http(s) links become <a>). */
+/** Minimal markdown renderer for model replies: **bold** + [label](url).
+ *  url acepta http(s) (nueva pestaña) y rutas relativas `/…` (next/link,
+ *  el chat navega el sitio). Seguro: no dangerouslySetInnerHTML. */
 function renderInline(text: string, keyPrefix: string): ReactNode[] {
     const parts: ReactNode[] = [];
     const re = /(\*\*[^*]+\*\*)|(\[[^\]]+\]\([^)\s]+\))/g;
@@ -41,6 +43,16 @@ function renderInline(text: string, keyPrefix: string): ReactNode[] {
                         {lm[1]}
                     </a>
                 );
+            } else if (lm && href.startsWith("/") && !href.startsWith("//")) {
+                parts.push(
+                    <Link
+                        key={`${keyPrefix}-a${k++}`}
+                        href={href}
+                        className="underline underline-offset-2 hover:opacity-80"
+                    >
+                        {lm[1]}
+                    </Link>
+                );
             } else {
                 parts.push(tok);
             }
@@ -60,7 +72,9 @@ function renderMessage(content: string): ReactNode[] {
     ));
 }
 
-async function askAssistant(
+export { renderMessage };
+
+export async function askAssistant(
     messages: AssistantChatMessage[],
     lang: "en" | "es"
 ): Promise<string> {
@@ -84,10 +98,30 @@ export default function RecruiterChat() {
     const [loading, setLoading] = useState(false);
     const [messages, setMessages] = useState<AssistantChatMessage[]>([]);
     const bottomRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
     }, [messages, open, loading]);
+
+    // Al abrir (FAB, evento del palette o CTA del hero) el foco va al input.
+    useEffect(() => {
+        if (open) {
+            requestAnimationFrame(() => inputRef.current?.focus());
+        }
+    }, [open]);
+
+    // El palette ⌘K puede abrir el dock con la conversación ya sembrada.
+    useEffect(
+        () =>
+            listenOpenChat((seed) => {
+                setOpen(true);
+                if (seed && seed.length > 0) {
+                    setMessages((prev) => [...prev, ...seed].slice(-MAX_HISTORY));
+                }
+            }),
+        []
+    );
 
     const send = async (text?: string) => {
         const content = (text ?? input).trim();
@@ -111,20 +145,20 @@ export default function RecruiterChat() {
     return (
         <div className="fixed bottom-4 right-4 z-[60] flex flex-col items-end gap-3 sm:bottom-5 sm:right-5">
             {open && (
-                <div className="flex h-[min(480px,calc(100dvh-9rem))] max-h-[480px] w-[calc(100vw-2rem)] max-w-sm flex-col overflow-hidden rounded-2xl border border-stone-200 bg-[#FBF6EA] shadow-2xl dark:border-emerald-900 dark:bg-[#03100E]">
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-stone-200 dark:border-emerald-900">
+                <div className="flex h-[min(480px,calc(100dvh-9rem))] max-h-[480px] w-[calc(100vw-2rem)] max-w-sm flex-col overflow-hidden rounded-2xl border border-border bg-popover shadow-2xl">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-border">
                         <div>
-                            <p className="text-sm font-semibold text-stone-900 dark:text-emerald-50">
+                            <p className="text-sm font-semibold text-foreground">
                                 {t.assistant.title}
                             </p>
-                            <p className="text-xs text-stone-500 dark:text-emerald-200/60">
+                            <p className="text-xs text-muted-foreground">
                                 {t.assistant.subtitle}
                             </p>
                         </div>
                         <button
                             aria-label={t.assistant.close}
                             onClick={() => setOpen(false)}
-                            className="rounded-full p-1.5 text-stone-500 hover:bg-stone-200/60 dark:text-emerald-100/70 dark:hover:bg-emerald-900/50"
+                            className="rounded-full p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
                         >
                             <X size={18} />
                         </button>
@@ -136,8 +170,8 @@ export default function RecruiterChat() {
                                 <div
                                     className={`min-w-0 max-w-[88%] break-words rounded-2xl px-3 py-2 text-sm leading-relaxed [overflow-wrap:anywhere] ${
                                         m.role === "user"
-                                            ? "bg-stone-900 text-stone-50 dark:bg-emerald-400 dark:text-emerald-950"
-                                            : "bg-stone-200/70 text-stone-800 dark:bg-emerald-900/50 dark:text-emerald-50"
+                                            ? "bg-brand-green text-white dark:text-background"
+                                            : "bg-muted text-foreground"
                                     }`}
                                 >
                                     {m.role === "assistant" ? renderMessage(m.content) : m.content}
@@ -146,7 +180,7 @@ export default function RecruiterChat() {
                         ))}
                         {loading && (
                             <div className="flex justify-start">
-                                <div className="rounded-2xl bg-stone-200/70 px-3 py-2 text-sm text-stone-500 dark:bg-emerald-900/50 dark:text-emerald-200/70">
+                                <div className="rounded-2xl bg-muted px-3 py-2 text-sm text-muted-foreground">
                                     {t.assistant.thinking}
                                 </div>
                             </div>
@@ -164,7 +198,7 @@ export default function RecruiterChat() {
                                     <button
                                         key={s}
                                         onClick={() => send(s)}
-                                        className="max-w-full break-words rounded-xl border border-stone-300 px-2.5 py-1 text-left text-[11px] leading-snug text-stone-600 hover:bg-stone-200/60 dark:border-emerald-800 dark:text-emerald-100/70 dark:hover:bg-emerald-900/40"
+                                        className="max-w-full break-words rounded-xl border border-border px-2.5 py-1 text-left text-[11px] leading-snug text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                                     >
                                         {s}
                                     </button>
@@ -175,24 +209,25 @@ export default function RecruiterChat() {
                     </div>
 
                     <form
-                        className="flex items-center gap-2 border-t border-stone-200 p-3 dark:border-emerald-900"
+                        className="flex items-center gap-2 border-t border-border p-3"
                         onSubmit={(e) => {
                             e.preventDefault();
                             send();
                         }}
                     >
                         <input
+                            ref={inputRef}
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             placeholder={t.assistant.placeholder}
                             maxLength={2000}
-                            className="min-w-0 flex-1 rounded-xl border border-stone-200 bg-white/70 px-3 py-2 text-sm text-stone-900 outline-none placeholder:text-stone-400 focus:border-stone-400 dark:border-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-50 dark:placeholder:text-emerald-200/40 dark:focus:border-emerald-700"
+                            className="focus-ring min-w-0 flex-1 rounded-xl border border-border bg-background/70 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-brand-green"
                         />
                         <button
                             type="submit"
                             aria-label={t.assistant.send}
                             disabled={loading || !input.trim()}
-                            className="rounded-xl bg-stone-900 p-2.5 text-stone-50 hover:bg-stone-700 disabled:opacity-40 dark:bg-emerald-400 dark:text-emerald-950 dark:hover:bg-emerald-300"
+                            className="rounded-xl bg-brand-green p-2.5 text-white hover:bg-brand-medium disabled:opacity-40 dark:text-background"
                         >
                             <Send size={16} />
                         </button>
@@ -203,7 +238,7 @@ export default function RecruiterChat() {
             <button
                 aria-label={open ? t.assistant.close : t.assistant.open}
                 onClick={() => setOpen((v) => !v)}
-                className="flex h-12 w-12 items-center justify-center rounded-full bg-stone-900 text-stone-50 shadow-xl hover:bg-stone-700 dark:bg-emerald-400 dark:text-emerald-950 dark:hover:bg-emerald-300"
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-green text-white shadow-xl hover:bg-brand-medium dark:text-background"
             >
                 {open ? <X size={22} /> : <MessageCircle size={22} />}
             </button>

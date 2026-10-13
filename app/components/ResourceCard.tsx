@@ -14,7 +14,7 @@ export const ResourceCard = ({ resource }: { resource: ResourceType }) => {
       initial={reduce ? false : { opacity: 0, y: 20 }}
       animate={reduce ? undefined : { opacity: 1, y: 0 }}
       whileHover={reduce ? undefined : { y: -4 }}
-      className="group relative h-full w-full overflow-hidden rounded-[1.5rem] border border-gray-200/70 bg-white/70 shadow-lg backdrop-blur-xl transition-all duration-500 hover:border-brand-green/40 hover:shadow-[0_0_45px_-14px_hsl(var(--brand-green))] dark:border-white/10 dark:bg-white/5"
+      className="group relative h-full w-full overflow-hidden rounded-2xl border border-border bg-card transition-colors duration-500 hover:border-brand-green/40 dark:hover:border-brand-green/40"
     >
       {/* Cover */}
       <div className="relative h-48 overflow-hidden">
@@ -29,8 +29,8 @@ export const ResourceCard = ({ resource }: { resource: ResourceType }) => {
 
         {/* Type Badge */}
         <div className="absolute right-4 top-4">
-          <div className="rounded-full bg-brand-green px-3 py-1.5 shadow-lg">
-            <span className="font-mono text-[10px] font-bold uppercase tracking-wide text-white dark:text-[#03100E]">
+          <div className="rounded-full bg-brand-green px-3 py-1.5 shadow-sm">
+            <span className="font-mono text-[10px] font-bold uppercase tracking-wide text-white dark:text-background">
               {resource.type}
             </span>
           </div>
@@ -38,7 +38,7 @@ export const ResourceCard = ({ resource }: { resource: ResourceType }) => {
 
         {/* Category Badge */}
         <div className="absolute bottom-4 left-4">
-          <div className="rounded-full border border-white/30 bg-white/15 px-3 py-1.5 backdrop-blur-md">
+          <div className="rounded-full border border-white/30 bg-black/50 px-3 py-1.5">
             <span className="font-mono text-[10px] uppercase tracking-wide text-white">
               {resource.category.name}
             </span>
@@ -48,15 +48,15 @@ export const ResourceCard = ({ resource }: { resource: ResourceType }) => {
 
       {/* Content */}
       <div className="flex h-[calc(100%-12rem)] flex-col p-6">
-        <h3 className="mb-3 line-clamp-2 font-poiret text-xl font-bold text-gray-900 transition-colors group-hover:text-brand-green dark:text-white">
+        <h3 className="mb-3 line-clamp-2 font-poiret text-xl font-bold text-foreground transition-colors group-hover:text-brand-green">
           {resource.title}
         </h3>
 
-        <p className="mb-4 line-clamp-2 flex-grow text-sm text-gray-600 dark:text-gray-400">
+        <p className="mb-4 line-clamp-2 flex-grow text-sm text-muted-foreground">
           {resource.description}
         </p>
 
-        <div className="mb-4 space-y-2 font-mono text-[11px] text-gray-500 dark:text-gray-400">
+        <div className="mb-4 space-y-2 font-mono text-[11px] text-muted-foreground">
           <div className="flex flex-wrap items-center gap-2">
             <Calendar className="h-3.5 w-3.5" />
             <span>{new Date(resource.publishedAt).toLocaleDateString()}</span>
@@ -64,12 +64,12 @@ export const ResourceCard = ({ resource }: { resource: ResourceType }) => {
               <>
                 <span>•</span>
                 <Clock className="h-3.5 w-3.5" />
-                <span>{resource.readTimeMinutes} {t.resources?.minRead || "min read"}</span>
+                <span>{resource.readTimeMinutes} {t.resources?.minRead}</span>
               </>
             )}
           </div>
           <div className="flex items-center gap-2">
-            <span>By {resource.author}</span>
+            <span>{t.resources.by} {resource.author}</span>
           </div>
         </div>
 
@@ -79,13 +79,13 @@ export const ResourceCard = ({ resource }: { resource: ResourceType }) => {
             {resource.tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
-                className="rounded-md border border-gray-200/70 bg-gray-100/70 px-2 py-0.5 font-mono text-[10px] text-gray-600 dark:border-white/10 dark:bg-white/5 dark:text-gray-300"
+                className="rounded-md border border-border bg-muted px-2 py-0.5 font-mono text-[10px] text-muted-foreground"
               >
                 {tag}
               </span>
             ))}
             {resource.tags.length > 3 && (
-              <span className="rounded-md border border-gray-200/70 bg-gray-100/70 px-2 py-0.5 font-mono text-[10px] text-gray-600 dark:border-white/10 dark:bg-white/5 dark:text-gray-300">
+              <span className="rounded-md border border-border bg-muted px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
                 +{resource.tags.length - 3}
               </span>
             )}
@@ -97,9 +97,9 @@ export const ResourceCard = ({ resource }: { resource: ResourceType }) => {
           href={resource.link || "#"}
           target="_blank"
           rel="noreferrer"
-          className="focus-ring group/btn flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green px-4 py-3 font-semibold text-white shadow-[0_0_24px_-8px_hsl(var(--brand-green))] transition-shadow hover:shadow-[0_0_36px_-6px_hsl(var(--brand-green))] dark:text-[#03100E]"
+          className="focus-ring group/btn flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green px-4 py-3 font-semibold text-white transition-colors hover:bg-brand-medium dark:text-background"
         >
-          <span>{t.resources?.viewResource || "View Resource"}</span>
+          <span>{t.resources?.viewResource}</span>
           <ExternalLink className="h-4 w-4 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
         </a>
       </div>

@@ -1,36 +1,54 @@
 import ExperienceTimeline from '../components/ExperienceTimeline'
 import EducationTimeline from '../components/EducationTimeline'
-import { ExperiencePathProps } from '../components/experiencePath'
-import { getExperiencesV2, getEducationsV2 } from '../requests/requests'
+import { ExperiencePathProps } from '../components/ExperienceTimeline'
+import { getExperiencesV2, getEducationsV2, getSkillCategoriesV2 } from '../requests/requests'
 import { ExperienceTitle } from '../components/ExperienceTitle'
-import { SectionHeading } from '../components/SectionHeading'
+import { ExperienceIntro } from '../components/ExperienceIntro'
+import { CollapsibleSection } from '../components/CollapsibleSection'
+import { serverT } from '../lib/server-i18n'
+
+const AI_CATEGORY_SLUG = 'ai-machine-learning'
 
 const Experience = async () => {
-    const [experiences, educations] = await Promise.all([
+    const t = serverT()
+    const [experiences, educations, skillCategories] = await Promise.all([
         getExperienceData(),
-        getEducationsV2()
+        getEducationsV2(),
+        getSkillCategoriesV2()
     ]);
+
+    const aiCategory = skillCategories?.find(
+        (c) => c.slug === AI_CATEGORY_SLUG || c.name.toLowerCase().includes('ai')
+    ) ?? null
 
     return (
         <div className="flex flex-col">
             <ExperienceTitle />
+            <ExperienceIntro aiCategory={aiCategory} />
 
-            <div className="w-full">
+            <div className="border-b border-border">
+                <CollapsibleSection
+                    title={t.experience.journeyTitle}
+                    subtitle={t.experience.journeySubtitle}
+                    defaultOpen
+                >
+                    {experiences.length > 0 ? (
+                        <ExperienceTimeline experiences={experiences} />
+                    ) : (
+                        <div className="rounded-2xl border border-dashed border-border py-16 text-center">
+                            <p className="text-muted-foreground">{t.experience.empty}</p>
+                        </div>
+                    )}
+                </CollapsibleSection>
+
                 {educations && educations.length > 0 && (
-                    <div className="mb-16">
-                        <SectionHeading
-                            title="Educación"
-                            subtitle="Formación académica y certificaciones"
-                        />
+                    <CollapsibleSection
+                        title={t.experience.educationTitle}
+                        subtitle={t.experience.educationSubtitle}
+                    >
                         <EducationTimeline educations={educations} />
-                    </div>
+                    </CollapsibleSection>
                 )}
-
-                <SectionHeading
-                    title="Experiencia"
-                    subtitle="Trayectoria profesional"
-                />
-                <ExperienceTimeline experiences={experiences} />
             </div>
         </div>
     )

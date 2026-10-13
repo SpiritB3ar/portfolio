@@ -44,21 +44,23 @@ const SkillBars: React.FC<SkillBarsProps> = ({ skillCategories }) => {
     return (
         <div className="w-full">
             {/* Header */}
-            <div className="px-6 pt-6 pb-4 border-b border-gray-100 dark:border-white/10">
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white uppercase tracking-wider font-poiret">
+            <div className="border-b border-border px-6 pb-4 pt-6">
+                <h2 className="font-poiret text-lg font-bold uppercase tracking-wider text-foreground">
                     {t.about.skills}
                 </h2>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    {totalSkills} skills across {skillCategories.length} categories
+                <p className="mt-1 text-xs text-muted-foreground">
+                    {t.about.skillsMeta
+                        .replace('{skills}', `${totalSkills}`)
+                        .replace('{categories}', `${skillCategories.length}`)}
                 </p>
             </div>
 
             {/* Categories */}
-            <div className="divide-y divide-gray-100 dark:divide-white/10">
+            <div className="divide-y divide-border">
                 {sortedCategories.length === 0 ? (
                     <div className="px-6 py-12 text-center">
-                        <p className="text-sm text-gray-400 dark:text-gray-500">
-                            No skills added yet.
+                        <p className="text-sm text-muted-foreground">
+                            {t.about.noSkills}
                         </p>
                     </div>
                 ) : (
@@ -75,20 +77,9 @@ const SkillBars: React.FC<SkillBarsProps> = ({ skillCategories }) => {
                                 {/* Category Header */}
                                 <button
                                     onClick={() => toggleCategory(category.id)}
-                                    className="w-full flex items-center gap-3 px-6 py-4 text-left hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors"
+                                    className="w-full flex items-center gap-3 px-6 py-4 text-left hover:bg-muted/50 transition-colors"
                                 >
-                                    <div
-                                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br shadow-md"
-                                        style={{
-                                            backgroundImage: category.color
-                                                ? undefined
-                                                : 'linear-gradient(to bottom right, #10b981, #059669)',
-                                            ...(category.color ? { background: `linear-gradient(to bottom right, var(--tw-gradient-stops))` } : {}),
-                                            background: category.color
-                                                ? undefined
-                                                : undefined,
-                                        }}
-                                    >
+                                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand-green to-brand-medium">
                                         {category.icon ? (
                                             <span className="text-base">{category.icon}</span>
                                         ) : (
@@ -96,15 +87,17 @@ const SkillBars: React.FC<SkillBarsProps> = ({ skillCategories }) => {
                                         )}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                                        <p className="text-sm font-semibold text-foreground truncate">
                                             {category.name}
                                         </p>
-                                        <p className="text-[10px] text-gray-500 dark:text-gray-400">
-                                            {skills.length} skills · {avgProficiency}% avg
+                                        <p className="text-[10px] text-muted-foreground">
+                                            {t.about.categoryMeta
+                                                .replace('{n}', `${skills.length}`)
+                                                .replace('{avg}', `${avgProficiency}`)}
                                         </p>
                                     </div>
                                     <ChevronDown
-                                        className={`h-4 w-4 text-gray-400 transition-transform duration-200 shrink-0 ${isExpanded ? 'rotate-180' : ''}`}
+                                        className={`h-4 w-4 text-muted-foreground transition-transform duration-200 shrink-0 ${isExpanded ? 'rotate-180' : ''}`}
                                     />
                                 </button>
 
@@ -130,14 +123,14 @@ const SkillBars: React.FC<SkillBarsProps> = ({ skillCategories }) => {
                                                             className="space-y-1.5"
                                                         >
                                                             <div className="flex justify-between items-center">
-                                                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                                <span className="text-sm font-medium text-foreground/80">
                                                                     {skill.name}
                                                                 </span>
                                                                 <span className="text-[10px] font-bold text-brand-green tabular-nums">
                                                                     {skill.proficiency}%
                                                                 </span>
                                                             </div>
-                                                            <div className="h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                                                            <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                                                                 <motion.div
                                                                     initial={{ width: 0 }}
                                                                     animate={{ width: `${skill.proficiency}%` }}
@@ -146,15 +139,8 @@ const SkillBars: React.FC<SkillBarsProps> = ({ skillCategories }) => {
                                                                         delay: i * 0.05,
                                                                         ease: [0.21, 0.6, 0.35, 1]
                                                                     }}
-                                                                    className="h-full rounded-full"
-                                                                    style={{
-                                                                        backgroundImage: category.color
-                                                                            ? undefined
-                                                                            : 'linear-gradient(to right, #10b981, #059669)',
-                                                                    }}
-                                                                >
-                                                                    <div className="h-full w-full bg-gradient-to-r from-brand-green to-brand-medium rounded-full" />
-                                                                </motion.div>
+                                                                    className="h-full rounded-full bg-gradient-to-r from-brand-green to-brand-medium"
+                                                                />
                                                             </div>
                                                         </motion.div>
                                                     ))}

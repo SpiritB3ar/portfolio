@@ -36,14 +36,11 @@ There is no `API_URL` (non-public) variable — earlier docs that referenced one
 
 ## Architecture Overview
 
-### Two Authoring UIs Coexist — Prefer `/admin/*`
+### Authoring UI — Use `/admin/*`
 
-There are **two parallel content-management surfaces** in the repo:
+`/admin` is the only content-management surface in the repo. It uses shadcn-style primitives imported from `@/components/ui/*` (Card, Badge, etc.), `AdminSidebar` + `AdminHeader` layout, TanStack Query for fetching, and form components in `app/admin/components/*Form.tsx`. The admin dashboard at `app/admin/page.tsx` is the entry point.
 
-- `app/admin/*` — the newer, actively-developed UI. Uses shadcn-style primitives imported from `@/components/ui/*` (Card, Badge, etc.), `AdminSidebar` + `AdminHeader` layout, TanStack Query for fetching, and form components in `app/admin/components/*Form.tsx`. The admin dashboard at `app/admin/page.tsx` is the entry point.
-- `app/dashboard/*` — the older surface using components from `@/app/components/ui/*` and `@/app/components/dashboard/*` (CRUDTable, DataGrid, AG Grid, the `DashBoardSidebar`).
-
-When adding a new content type, mirror the `/admin` pattern unless you have a reason to extend the older dashboard. **Do not unify them implicitly** — the two systems use different component libraries and layout conventions, and the user has not asked for consolidation.
+The legacy `app/dashboard/*` surface (CRUDTable, DataGrid, AG Grid, `DashBoardSidebar`) was removed; `app/components/dashboard/DataTable.tsx` and `DatePicker.tsx` remain because `/admin` reuses them. When adding a new content type, mirror the `/admin` pattern.
 
 ### Data Flow
 

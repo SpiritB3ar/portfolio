@@ -1,0 +1,107 @@
+- generic [ref=f21e2]:
+  - main [ref=f21e3]:
+    - generic [ref=f21e4]:
+      - navigation [ref=f21e5]:
+        - generic [ref=f21e6]:
+          - link [ref=f21e8] [cursor=pointer]:
+            - /url: /
+          - generic [ref=f21e13]:
+            - link "Trabajo" [ref=f21e14] [cursor=pointer]:
+              - /url: /projects
+            - link "Sobre Mí" [ref=f21e15] [cursor=pointer]:
+              - /url: /about
+          - generic [ref=f21e17]:
+            - button "Buscar y preguntar" [ref=f21e18] [cursor=pointer]:
+              - generic [ref=f21e23]: ⌘K
+            - button "ES" [ref=f21e26] [cursor=pointer]
+      - generic [ref=f21e33]:
+        - generic [ref=f21e34]:
+          - heading "Sobre Mí" [level=1] [ref=f21e37]
+          - paragraph [ref=f21e38]: Ingeniero de Software con más de 4 años de experiencia desarrollando soluciones escalables en entornos cloud.
+        - generic [ref=f21e40]:
+          - generic [ref=f21e41]:
+            - paragraph [ref=f21e46]: Ubicación
+            - paragraph [ref=f21e47]: Remoto / Perú
+          - generic [ref=f21e48]:
+            - paragraph [ref=f21e53]: Experiencia
+            - paragraph [ref=f21e54]: 4+ Años
+          - generic [ref=f21e55]:
+            - paragraph [ref=f21e61]: Proyectos
+            - paragraph [ref=f21e62]: 20+ Completados
+          - generic [ref=f21e63]:
+            - paragraph [ref=f21e67]: Disponibilidad
+            - paragraph [ref=f21e68]: Abierto a trabajar
+        - generic [ref=f21e69]:
+          - generic [ref=f21e70]:
+            - heading "Sobre Mí" [level=2] [ref=f21e75]
+            - generic [ref=f21e76]:
+              - paragraph [ref=f21e79]: Ingeniero de Software con más de 4 años de experiencia desarrollando soluciones escalables en entornos cloud. Experiencia en proyectos de banca, seguros y pagos digitales, participando en el diseño técnico de soluciones, arquitecturas backend y revisión de código (PRs). Trabajo con microservicios y arquitectura hexagonal, aplicando buenas prácticas para construir software limpio, robusto y mantenible. Me motiva resolver problemas complejos y desarrollar soluciones con impacto real.
+              - paragraph [ref=f21e82]: Soy un Desarrollador creativo con 3 años de experiencia en el desarrollo de aplicaciones, siempre trato de mantenerme al día con las últimas tendencias, ademas soy apasionado por aprender nuevas tecnologías para dar vida a ideas y trabajar para construir aplicaciones eficientes y robustas adaptadas a las necesidades del usuario.
+              - paragraph [ref=f21e85]: Quiero crear proyectos usando tecnologías modernas, escalables y seguras que revolucionarán el mundo y estoy dispuesto a lograrlo con mentes, organizaciones y otras asociaciones afines.
+              - paragraph [ref=f21e88]: Además, durante mi carrera, tuve la oportunidad de trabajar con diferentes lenguajes de programación,y frameworks lo que me dio más información sobre el mundo de la programación.
+            - generic [ref=f21e90]:
+              - generic [ref=f21e91]:
+                - heading "¿Trabajamos juntos?" [level=3] [ref=f21e92]
+                - paragraph [ref=f21e93]: ¿Tienes un proyecto en mente? Hablemos.
+              - link "Enviar correo" [ref=f21e94] [cursor=pointer]:
+                - /url: mailto:cardenascode7@outlook.com
+          - generic [ref=f21e103]:
+            - generic [ref=f21e104]:
+              - heading "Mis Habilidades" [level=2] [ref=f21e105]
+              - paragraph [ref=f21e106]: 21 habilidades en 5 categorías
+            - generic [ref=f21e107]:
+              - button [ref=f21e109] [cursor=pointer]:
+                - generic [ref=f21e117]:
+                  - paragraph [ref=f21e118]: Frontend Development
+                  - paragraph [ref=f21e119]: 0 habilidades · 0% prom
+              - button "☁️ Backend & Cloud 12 habilidades · 80% prom" [ref=f21e124] [cursor=pointer]:
+                - generic [ref=f21e125]: ☁️
+                - generic [ref=f21e127]:
+                  - paragraph [ref=f21e128]: Backend & Cloud
+                  - paragraph [ref=f21e129]: 12 habilidades · 80% prom
+              - button "🎨 Frontend & Tools 5 habilidades · 72% prom" [ref=f21e133] [cursor=pointer]:
+                - generic [ref=f21e134]: 🎨
+                - generic [ref=f21e136]:
+                  - paragraph [ref=f21e137]: Frontend & Tools
+                  - paragraph [ref=f21e138]: 5 habilidades · 72% prom
+              - button "🤖 AI & Machine Learning 2 habilidades · 73% prom" [ref=f21e142] [cursor=pointer]:
+                - generic [ref=f21e143]: 🤖
+                - generic [ref=f21e145]:
+                  - paragraph [ref=f21e146]: AI & Machine Learning
+                  - paragraph [ref=f21e147]: 2 habilidades · 73% prom
+              - button "📜 Languages & Certifications 2 habilidades · 88% prom" [ref=f21e151] [cursor=pointer]:
+                - generic [ref=f21e152]: 📜
+                - generic [ref=f21e154]:
+                  - paragraph [ref=f21e155]: Languages & Certifications
+                  - paragraph [ref=f21e156]: 2 habilidades · 88% prom
+      - button "Chat" [ref=f21e160] [cursor=pointer]
+  - contentinfo [ref=f21e163]:
+    - generic [ref=f21e164]:
+      - generic [ref=f21e165]:
+        - generic [ref=f21e166]:
+          - generic [ref=f21e167]: dranzr
+          - paragraph [ref=f21e173]: Construyo experiencias digitales con pasión y precisión.
+        - generic [ref=f21e174]:
+          - heading "Enlaces rápidos" [level=3] [ref=f21e175]
+          - list [ref=f21e176]:
+            - listitem [ref=f21e177]:
+              - link "Inicio" [ref=f21e178] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=f21e179]:
+              - link "Sobre Mí" [ref=f21e180] [cursor=pointer]:
+                - /url: /about
+            - listitem [ref=f21e181]:
+              - link "Experiencia" [ref=f21e182] [cursor=pointer]:
+                - /url: /experience
+            - listitem [ref=f21e183]:
+              - link "Proyectos" [ref=f21e184] [cursor=pointer]:
+                - /url: /projects
+            - listitem [ref=f21e185]:
+              - link "Blogs" [ref=f21e186] [cursor=pointer]:
+                - /url: /blogs
+            - listitem [ref=f21e187]:
+              - link "Recursos" [ref=f21e188] [cursor=pointer]:
+                - /url: /resources
+      - generic [ref=f21e190]:
+        - paragraph [ref=f21e191]: © 2026 dranzr. Todos los derechos reservados.
+        - paragraph [ref=f21e192]: Hecho con ♥ usando Next.js

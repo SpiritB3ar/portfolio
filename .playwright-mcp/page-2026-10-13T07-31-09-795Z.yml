@@ -1,0 +1,58 @@
+- generic [active] [ref=f3e1]:
+  - alert [ref=f3e2]
+  - generic [ref=f3e3]:
+    - main [ref=f3e4]:
+      - generic [ref=f3e5]:
+        - generic [aria-hidden]:
+          - generic: dranzr
+        - navigation [ref=f3e6]:
+          - generic [ref=f3e7]:
+            - link [ref=f3e9] [cursor=pointer]:
+              - /url: /
+            - generic [ref=f3e14]:
+              - link "Trabajo" [ref=f3e15] [cursor=pointer]:
+                - /url: /projects
+              - link "Sobre Mí" [ref=f3e16] [cursor=pointer]:
+                - /url: /about
+            - generic [ref=f3e17]:
+              - button "Buscar y preguntar" [ref=f3e18] [cursor=pointer]:
+                - generic [ref=f3e23]: Ctrl K
+              - button "Cambiar tema" [ref=f3e25] [cursor=pointer]
+              - button "ES" [ref=f3e34] [cursor=pointer]
+        - status [ref=f3e41]:
+          - generic [ref=f3e42]: Cargando...
+        - button "Chat" [ref=f3e47] [cursor=pointer]
+    - contentinfo [ref=f3e50]:
+      - generic [ref=f3e51]:
+        - generic [ref=f3e52]:
+          - generic [ref=f3e53]:
+            - generic [ref=f3e54]: dranzr
+            - paragraph [ref=f3e60]: Construyo experiencias digitales con pasión y precisión.
+          - generic [ref=f3e61]:
+            - heading "Enlaces rápidos" [level=3] [ref=f3e62]
+            - list [ref=f3e63]:
+              - listitem [ref=f3e64]:
+                - link "Sobre Mí" [ref=f3e65] [cursor=pointer]:
+                  - /url: /about
+              - listitem [ref=f3e66]:
+                - link "Experiencia" [ref=f3e67] [cursor=pointer]:
+                  - /url: /experience
+              - listitem [ref=f3e68]:
+                - link "Proyectos" [ref=f3e69] [cursor=pointer]:
+                  - /url: /projects
+              - listitem [ref=f3e70]:
+                - link "Blogs" [ref=f3e71] [cursor=pointer]:
+                  - /url: /blogs
+          - generic [ref=f3e72]:
+            - heading "Conecta" [level=3] [ref=f3e73]
+            - generic [ref=f3e74]:
+              - link "LinkedIn" [ref=f3e75] [cursor=pointer]:
+                - /url: https://www.linkedin.com/in/ronalcardenas-c
+              - link "Website" [ref=f3e80] [cursor=pointer]:
+                - /url: https://www.corleo.dev/
+              - link "Email" [ref=f3e84] [cursor=pointer]:
+                - /url: mailto:cardenascode7@outlook.com
+        - generic [ref=f3e89]:
+          - paragraph [ref=f3e90]: © 2026 dranzr. Todos los derechos reservados.
+          - paragraph [ref=f3e91]: Hecho con ♥ usando Next.js
+  - button "Open Tanstack query devtools" [ref=f3e142] [cursor=pointer]

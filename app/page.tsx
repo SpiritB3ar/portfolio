@@ -19,7 +19,7 @@ export default async function Home() {
   return (
     <>
       {/* Hero (cinematic canvas is provided site-wide by MainLayout) */}
-      <BodyContent homeData={homeData} socialLinks={socialLinks} />
+      <BodyContent homeData={homeData} />
 
       {/* Tech marquee */}
       <TechMarquee projects={projects || []} />

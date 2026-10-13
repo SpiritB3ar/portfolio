@@ -2,11 +2,24 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Briefcase, MapPin, Calendar, ChevronRight } from 'lucide-react';
-import { ExperiencePathProps } from './experiencePath';
 import { format } from 'date-fns';
 import { es, enUS } from 'date-fns/locale';
 import { useLanguage } from '../providers/LanguageProvider';
 import { Locale } from '../lib/dictionary';
+
+export interface ExperiencePathProps {
+    title: string
+    position: string
+    cover: string
+    company?: string
+    description?: string
+    location?: string
+    technologies?: string[]
+    activities: string[]
+    startDate: string
+    endDate: string
+    isLast?: boolean
+}
 
 interface TimelineProps {
     experiences: ExperiencePathProps[];
@@ -31,24 +44,24 @@ const ExperienceCard = ({ item, index, isLast }: { item: ExperiencePathProps; in
     const reduce = useReducedMotion();
     const { lang, t } = useLanguage();
 
-    const dateLabel = `${formatDate(item.startDate, lang)} — ${item.endDate ? formatDate(item.endDate, lang) : t.common.present}`;
+    const dateLabel = `${formatDate(item.startDate, lang)} · ${item.endDate ? formatDate(item.endDate, lang) : t.common.present}`;
 
     return (
         <div className="relative flex gap-6 sm:gap-10 group">
             {/* Timeline spine */}
             <div className="flex flex-col items-center shrink-0">
-                {/* Dot */}
+                {/* Node dot */}
                 <motion.div
                     initial={reduce ? false : { scale: 0 }}
                     whileInView={reduce ? undefined : { scale: 1 }}
                     viewport={{ once: true, margin: '-50px' }}
                     transition={{ duration: 0.4, delay: index * 0.1 }}
-                    className="relative z-10 flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full border-2 border-brand-green bg-white shadow-lg shadow-brand-green/20 dark:bg-[#03100E] dark:shadow-brand-green/10 group-hover:scale-110 transition-transform duration-300"
+                    className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full border-2 border-brand-green bg-background transition-transform duration-300 group-hover:scale-105 sm:h-14 sm:w-14"
                 >
                     {item.cover ? (
-                        <img src={item.cover} alt={item.title} className="h-7 w-7 sm:h-8 sm:w-8 object-contain rounded-full" />
+                        <img src={item.cover} alt={item.title} className="h-7 w-7 rounded-full object-contain sm:h-8 sm:w-8" />
                     ) : (
-                        <Briefcase className="h-5 w-5 sm:h-6 sm:w-6 text-brand-green" />
+                        <Briefcase className="h-5 w-5 text-brand-green sm:h-6 sm:w-6" />
                     )}
                 </motion.div>
                 {/* Line */}
@@ -65,7 +78,7 @@ const ExperienceCard = ({ item, index, isLast }: { item: ExperiencePathProps; in
                 transition={{ duration: 0.5, delay: index * 0.1, ease: [0.21, 0.6, 0.35, 1] }}
                 className="flex-1 pb-10 sm:pb-14"
             >
-                <div className="relative overflow-hidden rounded-2xl border border-gray-200/60 bg-white/80 backdrop-blur-sm shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-brand-green/10 hover:border-brand-green/30 dark:border-white/10 dark:bg-white/5 dark:hover:border-brand-green/30">
+                <div className="overflow-hidden rounded-2xl border border-border bg-card transition-colors duration-300 hover:border-brand-green/40 dark:hover:border-brand-green/40">
                     {/* Top accent bar */}
                     <div className="h-1 w-full bg-gradient-to-r from-brand-green via-brand-medium to-brand-green" />
 
@@ -76,16 +89,21 @@ const ExperienceCard = ({ item, index, isLast }: { item: ExperiencePathProps; in
                                 <div className="flex items-center gap-2 mb-1">
                                     <Calendar className="h-3.5 w-3.5 text-brand-green shrink-0" />
                                     <span className="text-xs font-medium text-brand-green uppercase tracking-wider">{dateLabel}</span>
+                                    {!item.endDate && (
+                                        <span className="rounded-full border border-brand-green/20 bg-brand-green/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-brand-green">
+                                            {t.experience.now}
+                                        </span>
+                                    )}
                                 </div>
-                                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white font-poiret mt-2">
+                                <h3 className="text-xl sm:text-2xl font-bold text-foreground font-poiret mt-2">
                                     {item.position}
                                 </h3>
                                 <div className="flex items-center gap-2 mt-1.5">
-                                    <span className="text-base font-semibold text-gray-700 dark:text-gray-300">{item.title}</span>
+                                    <span className="text-base font-semibold text-foreground/80">{item.title}</span>
                                     {item.location && (
                                         <>
-                                            <span className="text-gray-300 dark:text-gray-600">·</span>
-                                            <span className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+                                            <span className="text-border">·</span>
+                                            <span className="flex items-center gap-1 text-sm text-muted-foreground">
                                                 <MapPin className="h-3.5 w-3.5" />
                                                 {item.location}
                                             </span>
@@ -97,7 +115,7 @@ const ExperienceCard = ({ item, index, isLast }: { item: ExperiencePathProps; in
 
                         {/* Description */}
                         {item.description && (
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-5 leading-relaxed">
+                            <p className="text-sm text-muted-foreground mb-5 leading-relaxed">
                                 {item.description}
                             </p>
                         )}
@@ -106,7 +124,7 @@ const ExperienceCard = ({ item, index, isLast }: { item: ExperiencePathProps; in
                         {item.activities.length > 0 && (
                             <ul className="space-y-2.5 mb-5">
                                 {item.activities.map((activity, i) => (
-                                    <li key={i} className="flex items-start gap-2.5 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                                    <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground leading-relaxed">
                                         <ChevronRight className="h-4 w-4 text-brand-green shrink-0 mt-0.5" />
                                         <span>{activity}</span>
                                     </li>
@@ -116,7 +134,7 @@ const ExperienceCard = ({ item, index, isLast }: { item: ExperiencePathProps; in
 
                         {/* Technologies */}
                         {item.technologies && item.technologies.length > 0 && (
-                            <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-100 dark:border-white/10">
+                            <div className="flex flex-wrap gap-2 pt-4 border-t border-border">
                                 {item.technologies.map((tech, i) => (
                                     <TechBadge key={i} name={tech} />
                                 ))}

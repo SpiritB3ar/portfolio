@@ -20,10 +20,10 @@ const SiteAtmosphere = ({
       className="grain pointer-events-none fixed inset-0 z-0 overflow-hidden"
     >
       {/* Base canvas */}
-      <div className="absolute inset-0 bg-[#FBF6EA] transition-colors duration-700 dark:bg-[#03100E]" />
+      <div className="absolute inset-0 bg-background transition-colors duration-700" />
 
-      {/* Rotating conic aurora — modern premium glow */}
-      <div className="absolute left-1/2 top-0 h-[120vmax] w-[120vmax] opacity-[0.08] dark:opacity-[0.18]">
+      {/* Rotating conic aurora — subtle brand wash */}
+      <div className="absolute left-1/2 top-0 h-[120vmax] w-[120vmax] opacity-[0.05] dark:opacity-[0.10]">
         <div
           className="animate-aurora absolute left-1/2 top-1/2 h-full w-full rounded-full blur-[100px]"
           style={{

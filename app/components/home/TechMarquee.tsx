@@ -42,7 +42,7 @@ export const TechMarquee = ({ projects }: TechMarqueeProps) => {
     <div className="flex items-center gap-10" aria-hidden={hidden || undefined}>
       {items.map((tech, i) => (
         <div key={`${tech}-${i}`} className="flex items-center gap-10">
-          <span className="font-poiret text-2xl font-bold text-gray-700 transition-colors hover:text-brand-medium dark:text-gray-200 dark:hover:text-brand-green md:text-3xl">
+          <span className="font-poiret text-2xl font-bold text-foreground transition-colors hover:text-brand-medium dark:hover:text-brand-green md:text-3xl">
             {tech}
           </span>
           <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand-green/60" />
@@ -52,8 +52,8 @@ export const TechMarquee = ({ projects }: TechMarqueeProps) => {
   );
 
   return (
-    <section className="relative z-10 border-y border-gray-200/70 py-10 dark:border-white/10">
-      <p className="mb-6 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-gray-500 dark:text-gray-400">
+    <section className="relative z-10 border-y border-border py-10">
+      <p className="mb-6 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
         {t.home.techTitle}
       </p>
 

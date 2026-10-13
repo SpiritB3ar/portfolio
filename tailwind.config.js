@@ -2,10 +2,8 @@
 module.exports = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
   ],
   prefix: "",
   theme: {
@@ -30,11 +28,7 @@ module.exports = {
           medium: "hsl(var(--brand-medium))",
           green: "hsl(var(--brand-green))",
           light: "hsl(var(--brand-light))",
-          cream: "hsl(var(--brand-cream))",
-          "dark-green": "#024441",
         },
-        lightHomeBg: "#DBEEED",
-        bg: "#FFF8ED",
 
         primary: {
           DEFAULT: "hsl(var(--primary))",
@@ -87,10 +81,6 @@ module.exports = {
           from: { transform: "translateX(-50%)" },
           to: { transform: "translateX(0)" },
         },
-        "glow-pulse": {
-          "0%, 100%": { opacity: "0.55", transform: "scale(1)" },
-          "50%": { opacity: "1", transform: "scale(1.06)" },
-        },
         float: {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-14px)" },
@@ -103,21 +93,15 @@ module.exports = {
           from: { transform: "translate(-50%, -50%) rotate(0deg)" },
           to: { transform: "translate(-50%, -50%) rotate(360deg)" },
         },
-        shimmer: {
-          "0%": { backgroundPosition: "200% center" },
-          "100%": { backgroundPosition: "-200% center" },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         marquee: "marquee 38s linear infinite",
         "marquee-reverse": "marquee-reverse 38s linear infinite",
-        "glow-pulse": "glow-pulse 5s ease-in-out infinite",
         float: "float 7s ease-in-out infinite",
         "drift-slow": "drift-slow 24s ease-in-out infinite",
         aurora: "aurora 28s linear infinite",
-        shimmer: "shimmer 7s linear infinite",
       },
       fontFamily: {
         poiret: ['var(--font-poiret)'],

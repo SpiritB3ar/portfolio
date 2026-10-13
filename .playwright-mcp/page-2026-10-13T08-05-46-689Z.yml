@@ -1,0 +1,136 @@
+- generic [ref=f27e2]:
+  - main [ref=f27e3]:
+    - generic [ref=f27e4]:
+      - navigation [ref=f27e5]:
+        - generic [ref=f27e6]:
+          - link [ref=f27e8] [cursor=pointer]:
+            - /url: /
+          - generic [ref=f27e13]:
+            - link "Trabajo" [ref=f27e14] [cursor=pointer]:
+              - /url: /projects
+            - link "Sobre Mí" [ref=f27e15] [cursor=pointer]:
+              - /url: /about
+          - generic [ref=f27e16]:
+            - button "Buscar y preguntar" [ref=f27e17] [cursor=pointer]:
+              - generic [ref=f27e22]: ⌘K
+            - button "ES" [ref=f27e25] [cursor=pointer]
+      - generic [ref=f27e32]:
+        - heading "MI VIAJE HASTA AHORA" [level=1] [ref=f27e36]
+        - generic [ref=f27e37]:
+          - generic [ref=f27e38]:
+            - generic [ref=f27e39]:
+              - heading "Educación" [level=2] [ref=f27e40]
+              - paragraph [ref=f27e41]: Formación académica y certificaciones
+            - generic [ref=f27e43]:
+              - generic [ref=f27e50]:
+                - generic [ref=f27e51]: May 2022 · Mar 2024
+                - heading "UTP Universidad Tecnológica del Perú" [level=3] [ref=f27e55]
+                - paragraph [ref=f27e56]:
+                  - text: Software Engineer
+                  - generic [ref=f27e57]: en Tecnología de la información
+              - generic [ref=f27e63]:
+                - generic [ref=f27e64]: Dic 2018 · Dic 2021
+                - heading "Idat" [level=3] [ref=f27e68]
+                - paragraph [ref=f27e69]:
+                  - text: Desarrollo de Sistemas
+                  - generic [ref=f27e70]: en Desarrollo de Sistemas
+          - generic [ref=f27e71]:
+            - heading "Experiencia" [level=2] [ref=f27e72]
+            - paragraph [ref=f27e73]: Trayectoria profesional
+          - generic [ref=f27e75]:
+            - generic [ref=f27e82]:
+              - generic [ref=f27e84]:
+                - generic [ref=f27e85]: · Presente
+                - heading "Senior Software Engineer" [level=3] [ref=f27e89]
+                - generic [ref=f27e90]:
+                  - generic [ref=f27e91]: Coforge
+                  - generic [ref=f27e92]: ·
+                  - generic [ref=f27e93]: Lima, Perú
+              - paragraph [ref=f27e97]: "Coforge (antes Encora) — Cliente: Niubiz – Soluciones de Pagos Digitales Cliente: Niubiz – Soluciones de Pagos Digitales 🔹 Desarrollé e implementé soluciones de pago digital con código QR y pasarela de pagos, integradas en la plataforma de Niubiz, líder en procesamiento seguro de pagos en Perú. 🔹 Diseñé arquitecturas escalables y seguras para soportar altos volúmenes transaccionales y cumplir con estándares de seguridad de la industria. 🔹 Integré servicios de backend con pasarelas de pago y sistemas core, optimizando rendimiento y disponibilidad. 🔹Colaboré con equipos multidisciplinarios bajo metodologías ágiles para acelerar entregas con calidad técnica."
+              - generic [ref=f27e98]:
+                - generic [ref=f27e99]: NestJS
+                - generic [ref=f27e100]: Node.js
+                - generic [ref=f27e101]: TypeScript
+                - generic [ref=f27e102]: AWS
+                - generic [ref=f27e103]: Microservices
+                - generic [ref=f27e104]: QR Payments
+                - generic [ref=f27e105]: Digital Payments
+            - generic [ref=f27e112]:
+              - generic [ref=f27e114]:
+                - generic [ref=f27e115]: · Presente
+                - heading "Desarrollador de back-end" [level=3] [ref=f27e119]
+                - generic [ref=f27e120]:
+                  - generic [ref=f27e121]: Inetum
+                  - generic [ref=f27e122]: ·
+                  - generic [ref=f27e123]: Lima, Perú
+              - paragraph [ref=f27e127]: "Cliente: Pacífico Salud – Core Backend y Cloud Infraestructura"
+              - generic [ref=f27e128]:
+                - generic [ref=f27e129]: NestJS
+                - generic [ref=f27e130]: TypeScript
+                - generic [ref=f27e131]: Azure
+                - generic [ref=f27e132]: Hexagonal Architecture
+                - generic [ref=f27e133]: Node.js
+            - generic [ref=f27e140]:
+              - generic [ref=f27e142]:
+                - generic [ref=f27e143]: · Presente
+                - heading "Ingeniero de software" [level=3] [ref=f27e147]
+                - generic [ref=f27e148]:
+                  - generic [ref=f27e149]: NTT DATA Europe & Latam
+                  - generic [ref=f27e150]: ·
+                  - generic [ref=f27e151]: Lima, Perú
+              - paragraph [ref=f27e155]: "Cliente: Interbank – Backend Cloud para Proyectos Financieros"
+              - generic [ref=f27e156]:
+                - generic [ref=f27e157]: Java
+                - generic [ref=f27e158]: Spring Boot
+                - generic [ref=f27e159]: NestJS
+                - generic [ref=f27e160]: Azure
+                - generic [ref=f27e161]: Kubernetes
+                - generic [ref=f27e162]: Docker
+                - generic [ref=f27e163]: Microservices
+                - generic [ref=f27e164]: TypeScript
+            - generic [ref=f27e170]:
+              - generic [ref=f27e172]:
+                - generic [ref=f27e173]: · Presente
+                - heading "Desarrollador Backend Asistente" [level=3] [ref=f27e177]
+                - generic [ref=f27e178]:
+                  - generic [ref=f27e179]: Summit Consulting
+                  - generic [ref=f27e180]: ·
+                  - generic [ref=f27e181]: Lima, Perú
+              - paragraph [ref=f27e185]: Soporte técnico y desarrollo en sistemas empresariales.
+              - generic [ref=f27e186]:
+                - generic [ref=f27e187]: Angular
+                - generic [ref=f27e188]: .NET
+                - generic [ref=f27e189]: C#
+                - generic [ref=f27e190]: SQL Server
+                - generic [ref=f27e191]: Electronic Invoicing
+      - button "Chat" [ref=f27e193] [cursor=pointer]
+  - contentinfo [ref=f27e196]:
+    - generic [ref=f27e197]:
+      - generic [ref=f27e198]:
+        - generic [ref=f27e199]:
+          - generic [ref=f27e200]: dranzr
+          - paragraph [ref=f27e206]: Construyo experiencias digitales con pasión y precisión.
+        - generic [ref=f27e207]:
+          - heading "Enlaces rápidos" [level=3] [ref=f27e208]
+          - list [ref=f27e209]:
+            - listitem [ref=f27e210]:
+              - link "Inicio" [ref=f27e211] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=f27e212]:
+              - link "Sobre Mí" [ref=f27e213] [cursor=pointer]:
+                - /url: /about
+            - listitem [ref=f27e214]:
+              - link "Experiencia" [ref=f27e215] [cursor=pointer]:
+                - /url: /experience
+            - listitem [ref=f27e216]:
+              - link "Proyectos" [ref=f27e217] [cursor=pointer]:
+                - /url: /projects
+            - listitem [ref=f27e218]:
+              - link "Blogs" [ref=f27e219] [cursor=pointer]:
+                - /url: /blogs
+            - listitem [ref=f27e220]:
+              - link "Recursos" [ref=f27e221] [cursor=pointer]:
+                - /url: /resources
+      - generic [ref=f27e223]:
+        - paragraph [ref=f27e224]: © 2026 dranzr. Todos los derechos reservados.
+        - paragraph [ref=f27e225]: Hecho con ♥ usando Next.js

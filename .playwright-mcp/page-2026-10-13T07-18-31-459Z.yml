@@ -1,0 +1,179 @@
+- generic [active] [ref=e1]:
+  - alert [ref=e2]
+  - generic [ref=e3]:
+    - main [ref=e4]:
+      - generic [ref=e5]:
+        - navigation [ref=e6]:
+          - generic [ref=e7]:
+            - link [ref=e9] [cursor=pointer]:
+              - /url: /
+            - generic [ref=e14]:
+              - link "Trabajo" [ref=e15] [cursor=pointer]:
+                - /url: /projects
+              - link "Sobre Mí" [ref=e16] [cursor=pointer]:
+                - /url: /about
+            - generic [ref=e17]:
+              - button "Buscar y preguntar" [ref=e18] [cursor=pointer]:
+                - generic [ref=e23]: CtrlK
+              - button "Cambiar tema" [ref=e25] [cursor=pointer]
+              - button "ES" [ref=e34] [cursor=pointer]
+        - generic [ref=e654]:
+          - generic [ref=e655]:
+            - generic [ref=e656]: "01"
+            - heading "MI VIAJE HASTA AHORA" [level=1] [ref=e659]
+          - generic [ref=e660]:
+            - generic [ref=e661]:
+              - generic [ref=e662]:
+                - heading "Educación" [level=2] [ref=e663]
+                - paragraph [ref=e664]: Formación académica y certificaciones
+              - generic [ref=e666]:
+                - generic [ref=e677]:
+                  - generic [ref=e678]: May 2022 — Mar 2024
+                  - heading "UTP Universidad Tecnológica del Perú" [level=3] [ref=e682]
+                  - paragraph [ref=e683]:
+                    - text: Software Engineer
+                    - generic [ref=e684]: en Tecnología de la información
+                - generic [ref=e690]:
+                  - generic [ref=e691]: Dic 2018 — Dic 2021
+                  - heading "Idat" [level=3] [ref=e695]
+                  - paragraph [ref=e696]:
+                    - text: Desarrollo de Sistemas
+                    - generic [ref=e697]: en Desarrollo de Sistemas
+            - generic [ref=e698]:
+              - heading "Experiencia" [level=2] [ref=e699]
+              - paragraph [ref=e700]: Trayectoria profesional
+            - generic [ref=e702]:
+              - generic [ref=e709]:
+                - generic [ref=e711]:
+                  - generic [ref=e712]: — Presente
+                  - heading "Senior Software Engineer" [level=3] [ref=e716]
+                  - generic [ref=e717]:
+                    - generic [ref=e718]: Coforge
+                    - generic [ref=e719]: ·
+                    - generic [ref=e720]: Lima, Perú
+                - paragraph [ref=e724]: "Coforge (antes Encora) — Cliente: Niubiz – Soluciones de Pagos Digitales Cliente: Niubiz – Soluciones de Pagos Digitales 🔹 Desarrollé e implementé soluciones de pago digital con código QR y pasarela de pagos, integradas en la plataforma de Niubiz, líder en procesamiento seguro de pagos en Perú. 🔹 Diseñé arquitecturas escalables y seguras para soportar altos volúmenes transaccionales y cumplir con estándares de seguridad de la industria. 🔹 Integré servicios de backend con pasarelas de pago y sistemas core, optimizando rendimiento y disponibilidad. 🔹Colaboré con equipos multidisciplinarios bajo metodologías ágiles para acelerar entregas con calidad técnica."
+                - generic [ref=e725]:
+                  - generic [ref=e726]: NestJS
+                  - generic [ref=e727]: Node.js
+                  - generic [ref=e728]: TypeScript
+                  - generic [ref=e729]: AWS
+                  - generic [ref=e730]: Microservices
+                  - generic [ref=e731]: QR Payments
+                  - generic [ref=e732]: Digital Payments
+              - generic [ref=e739]:
+                - generic [ref=e741]:
+                  - generic [ref=e742]: — Presente
+                  - heading "Desarrollador de back-end" [level=3] [ref=e746]
+                  - generic [ref=e747]:
+                    - generic [ref=e748]: Inetum
+                    - generic [ref=e749]: ·
+                    - generic [ref=e750]: Lima, Perú
+                - paragraph [ref=e754]: "Cliente: Pacífico Salud – Core Backend y Cloud Infraestructura"
+                - generic [ref=e755]:
+                  - generic [ref=e756]: NestJS
+                  - generic [ref=e757]: TypeScript
+                  - generic [ref=e758]: Azure
+                  - generic [ref=e759]: Hexagonal Architecture
+                  - generic [ref=e760]: Node.js
+              - generic [ref=e767]:
+                - generic [ref=e769]:
+                  - generic [ref=e770]: — Presente
+                  - heading "Ingeniero de software" [level=3] [ref=e774]
+                  - generic [ref=e775]:
+                    - generic [ref=e776]: NTT DATA Europe & Latam
+                    - generic [ref=e777]: ·
+                    - generic [ref=e778]: Lima, Perú
+                - paragraph [ref=e782]: "Cliente: Interbank – Backend Cloud para Proyectos Financieros"
+                - generic [ref=e783]:
+                  - generic [ref=e784]: Java
+                  - generic [ref=e785]: Spring Boot
+                  - generic [ref=e786]: NestJS
+                  - generic [ref=e787]: Azure
+                  - generic [ref=e788]: Kubernetes
+                  - generic [ref=e789]: Docker
+                  - generic [ref=e790]: Microservices
+                  - generic [ref=e791]: TypeScript
+              - generic [ref=e797]:
+                - generic [ref=e799]:
+                  - generic [ref=e800]: — Presente
+                  - heading "Desarrollador Backend Asistente" [level=3] [ref=e804]
+                  - generic [ref=e805]:
+                    - generic [ref=e806]: Summit Consulting
+                    - generic [ref=e807]: ·
+                    - generic [ref=e808]: Lima, Perú
+                - paragraph [ref=e812]: Soporte técnico y desarrollo en sistemas empresariales.
+                - generic [ref=e813]:
+                  - generic [ref=e814]: Angular
+                  - generic [ref=e815]: .NET
+                  - generic [ref=e816]: C#
+                  - generic [ref=e817]: SQL Server
+                  - generic [ref=e818]: Electronic Invoicing
+        - generic [ref=e266]:
+          - generic [ref=e556]:
+            - generic [ref=e557]:
+              - generic [ref=e558]:
+                - paragraph [ref=e559]: Pregunta sobre mi perfil
+                - paragraph [ref=e560]: Te respondo directo sobre mi experiencia
+              - button "Cerrar" [ref=e561] [cursor=pointer]
+            - generic [ref=e565]:
+              - generic [ref=e566]: exp
+              - generic [ref=e569]:
+                - generic [ref=e570]: "Cuento con más de 4 años de experiencia en desarrollo backend y cloud:"
+                - generic [ref=e571]:
+                  - text: •
+                  - strong [ref=e572]: Senior Software Engineer @ Coforge
+                  - text: "(2025 - Presente): Desarrollo de pagos digitales y QR para Niubiz con NestJS, AWS y microservicios."
+                - generic [ref=e573]:
+                  - text: •
+                  - strong [ref=e574]: Desarrollador Backend @ Inetum
+                  - text: "(2024): Creación de librerías core y arquitectura hexagonal en NestJS y Azure para Pacífico Salud."
+                - generic [ref=e575]:
+                  - text: •
+                  - strong [ref=e576]: Ingeniero de Software @ NTT DATA
+                  - text: "(2022 - 2024): Microservicios financieros para Interbank con Java (Spring Boot), NestJS, Azure y Kubernetes."
+                - generic [ref=e577]:
+                  - text: •
+                  - strong [ref=e578]: Desarrollador Backend Asistente @ Summit Consulting
+                  - text: "(2021 - 2022): Soporte y desarrollo en ERP y facturación electrónica con .NET, C# y Angular."
+              - generic [ref=e579]:
+                - button "¿Cuántos años de experiencia tienes?" [ref=e580] [cursor=pointer]
+                - button "¿Cuál es tu stack frontend?" [ref=e581] [cursor=pointer]
+                - button "Cuéntame sobre tus proyectos recientes" [ref=e582] [cursor=pointer]
+            - generic [ref=e583]:
+              - textbox "Ej. ¿Cuántos años de experiencia con Next.js?" [ref=e584]
+              - button "Enviar" [disabled] [ref=e585]
+          - button "Cerrar" [ref=e589] [cursor=pointer]
+    - contentinfo [ref=e270]:
+      - generic [ref=e271]:
+        - generic [ref=e272]:
+          - generic [ref=e273]:
+            - generic [ref=e274]: dranzr
+            - paragraph [ref=e280]: Construyo experiencias digitales con pasión y precisión.
+          - generic [ref=e281]:
+            - heading "Enlaces rápidos" [level=3] [ref=e282]
+            - list [ref=e283]:
+              - listitem [ref=e284]:
+                - link "Sobre Mí" [ref=e285] [cursor=pointer]:
+                  - /url: /about
+              - listitem [ref=e286]:
+                - link "Experiencia" [ref=e287] [cursor=pointer]:
+                  - /url: /experience
+              - listitem [ref=e288]:
+                - link "Proyectos" [ref=e289] [cursor=pointer]:
+                  - /url: /projects
+              - listitem [ref=e290]:
+                - link "Blogs" [ref=e291] [cursor=pointer]:
+                  - /url: /blogs
+          - generic [ref=e292]:
+            - heading "Conecta" [level=3] [ref=e293]
+            - generic [ref=e294]:
+              - link "LinkedIn" [ref=e295] [cursor=pointer]:
+                - /url: https://www.linkedin.com/in/ronalcardenas-c
+              - link "Website" [ref=e300] [cursor=pointer]:
+                - /url: https://www.corleo.dev/
+              - link "Email" [ref=e304] [cursor=pointer]:
+                - /url: mailto:cardenascode7@outlook.com
+        - generic [ref=e309]:
+          - paragraph [ref=e310]: © 2026 dranzr. Todos los derechos reservados.
+          - paragraph [ref=e311]: Hecho con ♥ usando Next.js
+  - button "Open Tanstack query devtools" [ref=e362] [cursor=pointer]

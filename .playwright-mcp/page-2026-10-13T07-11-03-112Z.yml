@@ -1,0 +1,107 @@
+- generic [ref=e1]:
+  - alert [ref=e2]
+  - generic [ref=e3]:
+    - main [ref=e4]:
+      - generic [ref=e5]:
+        - navigation [ref=e6]:
+          - generic [ref=e7]:
+            - link [ref=e9] [cursor=pointer]:
+              - /url: /
+            - generic [ref=e14]:
+              - link "Trabajo" [ref=e15] [cursor=pointer]:
+                - /url: /projects
+              - link "Sobre Mí" [ref=e16] [cursor=pointer]:
+                - /url: /about
+            - generic [ref=e17]:
+              - button "Buscar y preguntar" [ref=e18] [cursor=pointer]:
+                - generic [ref=e23]: CtrlK
+              - button "Cambiar tema" [ref=e25] [cursor=pointer]
+              - button "ES" [ref=e34] [cursor=pointer]
+        - generic [ref=e412]:
+          - generic [ref=e413]:
+            - generic [ref=e414]: "01"
+            - heading "Mis Proyectos" [level=1] [ref=e417]
+            - paragraph [ref=e418]: Una colección de trabajos recientes que muestran mis habilidades en desarrollo frontend y backend.
+          - generic [ref=e419]:
+            - generic [ref=e420]:
+              - generic [ref=e421]: "1"
+              - paragraph [ref=e423]: "1"
+              - paragraph [ref=e424]: Proyectos
+            - generic [ref=e425]:
+              - generic [ref=e426]: "2"
+              - paragraph [ref=e428]: 2+
+              - paragraph [ref=e429]: Tecnologías
+            - generic [ref=e430]:
+              - generic [ref=e431]: "0"
+              - paragraph [ref=e433]: "0"
+              - paragraph [ref=e434]: Categorías
+            - generic [ref=e435]:
+              - generic [ref=e436]: "4"
+              - paragraph [ref=e438]: 4+
+              - paragraph [ref=e439]: Años Exp
+          - generic [ref=e440]:
+            - generic [ref=e441]:
+              - generic [ref=e442]:
+                - generic [ref=e443]: "02"
+                - heading "Todos los Proyectos" [level=2] [ref=e446]
+              - paragraph [ref=e447]: 1 projects
+            - article [ref=e449]:
+              - generic [ref=e450]:
+                - img "Ecommerce con Administración" [ref=e451]
+                - generic [ref=e453]: New
+                - button "Tecnologías" [ref=e455] [cursor=pointer]
+              - generic [ref=e460]:
+                - generic [ref=e461]:
+                  - heading "Ecommerce con Administración" [level=3] [ref=e462]
+                  - link "Live demo" [ref=e464] [cursor=pointer]:
+                    - /url: https://github.com/Spiritbe4r/ngAdmin
+                - paragraph [ref=e469]: Administrador de Ecommerce en Angular
+                - generic [ref=e470]:
+                  - generic [ref=e471]: CSS
+                  - generic [ref=e472]: Paypal API
+        - dialog "Buscar y preguntar" [ref=e474]:
+          - generic [ref=e475]:
+            - textbox "Busca páginas o pregunta sobre mi perfil…" [active] [ref=e479]: exp
+            - generic [ref=e480]: esc
+          - generic [ref=e541]:
+            - paragraph [ref=e542]: exp
+            - generic [ref=e543]: Pensando…
+          - generic [ref=e530]:
+            - generic [ref=e531]: ↵ Seleccionar
+            - generic [ref=e532]: ↑↓ Moverse
+            - generic [ref=e533]: Esc Cerrar
+        - button "Chat" [ref=e267] [cursor=pointer]
+    - contentinfo [ref=e270]:
+      - generic [ref=e271]:
+        - generic [ref=e272]:
+          - generic [ref=e273]:
+            - generic [ref=e274]: dranzr
+            - paragraph [ref=e280]: Construyo experiencias digitales con pasión y precisión.
+          - generic [ref=e281]:
+            - heading "Enlaces rápidos" [level=3] [ref=e282]
+            - list [ref=e283]:
+              - listitem [ref=e284]:
+                - link "Sobre Mí" [ref=e285] [cursor=pointer]:
+                  - /url: /about
+              - listitem [ref=e286]:
+                - link "Experiencia" [ref=e287] [cursor=pointer]:
+                  - /url: /experience
+              - listitem [ref=e288]:
+                - link "Proyectos" [ref=e289] [cursor=pointer]:
+                  - /url: /projects
+              - listitem [ref=e290]:
+                - link "Blogs" [ref=e291] [cursor=pointer]:
+                  - /url: /blogs
+          - generic [ref=e292]:
+            - heading "Conecta" [level=3] [ref=e293]
+            - generic [ref=e294]:
+              - link "LinkedIn" [ref=e295] [cursor=pointer]:
+                - /url: https://www.linkedin.com/in/ronalcardenas-c
+              - link "Website" [ref=e300] [cursor=pointer]:
+                - /url: https://www.corleo.dev/
+              - link "Email" [ref=e304] [cursor=pointer]:
+                - /url: mailto:cardenascode7@outlook.com
+        - generic [ref=e309]:
+          - paragraph [ref=e310]: © 2026 dranzr. Todos los derechos reservados.
+          - paragraph [ref=e311]: Hecho con ♥ usando Next.js
+  - button "Open Tanstack query devtools" [ref=e362] [cursor=pointer]

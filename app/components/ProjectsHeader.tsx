@@ -7,7 +7,6 @@ export const ProjectsHeader = () => {
 
     return (
         <PageHeader
-            index="01"
             title={t.projects.title}
             subtitle={t.projects.description}
         />

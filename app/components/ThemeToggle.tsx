@@ -2,10 +2,12 @@
 import { motion } from "framer-motion";
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useLanguage } from "../providers/LanguageProvider";
 
 export const ThemeToggle = () => {
     const [theme, setTheme] = useState<'light' | 'dark'>('dark');
     const [mounted, setMounted] = useState(false);
+    const { t } = useLanguage();
 
     useEffect(() => {
         // Check localStorage or system preference
@@ -49,8 +51,8 @@ export const ThemeToggle = () => {
         <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={toggleTheme}
-            className="relative w-9 h-9 rounded-full bg-white/50 dark:bg-white/10 backdrop-blur-xl border border-gray-200/50 dark:border-white/10 shadow-sm hover:shadow-md transition-all flex items-center justify-center group"
-            aria-label="Toggle theme"
+            className="relative w-9 h-9 rounded-full bg-card/70 border border-border shadow-sm hover:shadow-md transition-all flex items-center justify-center group focus-ring"
+            aria-label={t.common.toggleTheme}
         >
             <div className="relative w-5 h-5">
                 <motion.div
@@ -63,7 +65,7 @@ export const ThemeToggle = () => {
                     transition={{ duration: 0.3 }}
                     className="absolute inset-0"
                 >
-                    <Sun className="w-5 h-5 text-amber-500" />
+                    <Sun className="w-5 h-5 text-foreground" />
                 </motion.div>
                 <motion.div
                     initial={false}
@@ -75,7 +77,7 @@ export const ThemeToggle = () => {
                     transition={{ duration: 0.3 }}
                     className="absolute inset-0"
                 >
-                    <Moon className="w-5 h-5 text-blue-400" />
+                    <Moon className="w-5 h-5 text-foreground" />
                 </motion.div>
             </div>
         </motion.button>

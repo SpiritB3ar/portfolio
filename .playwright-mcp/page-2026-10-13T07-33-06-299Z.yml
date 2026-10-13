@@ -1,0 +1,149 @@
+- generic [ref=f4e1]:
+  - alert [ref=f4e2]
+  - generic [ref=f4e3]:
+    - main [ref=f4e4]:
+      - generic [ref=f4e5]:
+        - generic [aria-hidden]:
+          - generic: dranzr
+        - navigation [ref=f4e6]:
+          - generic [ref=f4e7]:
+            - link [ref=f4e9] [cursor=pointer]:
+              - /url: /
+            - generic [ref=f4e14]:
+              - link "Trabajo" [ref=f4e15] [cursor=pointer]:
+                - /url: /projects
+              - link "Sobre Mí" [ref=f4e16] [cursor=pointer]:
+                - /url: /about
+            - generic [ref=f4e17]:
+              - button "Buscar y preguntar" [ref=f4e18] [cursor=pointer]:
+                - generic [ref=f4e23]: Ctrl K
+              - button "Cambiar tema" [ref=f4e25] [cursor=pointer]
+              - button "ES" [ref=f4e34] [cursor=pointer]
+        - generic [ref=f4e40]:
+          - generic [ref=f4e191]:
+            - generic [ref=f4e192]:
+              - heading "Sr Backend Developer | AI Engineer | Cloud Architecture (AWS, Azure, GCP)" [level=1] [ref=f4e193]
+              - paragraph [ref=f4e194]: Ingeniero de Software con más de 4 años de experiencia desarrollando soluciones escalables en entornos cloud. Experiencia en proyectos de banca, seguros y pagos digitales, participando en el diseño técnico de soluciones, arquitecturas backend y revisión de código (PRs). Trabajo con microservicios y arquitectura hexagonal, aplicando buenas prácticas para construir software limpio, robusto y mantenible. Me motiva resolver problemas complejos y desarrollar soluciones con impacto real.
+              - button "Pregúntame sobre mi trabajo…" [ref=f4e195] [cursor=pointer]
+              - button "Descargar CV" [ref=f4e203] [cursor=pointer]
+            - img "Ronald Cardenas" [ref=f4e211]
+          - generic [ref=f4e214]:
+            - paragraph [ref=f4e215]: Tecnologías que uso
+            - generic [ref=f4e217]:
+              - generic [ref=f4e218]:
+                - generic [ref=f4e219]: TypeScript
+                - generic [ref=f4e222]: React
+                - generic [ref=f4e225]: Next.js
+                - generic [ref=f4e228]: Node.js
+                - generic [ref=f4e231]: Tailwind CSS
+                - generic [ref=f4e234]: Prisma
+                - generic [ref=f4e237]: MongoDB
+                - generic [ref=f4e240]: Framer Motion
+                - generic [ref=f4e243]: GraphQL
+                - generic [ref=f4e246]: React Native
+              - generic [aria-hidden] [ref=f4e249]:
+                - generic [ref=f4e250]: TypeScript
+                - generic [ref=f4e253]: React
+                - generic [ref=f4e256]: Next.js
+                - generic [ref=f4e259]: Node.js
+                - generic [ref=f4e262]: Tailwind CSS
+                - generic [ref=f4e265]: Prisma
+                - generic [ref=f4e268]: MongoDB
+                - generic [ref=f4e271]: Framer Motion
+                - generic [ref=f4e274]: GraphQL
+                - generic [ref=f4e277]: React Native
+          - generic [ref=f4e280]:
+            - generic [ref=f4e281]: Sobre mí
+            - blockquote [ref=f4e284]: “Ingeniero de Software con más de 4 años de experiencia desarrollando soluciones escalables en entornos cloud. Experiencia en proyectos de banca, seguros y pagos digitales, participando en el diseño técnico de soluciones, arquitecturas backend y revisión de código (PRs). Trabajo con microservicios y arquitectura hexagonal, aplicando buenas prácticas para construir software limpio, robusto y mantenible. Me motiva resolver problemas complejos y desarrollar soluciones con impacto real.”
+            - link "Leer Más" [ref=f4e286] [cursor=pointer]:
+              - /url: /about
+          - generic [ref=f4e291]:
+            - generic [ref=f4e292]:
+              - generic [ref=f4e293]:
+                - heading "Trabajo destacado" [level=2] [ref=f4e296]
+                - paragraph [ref=f4e297]: Proyectos recientes
+              - link "Ver todo" [ref=f4e298] [cursor=pointer]:
+                - /url: /projects
+            - article [ref=f4e303]:
+              - link "Ecommerce con Administración Ecommerce con Administración Administrador de Ecommerce en Angular CSS Paypal API" [ref=f4e304] [cursor=pointer]:
+                - /url: https://github.com/Spiritbe4r/ngAdmin
+                - generic [ref=f4e306]:
+                  - img "Ecommerce con Administración" [ref=f4e307]
+                  - generic [ref=f4e313]:
+                    - heading "Ecommerce con Administración" [level=3] [ref=f4e314]
+                    - paragraph [ref=f4e315]: Administrador de Ecommerce en Angular
+                    - generic [ref=f4e316]:
+                      - generic [ref=f4e317]: CSS
+                      - generic [ref=f4e318]: Paypal API
+          - generic [ref=f4e321]:
+            - heading "Construyamos algo" [level=2] [ref=f4e322]
+            - paragraph [ref=f4e323]: ¿Tienes un proyecto en mente? Estoy a un mensaje de distancia.
+            - generic [ref=f4e324]:
+              - link "Descargar CV" [ref=f4e325] [cursor=pointer]:
+                - /url: https://res.cloudinary.com/dmnzrw08u/raw/upload/v1780814474/uhr426ksxkrctpi0zfsq.pdf
+              - link "Enviar correo" [ref=f4e330] [cursor=pointer]:
+                - /url: mailto:cardenascode7@outlook.com
+            - generic [ref=f4e335]:
+              - link "Linkedin" [ref=f4e337] [cursor=pointer]:
+                - /url: https://www.linkedin.com/in/ronal-cardenas-58772520a/
+              - link "Github" [ref=f4e342] [cursor=pointer]:
+                - /url: https://github.com/Spiritbe4r
+              - link "Facebook" [ref=f4e347] [cursor=pointer]:
+                - /url: https://www.facebook.com
+              - link "Youtube" [ref=f4e352] [cursor=pointer]:
+                - /url: https://www.youtube.com
+              - link "LinkedIn" [ref=f4e357] [cursor=pointer]:
+                - /url: https://www.linkedin.com/in/ronalcardenas-c
+              - link "Website" [ref=f4e363] [cursor=pointer]:
+                - /url: https://www.corleo.dev/
+              - link "Email" [ref=f4e368] [cursor=pointer]:
+                - /url: mailto:cardenascode7@outlook.com
+        - generic [ref=f4e46]:
+          - generic [ref=f4e372]:
+            - generic [ref=f4e373]:
+              - generic [ref=f4e374]:
+                - paragraph [ref=f4e375]: Pregunta sobre mi perfil
+                - paragraph [ref=f4e376]: Te respondo directo sobre mi experiencia
+              - button "Cerrar" [ref=f4e377] [cursor=pointer]
+            - generic [ref=f4e382]:
+              - button "¿Cuántos años de experiencia tienes?" [ref=f4e383] [cursor=pointer]
+              - button "¿Cuál es tu stack frontend?" [ref=f4e384] [cursor=pointer]
+              - button "Cuéntame sobre tus proyectos recientes" [ref=f4e385] [cursor=pointer]
+            - generic [ref=f4e386]:
+              - textbox "Ej. ¿Cuántos años de experiencia con Next.js?" [active] [ref=f4e387]
+              - button "Enviar" [disabled] [ref=f4e388]
+          - button "Cerrar" [ref=f4e392] [cursor=pointer]
+    - contentinfo [ref=f4e50]:
+      - generic [ref=f4e51]:
+        - generic [ref=f4e52]:
+          - generic [ref=f4e53]:
+            - generic [ref=f4e54]: dranzr
+            - paragraph [ref=f4e60]: Construyo experiencias digitales con pasión y precisión.
+          - generic [ref=f4e61]:
+            - heading "Enlaces rápidos" [level=3] [ref=f4e62]
+            - list [ref=f4e63]:
+              - listitem [ref=f4e64]:
+                - link "Sobre Mí" [ref=f4e65] [cursor=pointer]:
+                  - /url: /about
+              - listitem [ref=f4e66]:
+                - link "Experiencia" [ref=f4e67] [cursor=pointer]:
+                  - /url: /experience
+              - listitem [ref=f4e68]:
+                - link "Proyectos" [ref=f4e69] [cursor=pointer]:
+                  - /url: /projects
+              - listitem [ref=f4e70]:
+                - link "Blogs" [ref=f4e71] [cursor=pointer]:
+                  - /url: /blogs
+          - generic [ref=f4e72]:
+            - heading "Conecta" [level=3] [ref=f4e73]
+            - generic [ref=f4e74]:
+              - link "LinkedIn" [ref=f4e75] [cursor=pointer]:
+                - /url: https://www.linkedin.com/in/ronalcardenas-c
+              - link "Website" [ref=f4e80] [cursor=pointer]:
+                - /url: https://www.corleo.dev/
+              - link "Email" [ref=f4e84] [cursor=pointer]:
+                - /url: mailto:cardenascode7@outlook.com
+        - generic [ref=f4e89]:
+          - paragraph [ref=f4e90]: © 2026 dranzr. Todos los derechos reservados.
+          - paragraph [ref=f4e91]: Hecho con ♥ usando Next.js
+  - button "Open Tanstack query devtools" [ref=f4e142] [cursor=pointer]

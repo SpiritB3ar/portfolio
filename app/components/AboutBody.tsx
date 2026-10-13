@@ -2,7 +2,7 @@
 import React from 'react';
 import { AboutType, SkillCategoryType } from './types/types';
 import Skillbar from './Skillbar';
-import { Mail, MapPin, Briefcase, Calendar, Code2, Sparkles, ArrowRight } from 'lucide-react';
+import { Mail, MapPin, Briefcase, Calendar, Code2, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../providers/LanguageProvider';
 import { motion, useReducedMotion } from 'framer-motion';
 import { PageHeader } from './PageHeader';
@@ -17,7 +17,7 @@ const AboutBody = ({ paragraphs, skillCategories }: ContentType) => {
     const reduce = useReducedMotion();
 
     const fade = {
-        hidden: { opacity: 0, y: 24 },
+        hidden: { opacity: 0, y: reduce ? 0 : 24 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.21, 0.6, 0.35, 1] } }
     };
 
@@ -27,10 +27,10 @@ const AboutBody = ({ paragraphs, skillCategories }: ContentType) => {
     };
 
     const quickFacts = [
-        { icon: MapPin, label: 'Ubicación', value: 'Remoto / Perú', color: 'from-blue-500 to-cyan-500' },
-        { icon: Briefcase, label: 'Experiencia', value: '4+ Años', color: 'from-brand-green to-emerald-500' },
-        { icon: Code2, label: 'Proyectos', value: '20+ Completados', color: 'from-violet-500 to-purple-500' },
-        { icon: Calendar, label: 'Disponibilidad', value: 'Abierto a trabajar', color: 'from-amber-500 to-orange-500' },
+        { icon: MapPin, label: t.about.factLocationLabel, value: t.about.factLocationValue },
+        { icon: Briefcase, label: t.about.factExperienceLabel, value: t.about.factExperienceValue },
+        { icon: Code2, label: t.about.factProjectsLabel, value: t.about.factProjectsValue },
+        { icon: Calendar, label: t.about.factAvailabilityLabel, value: t.about.factAvailabilityValue },
     ];
 
     return (
@@ -42,29 +42,25 @@ const AboutBody = ({ paragraphs, skillCategories }: ContentType) => {
         >
             {/* Header */}
             <PageHeader
-                index="01"
                 title={t.about.title}
-                subtitle={t.about.subtitle || "Ingeniero de Software con más de 4 años de experiencia desarrollando soluciones escalables en entornos cloud."}
+                subtitle={t.about.subtitle}
             />
 
             {/* Quick Facts */}
             <motion.div variants={fade}>
-                <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
+                <div className="grid grid-cols-2 gap-y-8 md:grid-cols-4 md:divide-x md:divide-border">
                     {quickFacts.map((fact, index) => (
                         <motion.div
                             key={index}
                             variants={fade}
-                            whileHover={reduce ? undefined : { y: -4, scale: 1.02 }}
-                            className="group relative overflow-hidden rounded-2xl border border-gray-200/60 bg-white/80 backdrop-blur-sm p-5 sm:p-6 text-center shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-brand-green/10 hover:border-brand-green/30 dark:border-white/10 dark:bg-white/5 dark:hover:border-brand-green/30"
+                            className="px-2 text-center md:px-6"
                         >
-                            <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${fact.color} mb-3 shadow-lg`}>
-                                <fact.icon className="h-6 w-6 text-white" />
-                            </div>
-                            <p className="mb-1 text-[10px] sm:text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400">
-                                {fact.label}
-                            </p>
-                            <p className="text-sm sm:text-base font-bold text-gray-900 dark:text-white">
+                            <fact.icon className="mx-auto mb-2 h-5 w-5 text-brand-green" />
+                            <p className="text-lg font-bold text-foreground sm:text-xl">
                                 {fact.value}
+                            </p>
+                            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                                {fact.label}
                             </p>
                         </motion.div>
                     ))}
@@ -76,27 +72,18 @@ const AboutBody = ({ paragraphs, skillCategories }: ContentType) => {
 
                 {/* Left Column: Bio */}
                 <motion.div variants={fade} className="space-y-6 lg:col-span-3">
-                    {/* Bio header */}
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-green to-brand-medium shadow-lg shadow-brand-green/20">
-                            <Sparkles className="h-5 w-5 text-white" />
-                        </div>
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white font-poiret">
-                            {t.about.title}
-                        </h2>
-                    </div>
-
-                    {/* Paragraphs */}
-                    <div className="space-y-4">
+                    {/* Bio prose */}
+                    <div>
                         {paragraphs.map((item, index) => (
                             <motion.div
                                 key={index}
                                 variants={fade}
-                                whileHover={reduce ? undefined : { x: 4 }}
-                                className="relative overflow-hidden rounded-2xl border border-gray-200/60 bg-white/80 backdrop-blur-sm p-6 sm:p-8 shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-brand-green/10 hover:border-brand-green/30 dark:border-white/10 dark:bg-white/5 dark:hover:border-brand-green/30 group"
+                                className={index > 0 ? "mt-6 border-t border-border pt-6" : ""}
                             >
-                                <div className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-brand-green to-brand-medium rounded-l-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                                <p className="text-[15px] sm:text-[17px] leading-relaxed text-gray-700 dark:text-gray-300">
+                                <p className={index === 0
+                                    ? "text-xl font-medium leading-relaxed text-foreground sm:text-2xl"
+                                    : "text-[15px] leading-relaxed text-muted-foreground sm:text-base"
+                                }>
                                     {item.paragraph}
                                 </p>
                             </motion.div>
@@ -106,20 +93,20 @@ const AboutBody = ({ paragraphs, skillCategories }: ContentType) => {
                     {/* CTA */}
                     <motion.div
                         variants={fade}
-                        className="relative overflow-hidden rounded-2xl border border-brand-green/20 bg-gradient-to-br from-brand-green/5 to-brand-medium/5 p-6 sm:p-8 dark:from-brand-green/10 dark:to-brand-medium/10"
+                        className="rounded-2xl border border-border bg-muted p-6 sm:p-8"
                     >
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+                        <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
                             <div className="flex-1">
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white font-poiret mb-1">
-                                    {t.about.ctaTitle || "¿Trabajamos juntos?"}
-                                </h3>
-                                <p className="text-sm text-gray-600 dark:text-gray-400">
-                                    {t.about.ctaSubtitle || "¿Tienes un proyecto en mente? Hablemos."}
+                                <h2 className="font-poiret mb-1 text-xl font-bold text-foreground">
+                                    {t.about.ctaTitle}
+                                </h2>
+                                <p className="text-sm text-muted-foreground">
+                                    {t.about.ctaSubtitle}
                                 </p>
                             </div>
                             <a
                                 href="mailto:cardenascode7@outlook.com"
-                                className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-gradient-to-r from-brand-green to-brand-medium px-6 py-3 font-semibold text-white shadow-lg shadow-brand-green/20 transition-all duration-300 hover:shadow-xl hover:shadow-brand-green/30 hover:scale-105"
+                                className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-brand-green px-6 py-3 font-semibold text-white transition-colors duration-300 hover:bg-brand-medium dark:text-background"
                             >
                                 <Mail className="h-4 w-4" />
                                 <span>{t.about.sendEmail}</span>
@@ -134,7 +121,7 @@ const AboutBody = ({ paragraphs, skillCategories }: ContentType) => {
                     variants={fade}
                     className="lg:col-span-2"
                 >
-                    <div className="sticky top-24 overflow-hidden rounded-2xl border border-gray-200/60 bg-white/80 backdrop-blur-sm shadow-sm dark:border-white/10 dark:bg-white/5">
+                    <div className="sticky top-24 overflow-hidden rounded-2xl border border-border bg-card">
                         <Skillbar skillCategories={skillCategories} />
                     </div>
                 </motion.div>

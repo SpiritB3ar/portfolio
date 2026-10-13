@@ -74,12 +74,6 @@ importers:
       '@types/react-dom':
         specifier: 18.0.9
         version: 18.0.9
-      ag-grid-community:
-        specifier: ^32.0.2
-        version: 32.3.7
-      ag-grid-react:
-        specifier: ^32.0.2
-        version: 32.3.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.1
@@ -125,15 +119,9 @@ importers:
       react-hook-form:
         specifier: ^7.52.2
         version: 7.56.1(react@18.3.1)
-      react-skillbars:
-        specifier: ^2.2.0
-        version: 2.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       recharts:
         specifier: 2.15.4
         version: 2.15.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      sass:
-        specifier: ^1.56.1
-        version: 1.87.0
       sonner:
         specifier: ^2.0.7
         version: 2.0.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -150,9 +138,6 @@ importers:
       '@types/react':
         specifier: 18.0.25
         version: 18.0.25
-      '@types/react-vertical-timeline-component':
-        specifier: ^3.3.6
-        version: 3.3.6
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.21(postcss@8.5.3)
@@ -1588,9 +1573,6 @@ packages:
   '@types/react-dom@18.0.9':
     resolution: {integrity: sha512-qnVvHxASt/H7i+XG1U1xMiY5t+IHcPGUK7TDMDzom08xa7e86eCeKOiLZezwCKVxJn6NEiiy2ekgX8aQssjIKg==}
 
-  '@types/react-vertical-timeline-component@3.3.6':
-    resolution: {integrity: sha512-OUvyPXRjXvUD/SNLO0CW0GbIxVF32Ios5qHecMSfw6kxnK1cPULD9NV80EuqZ3WmS/s6BgbcwmN8k4ISb3akhQ==}
-
   '@types/react@18.0.25':
     resolution: {integrity: sha512-xD6c0KDT4m7n9uD4ZHi02lzskaiqcBxf4zi+tXZY98a04wvc0hi/TcCPC2FOESZi51Nd7tlUeOJY8RofL799/g==}
 
@@ -1745,18 +1727,6 @@ packages:
     resolution: {integrity: sha512-OvQ/2pUDKmgfCg++xsTX1wGxfTaszcHVcTctW4UJB4hibJx2HXxxO5UmVgyjMa+ZDsiaf5wWLXYpRWMmBI0QHg==}
     engines: {node: '>=0.4.0'}
     hasBin: true
-
-  ag-charts-types@10.3.7:
-    resolution: {integrity: sha512-ja7eA27Ns0SfwvV89ORsZTqcsZ57rPYptlzrvzRLjoKXowR+Ft9stb3USLHJjpPwT45qtMyCmTdRTfis6auWnw==}
-
-  ag-grid-community@32.3.7:
-    resolution: {integrity: sha512-36P/ex/itDEWMC0gESNR5J+lm3aeLquhgwXgM+AKGb/soLdvKv8Fc3BP/5n4r6a7qhsSFE/E1w37b26xbpHuPQ==}
-
-  ag-grid-react@32.3.7:
-    resolution: {integrity: sha512-rKTy4WqfVB0l5l7poMJoqIpLLKe2zdIbRAFoM8PiBJmFrGSjyhhR4kXVvj/AQPKdejKZkcy8r6R8F1C8obG/dA==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   agent-base@7.1.4:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
@@ -3167,12 +3137,6 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
-
-  react-skillbars@2.2.0:
-    resolution: {integrity: sha512-MzCILQkdUotSCtTpUK6KPFj41ng9rmkQULEIqlTb2FE7omAekEA27qP18bbP/qnjyuA+fdGXqA3LaPBCJoXKKA==}
-    peerDependencies:
-      react: '>=16.8 >=17 >=18'
-      react-dom: '>=16.8 >=17 >=18'
 
   react-smooth@4.0.4:
     resolution: {integrity: sha512-gnGKTpYwqL0Iii09gHobNolvX4Kiq4PKx6eWBCYYix+8cdw+cGo3do906l1NBPKkSWx1DghC1dlWG9L2uGd61Q==}
@@ -4877,10 +4841,6 @@ snapshots:
     dependencies:
       '@types/react': 18.0.25
 
-  '@types/react-vertical-timeline-component@3.3.6':
-    dependencies:
-      '@types/react': 18.0.25
-
   '@types/react@18.0.25':
     dependencies:
       '@types/prop-types': 15.7.14
@@ -5030,19 +4990,6 @@ snapshots:
       acorn: 8.14.1
 
   acorn@8.14.1: {}
-
-  ag-charts-types@10.3.7: {}
-
-  ag-grid-community@32.3.7:
-    dependencies:
-      ag-charts-types: 10.3.7
-
-  ag-grid-react@32.3.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
-    dependencies:
-      ag-grid-community: 32.3.7
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
 
   agent-base@7.1.4: {}
 
@@ -6036,7 +5983,8 @@ snapshots:
 
   ignore@5.3.2: {}
 
-  immutable@5.1.1: {}
+  immutable@5.1.1:
+    optional: true
 
   import-fresh@3.3.1:
     dependencies:
@@ -6651,11 +6599,6 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.0.25
 
-  react-skillbars@2.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
-    dependencies:
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
   react-smooth@4.0.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       fast-equals: 5.4.0
@@ -6790,6 +6733,7 @@ snapshots:
       source-map-js: 1.2.1
     optionalDependencies:
       '@parcel/watcher': 2.5.1
+    optional: true
 
   scheduler@0.23.2:
     dependencies:

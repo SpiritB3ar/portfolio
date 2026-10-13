@@ -23,15 +23,12 @@ export const FeaturedProjects = ({ projects }: FeaturedProjectsProps) => {
       <div className="mb-12 flex items-end justify-between gap-6">
         <div>
           <div className="mb-3 flex items-center gap-4">
-            <span className="font-mono text-xs font-medium text-brand-medium dark:text-brand-green">
-              02
-            </span>
-            <span className="h-px w-12 bg-brand-green/50" />
+            <span className="h-px w-12 bg-border" />
           </div>
-          <h2 className="font-poiret text-4xl font-bold text-gray-900 dark:text-white md:text-5xl">
+          <h2 className="font-poiret text-4xl font-bold text-foreground md:text-5xl">
             {t.home.selectedWork}
           </h2>
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+          <p className="mt-2 text-sm text-muted-foreground">
             {t.home.recentProjects}
           </p>
         </div>
@@ -70,10 +67,10 @@ export const FeaturedProjects = ({ projects }: FeaturedProjectsProps) => {
                 href={href}
                 target={isExternal ? "_blank" : undefined}
                 rel={isExternal ? "noreferrer" : undefined}
-                className="focus-ring group block rounded-[1.75rem]"
+                className="focus-ring group block rounded-2xl"
               >
-                <div className="sheen relative overflow-hidden rounded-[1.75rem] border border-gray-200/70 shadow-lg transition-all duration-500 group-hover:-translate-y-1 group-hover:border-brand-green/40 group-hover:shadow-[0_0_50px_-12px_hsl(var(--brand-green))] dark:border-white/10">
-                  <div className="relative aspect-[16/11] overflow-hidden bg-gray-100 dark:bg-white/5">
+                <div className="relative overflow-hidden rounded-2xl border border-border shadow-sm transition-all duration-500 group-hover:-translate-y-1 group-hover:border-brand-green/40 group-hover:shadow-md">
+                  <div className="relative aspect-[16/11] overflow-hidden bg-muted">
                     {cover && (
                       <Image
                         src={cover}
@@ -85,11 +82,8 @@ export const FeaturedProjects = ({ projects }: FeaturedProjectsProps) => {
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-[#03100E]/95 via-[#03100E]/35 to-transparent" />
 
-                    {/* Top row: index + arrow */}
-                    <span className="absolute left-5 top-5 font-mono text-xs text-white/70">
-                      0{index + 1}
-                    </span>
-                    <span className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-sm transition-all duration-300 group-hover:border-brand-green group-hover:bg-brand-green group-hover:text-[#03100E]">
+                    {/* Arrow */}
+                    <span className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full border border-white/25 bg-black/30 text-white transition-all duration-300 group-hover:border-brand-green group-hover:bg-brand-green group-hover:text-white dark:group-hover:text-background">
                       <ArrowUpRight className="h-4 w-4" />
                     </span>
 
@@ -99,7 +93,7 @@ export const FeaturedProjects = ({ projects }: FeaturedProjectsProps) => {
                         {project.title}
                       </h3>
                       {description && (
-                        <p className="line-clamp-2 text-sm text-gray-300/90">
+                        <p className="line-clamp-2 text-sm text-white/80">
                           {description}
                         </p>
                       )}
@@ -108,7 +102,7 @@ export const FeaturedProjects = ({ projects }: FeaturedProjectsProps) => {
                           {tags.map((tag) => (
                             <span
                               key={tag}
-                              className="rounded-full border border-white/20 bg-white/5 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide text-white/80 backdrop-blur-sm"
+                              className="rounded-full border border-white/20 bg-black/30 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide text-white/80"
                             >
                               {tag}
                             </span>
