@@ -102,7 +102,7 @@ const BodyContent = ({ homeData }: ContentType) => {
           </span>
           <ArrowUpRight
             size={16}
-            className="shrink-0 text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand-medium dark:group-hover:text-brand-green"
+            className="shrink-0 text-muted-foreground transition-[transform,color] duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand-medium dark:group-hover:text-brand-green"
           />
         </motion.button>
 
@@ -114,7 +114,7 @@ const BodyContent = ({ homeData }: ContentType) => {
               onClick={handleDownloadCV}
               disabled={isDownloading}
               aria-label={t.common.downloadCV}
-              className="focus-ring group relative flex items-center gap-3 rounded-full bg-brand-green px-7 py-3.5 font-semibold text-white transition-colors duration-300 hover:bg-brand-medium disabled:cursor-not-allowed disabled:opacity-70 dark:text-background"
+              className="focus-ring group relative flex items-center gap-3 rounded-full bg-brand-green px-7 py-3.5 font-semibold text-white transition-colors duration-300 hover:bg-brand-medium disabled:cursor-not-allowed disabled:opacity-70 dark:text-background pressable active:scale-[0.98]"
             >
               {isDownloading ? (
                 <Loader2 className="relative z-10 h-4 w-4 animate-spin" />

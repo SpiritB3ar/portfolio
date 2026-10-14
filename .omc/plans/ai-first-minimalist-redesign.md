@@ -134,4 +134,30 @@
   - `/projects`: 100/100/100/100, 0 fallos. `/resources`: 98→100 tras fix `heading-order`.
   - Fixes orden de headings: count de resultados `<p>→<h2>`, `BlogCard`/`AboutBody` CTA `h3→h2`, `CollapsibleSection` a patrón `h2>button` (WAI-ARIA accordion).
   - Móvil 375px: pills envuelven limpio, featured apila cover+contenido, strips en 2-col sin divisores.
+- **Follow-up 5: cobertura total + build ✅**:
+  - Lighthouse 100/100/100/100 en las 6 páginas públicas (`/about`, `/experience`, `/blogs` auditadas; footer `h3→h2` fix del último `heading-order`).
+  - `aria-hidden` en contenido de accordions colapsados; dark mode verificado con screenshots (pills, timeline, strips).
+  - `npm run build` exitoso con todos los cambios (30 páginas, First Load 135-159 kB); dev server reiniciado en :3000.
+- **Follow-up 7: CRUD Social Links en admin ✅** (faltaba edición):
+  - API: POST colección (zod `socialLinkSchema` + 409 por nombre) + `[id]` GET/PUT/DELETE por ObjectId (400 id inválido, 404, 409 en rename).
+  - Admin: `SocialLinkForm` (name/link + select de las 8 keys de `iconMap` con preview, otras no renderizan en footer) + página `/admin/social-links` (DataTable: name/link/icon) + entrada en sidebar.
+  - Verificado: ciclo API 201/409/200/404/400, crear vía UI aparece en tabla, tsc + lint limpios, 0 errores consola. Filas de prueba eliminadas.
+  - Icono `facebook` agregado a `iconMap` (+ form) y fila FB legacy (URL→key) corregida; footer lo muestra verificado con screenshot.
+- **Follow-up 8: CRUD About en admin ✅**: POST + `[id]` GET/PUT/DELETE (400/404, zod `aboutSchema`); `AboutForm` (textarea) + `/admin/about` (DataTable) + sidebar; verificado 201/200/404/400 y UI con filas reales.
+- **Propuesta: página IA especializada (evaluada, SIN implementar)**:
+  - Gap: el portfolio dice "AI Engineer" pero no hay showcase de IA (el asistente es herramienta, el strip de experience es teaser, skills IA son 2).
+  - Opción A (recomendada): ruta `/ai` — statement + demo CTA (abre el dock) + "how it works" honesto (RAG estático ~7KB, provider agnóstico, rate-limit) + stack + skills DB. Sin DB ni deps. Registro en footer/palette/SITE_MAP (sería ruta 7).
+  - Opción B (no): sección en home — rompe flujo curado y duplica hero-ask + dock.
+  - Opción C (no): expandir strip de /experience — mezcla historia laboral con técnica.
+  - Opción D (complemento de A): asistente como Project creado en admin (alimenta /projects + featured sin código).
+- **Follow-up 9: página `/ai` implementada (opción A) ✅**:
+  - `app/ai/`: header + demo live (CTA abre dock; 3 samples preguntan vía `askAssistant` y siembran Q+A) + "How it works" (4 filas honestas del sistema real) + stack chips + skills IA de DB.
+  - i18n `ai.*` en/es + `nav.ai`; ruta 7 registrada en footer, palette, drawer móvil y SITE_MAP del prompt.
+  - Incidente: caché stale del dev ignoró un string (SSR lo confirmó); reinicio lo resolvió.
+  - Verificado: tsc + lint limpios, demo end-to-end (Q+A en dock), Lighthouse /ai 100/100/100/100, 0 errores consola.
+- **Follow-up 6: polish de componentes con `emil-design-eng` ✅**:
+  - Palette ⌘K instantáneo (fuera motion de 180ms; acción de teclado 100+/día, sin animación).
+  - `.pressable` (utilidad exacta 160ms) + `active:scale` en CTAs, pills, icon-buttons, FAB, send, drawer, footer socials.
+  - Fuera lifts en hover (Blog/Resource/Featured/socials); `transition-all`→props exactas; duraciones UI 500→300ms; stagger timeline 100→60ms; dots timeline sin `scale(0)`; tech pill 0.8→0.9.
+  - Verificado: tsc + lint limpios, palette abre instantáneo con foco, 0 errores consola.
 - **Nota:** `prisma generate` falla con EPERM si el dev server (puerto 3000) está corriendo (dll bloqueada); el cliente generado previo sigue siendo válido mientras el schema no cambie.

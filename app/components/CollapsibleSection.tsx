@@ -47,6 +47,7 @@ export const CollapsibleSection = ({ title, subtitle, defaultOpen = false, child
                         initial={false}
                         animate={{ opacity: open ? 1 : 0 }}
                         transition={{ duration: reduce ? 0 : 0.25 }}
+                        aria-hidden={!open}
                         className="pb-10 pt-2 sm:pb-12"
                     >
                         {children}

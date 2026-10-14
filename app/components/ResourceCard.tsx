@@ -13,8 +13,7 @@ export const ResourceCard = ({ resource }: { resource: ResourceType }) => {
     <motion.div
       initial={reduce ? false : { opacity: 0, y: 20 }}
       animate={reduce ? undefined : { opacity: 1, y: 0 }}
-      whileHover={reduce ? undefined : { y: -4 }}
-      className="group relative h-full w-full overflow-hidden rounded-2xl border border-border bg-card transition-colors duration-500 hover:border-brand-green/40 dark:hover:border-brand-green/40"
+      className="group relative h-full w-full overflow-hidden rounded-2xl border border-border bg-card transition-colors duration-300 hover:border-brand-green/40 dark:hover:border-brand-green/40"
     >
       {/* Cover */}
       <div className="relative h-48 overflow-hidden">
@@ -97,7 +96,7 @@ export const ResourceCard = ({ resource }: { resource: ResourceType }) => {
           href={resource.link || "#"}
           target="_blank"
           rel="noreferrer"
-          className="focus-ring group/btn flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green px-4 py-3 font-semibold text-white transition-colors hover:bg-brand-medium dark:text-background"
+          className="focus-ring group/btn flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green px-4 py-3 font-semibold text-white transition-colors hover:bg-brand-medium dark:text-background pressable active:scale-[0.98]"
         >
           <span>{t.resources?.viewResource}</span>
           <ExternalLink className="h-4 w-4 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />

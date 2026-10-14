@@ -67,9 +67,9 @@ export const FeaturedProjects = ({ projects }: FeaturedProjectsProps) => {
                 href={href}
                 target={isExternal ? "_blank" : undefined}
                 rel={isExternal ? "noreferrer" : undefined}
-                className="focus-ring group block rounded-2xl"
+                className="focus-ring group block rounded-2xl pressable active:scale-[0.99]"
               >
-                <div className="relative overflow-hidden rounded-2xl border border-border shadow-sm transition-all duration-500 group-hover:-translate-y-1 group-hover:border-brand-green/40 group-hover:shadow-md">
+                <div className="relative overflow-hidden rounded-2xl border border-border shadow-sm transition-[border-color,box-shadow] duration-300 group-hover:border-brand-green/40 group-hover:shadow-md">
                   <div className="relative aspect-[16/11] overflow-hidden bg-muted">
                     {cover && (
                       <Image
@@ -83,7 +83,7 @@ export const FeaturedProjects = ({ projects }: FeaturedProjectsProps) => {
                     <div className="absolute inset-0 bg-gradient-to-t from-[#03100E]/95 via-[#03100E]/35 to-transparent" />
 
                     {/* Arrow */}
-                    <span className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full border border-white/25 bg-black/30 text-white transition-all duration-300 group-hover:border-brand-green group-hover:bg-brand-green group-hover:text-white dark:group-hover:text-background">
+                    <span className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full border border-white/25 bg-black/30 text-white transition-colors duration-300 group-hover:border-brand-green group-hover:bg-brand-green group-hover:text-white dark:group-hover:text-background">
                       <ArrowUpRight className="h-4 w-4" />
                     </span>
 

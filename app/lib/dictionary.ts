@@ -25,6 +25,7 @@ export const dictionary = {
             work: "Work",
             dashboard: "Dashboard",
             toggleMenu: "Toggle menu",
+            ai: "AI",
         },
         experience: {
             title: "MY JOURNEY SO FAR",
@@ -142,6 +143,23 @@ export const dictionary = {
             hintSelect: "Select",
             hintClose: "Close",
         },
+        ai: {
+            title: "AI Engineering",
+            subtitle: "Production AI, live on this site.",
+            demoLabel: "Live demo",
+            demoButton: "Try the assistant",
+            samplesLabel: "Try asking",
+            howTitle: "How it works",
+            how: [
+                { title: "Grounded answers", text: "A small profile snapshot, refreshed every few minutes, grounds every reply. No vectors, no retrieval latency." },
+                { title: "Portable by design", text: "A provider factory with Gemini as default keeps the assistant swappable without rewrites." },
+                { title: "Concise and first-person", text: "Replies come in the owner's voice, 1-4 sentences, in your UI language." },
+                { title: "Links that navigate", text: "Sections are linked with relative routes the chat renders inline, so answers move you around." },
+            ],
+            stackLabel: "Built with",
+            stack: ["Gemini", "Static RAG", "Next.js", "Zod"],
+            skillsLabel: "AI & ML skills",
+        },
         notFound: {
             title: "This page doesn't exist",
             subtitle: "The link may be broken or the page has moved.",
@@ -185,6 +203,7 @@ export const dictionary = {
             work: "Trabajo",
             dashboard: "Panel",
             toggleMenu: "Abrir menú",
+            ai: "IA",
         },
         experience: {
             title: "MI VIAJE HASTA AHORA",
@@ -301,6 +320,23 @@ export const dictionary = {
             hintMove: "Moverse",
             hintSelect: "Seleccionar",
             hintClose: "Cerrar",
+        },
+        ai: {
+            title: "Ingeniería de IA",
+            subtitle: "IA en producción, en vivo en este sitio.",
+            demoLabel: "Demo en vivo",
+            demoButton: "Probar el asistente",
+            samplesLabel: "Prueba preguntar",
+            howTitle: "Cómo funciona",
+            how: [
+                { title: "Respuestas con contexto", text: "Un snapshot pequeño del perfil, actualizado cada pocos minutos, fundamenta cada respuesta. Sin vectores, sin latencia de búsqueda." },
+                { title: "Portable por diseño", text: "Una factoría de proveedores con Gemini por defecto permite cambiar de modelo sin reescribir." },
+                { title: "Conciso y en primera persona", text: "Respuestas con la voz del dueño, 1-4 frases, en el idioma de tu interfaz." },
+                { title: "Enlaces que navegan", text: "Las secciones se enlazan con rutas relativas que el chat muestra inline, así las respuestas te mueven por el sitio." },
+            ],
+            stackLabel: "Construido con",
+            stack: ["Gemini", "Static RAG", "Next.js", "Zod"],
+            skillsLabel: "Habilidades de IA y ML",
         },
         notFound: {
             title: "Esta página no existe",

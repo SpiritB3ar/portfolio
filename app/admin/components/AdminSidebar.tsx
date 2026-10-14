@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   User,
+  Share2,
+  UserRound,
   Briefcase,
   FolderKanban,
   BookOpen,
@@ -26,6 +28,8 @@ type AdminSidebarProps = {
 const menuItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, description: "Overview & Statistics" },
   { href: "/admin/profile", label: "Profile", icon: User, description: "Edit your information" },
+  { href: "/admin/social-links", label: "Social Links", icon: Share2, description: "Footer & contact links" },
+  { href: "/admin/about", label: "About", icon: UserRound, description: "About page paragraphs" },
   { href: "/admin/projects", label: "Projects", icon: FolderKanban, description: "Manage portfolio projects" },
   { href: "/admin/experiences", label: "Experiences", icon: Briefcase, description: "Work history" },
   { href: "/admin/educations", label: "Education", icon: GraduationCap, description: "Academic background" },

@@ -1,5 +1,5 @@
 import { SocialLinkType } from "./types/types"
-import { Linkedin, Globe, Mail, Github, Instagram, Twitter, Youtube } from "lucide-react"
+import { Linkedin, Globe, Mail, Github, Instagram, Twitter, Youtube, Facebook } from "lucide-react"
 
 const TikTokIcon = ({ size = 24 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
@@ -13,6 +13,7 @@ export const iconMap: Record<string, React.ComponentType<any>> = {
   instagram: Instagram,
   twitter: Twitter,
   youtube: Youtube,
+  facebook: Facebook,
   tiktok: TikTokIcon,
   mail: Mail,
   globe: Globe,

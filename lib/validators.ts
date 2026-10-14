@@ -122,7 +122,7 @@ export const blogSchema = z.object({
 });
 export type BlogInput = z.infer<typeof blogSchema>;
 
-// ── Social link (no write endpoint yet — schema kept for the integration doc)
+// ── Social link (GET/POST /api/user-social-links, GET/PUT/DELETE [id]) ──────
 export const socialLinkSchema = z.object({
     name: nonEmpty("name"),
     link: nonEmpty("link"),
@@ -130,7 +130,7 @@ export const socialLinkSchema = z.object({
 });
 export type SocialLinkInput = z.infer<typeof socialLinkSchema>;
 
-// ── About paragraph (no write endpoint yet) ──────────────────────────────────
+// ── About paragraph (GET/POST /api/about-me, GET/PUT/DELETE [id]) ────────────
 export const aboutSchema = z.object({
     paragraph: nonEmpty("paragraph"),
 });

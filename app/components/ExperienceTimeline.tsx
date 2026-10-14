@@ -52,10 +52,10 @@ const ExperienceCard = ({ item, index, isLast }: { item: ExperiencePathProps; in
             <div className="flex flex-col items-center shrink-0">
                 {/* Node dot */}
                 <motion.div
-                    initial={reduce ? false : { scale: 0 }}
-                    whileInView={reduce ? undefined : { scale: 1 }}
+                    initial={reduce ? false : { scale: 0.6, opacity: 0 }}
+                    whileInView={reduce ? undefined : { scale: 1, opacity: 1 }}
                     viewport={{ once: true, margin: '-50px' }}
-                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                    transition={{ duration: 0.3, delay: index * 0.06, ease: [0.21, 0.6, 0.35, 1] }}
                     className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full border-2 border-brand-green bg-background transition-transform duration-300 group-hover:scale-105 sm:h-14 sm:w-14"
                 >
                     {item.cover ? (

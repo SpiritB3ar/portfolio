@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Search, Sparkles, CornerDownLeft, ArrowRight, FileText, Hash } from "lucide-react";
 import { useLanguage } from "@/app/providers/LanguageProvider";
 import { askAssistant, renderMessage } from "./RecruiterChat";
@@ -16,7 +15,6 @@ type PageEntry = { label: string; href: string; anchor?: boolean };
 export default function CommandPalette({ open, onOpen, onClose }: Props) {
     const { lang, t } = useLanguage();
     const router = useRouter();
-    const reduce = useReducedMotion();
     const inputRef = useRef<HTMLInputElement>(null);
     const listRef = useRef<HTMLDivElement>(null);
     const askIdRef = useRef(0);
@@ -58,6 +56,7 @@ export default function CommandPalette({ open, onOpen, onClose }: Props) {
             { label: t.nav.projects, href: "/projects" },
             { label: t.nav.blogs, href: "/blogs" },
             { label: t.nav.resources, href: "/resources" },
+            { label: t.nav.ai, href: "/ai" },
             { label: t.home.aboutTitle, href: "/#about", anchor: true },
             { label: t.home.selectedWork, href: "/#featured", anchor: true },
         ],
@@ -129,34 +128,23 @@ export default function CommandPalette({ open, onOpen, onClose }: Props) {
         }
     };
 
-    const motionProps = reduce
-        ? {}
-        : { initial: { opacity: 0, y: 8, scale: 0.98 }, exit: { opacity: 0, y: 8, scale: 0.98 } };
-
     const rowBase =
         "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-colors";
 
+    if (!open) return null;
+
     return (
-        <AnimatePresence>
-            {open && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.15 }}
-                    className="fixed inset-0 z-[70] flex items-start justify-center bg-black/50 px-4 pt-[12vh]"
-                    onClick={onClose}
-                >
-                    <motion.div
-                        {...motionProps}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        transition={{ duration: 0.18, ease: [0.21, 0.6, 0.35, 1] }}
-                        role="dialog"
-                        aria-modal="true"
-                        aria-label={t.palette.title}
-                        className="w-[min(640px,100%)] overflow-hidden rounded-2xl border border-border bg-popover shadow-2xl"
-                        onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
-                    >
+        <div
+            className="fixed inset-0 z-[70] flex items-start justify-center bg-black/50 px-4 pt-[12vh]"
+            onClick={onClose}
+        >
+            <div
+                role="dialog"
+                aria-modal="true"
+                aria-label={t.palette.title}
+                className="w-[min(640px,100%)] overflow-hidden rounded-2xl border border-border bg-popover shadow-2xl"
+                onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
+            >
                         {/* Input */}
                         <div className="flex items-center gap-3 border-b border-border px-4">
                             <Search size={16} className="shrink-0 text-muted-foreground" />
@@ -256,9 +244,7 @@ export default function CommandPalette({ open, onOpen, onClose }: Props) {
                             <span>↑↓ {t.palette.hintMove}</span>
                             <span>Esc {t.palette.hintClose}</span>
                         </div>
-                    </motion.div>
-                </motion.div>
-            )}
-        </AnimatePresence>
+                    </div>
+            </div>
     );
 }

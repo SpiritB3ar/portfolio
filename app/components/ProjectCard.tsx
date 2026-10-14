@@ -32,7 +32,7 @@ const ProjectCard = ({ project, index = 0, isNew = false, featured = false }: { 
             whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 0.5, delay: index * 0.08, ease: [0.21, 0.6, 0.35, 1] }}
-            className={`group relative overflow-hidden rounded-2xl border border-border bg-card transition-colors duration-500 hover:border-brand-green/40 dark:hover:border-brand-green/40 ${
+            className={`group relative overflow-hidden rounded-2xl border border-border bg-card transition-colors duration-300 hover:border-brand-green/40 dark:hover:border-brand-green/40 ${
                 featured ? "md:grid md:grid-cols-2" : ""
             }`}
         >
@@ -48,7 +48,7 @@ const ProjectCard = ({ project, index = 0, isNew = false, featured = false }: { 
                     />
                 )}
                 {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
 
                 {/* Top badges */}
                 <div className="absolute top-4 left-4 flex items-center gap-2">
@@ -76,7 +76,7 @@ const ProjectCard = ({ project, index = 0, isNew = false, featured = false }: { 
                     <button
                         onClick={(e) => { e.preventDefault(); setShowTool(!showTool); }}
                         aria-label={t.projects.technologies}
-                        className="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-black/50 text-white transition-all duration-300 hover:border-brand-green hover:bg-brand-green hover:text-white dark:hover:text-background"
+                        className="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-black/50 text-white transition-colors duration-200 hover:border-brand-green hover:bg-brand-green hover:text-white dark:hover:text-background pressable active:scale-90"
                     >
                         <Code2 className="h-4 w-4" />
                     </button>
@@ -99,7 +99,7 @@ const ProjectCard = ({ project, index = 0, isNew = false, featured = false }: { 
                                 target="_blank"
                                 rel="noreferrer"
                                 onClick={(e) => e.stopPropagation()}
-                                className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted-foreground transition-all duration-300 hover:border-brand-green hover:text-brand-green hover:bg-brand-green/10"
+                                className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors duration-200 hover:border-brand-green hover:text-brand-green hover:bg-brand-green/10 pressable active:scale-90"
                                 aria-label="GitHub"
                             >
                                 <Github className="h-4 w-4" />
@@ -111,7 +111,7 @@ const ProjectCard = ({ project, index = 0, isNew = false, featured = false }: { 
                                 target={isExternal ? "_blank" : undefined}
                                 rel={isExternal ? "noreferrer" : undefined}
                                 onClick={(e) => e.stopPropagation()}
-                                className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted-foreground transition-all duration-300 hover:border-brand-green hover:text-brand-green hover:bg-brand-green/10"
+                                className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors duration-200 hover:border-brand-green hover:text-brand-green hover:bg-brand-green/10 pressable active:scale-90"
                                 aria-label={t.common.viewProject}
                             >
                                 <ExternalLink className="h-4 w-4" />
@@ -173,7 +173,7 @@ const ProjectCard = ({ project, index = 0, isNew = false, featured = false }: { 
                             {allTechs.map((tech, i) => (
                                 <motion.span
                                     key={i}
-                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ delay: reduce ? 0 : i * 0.04 }}
                                     className="rounded-full border border-white/30 bg-white/15 px-4 py-2 font-mono text-xs uppercase tracking-wide text-white"

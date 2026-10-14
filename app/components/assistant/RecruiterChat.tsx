@@ -227,7 +227,7 @@ export default function RecruiterChat() {
                             type="submit"
                             aria-label={t.assistant.send}
                             disabled={loading || !input.trim()}
-                            className="rounded-xl bg-brand-green p-2.5 text-white hover:bg-brand-medium disabled:opacity-40 dark:text-background"
+                            className="rounded-xl bg-brand-green p-2.5 text-white transition-colors hover:bg-brand-medium disabled:opacity-40 dark:text-background pressable active:scale-90"
                         >
                             <Send size={16} />
                         </button>
@@ -238,7 +238,7 @@ export default function RecruiterChat() {
             <button
                 aria-label={open ? t.assistant.close : t.assistant.open}
                 onClick={() => setOpen((v) => !v)}
-                className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-green text-white shadow-xl hover:bg-brand-medium dark:text-background"
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-green text-white shadow-xl transition-colors hover:bg-brand-medium dark:text-background pressable active:scale-90"
             >
                 {open ? <X size={22} /> : <MessageCircle size={22} />}
             </button>

@@ -27,7 +27,7 @@ const FilterPill = ({
         type="button"
         onClick={onClick}
         aria-pressed={active}
-        className={`focus-ring inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors ${
+        className={`focus-ring inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-medium pressable active:scale-95 ${
             active
                 ? 'border-brand-green bg-brand-green text-white dark:text-background'
                 : 'border-border bg-transparent text-muted-foreground hover:border-brand-green/40 hover:text-foreground'

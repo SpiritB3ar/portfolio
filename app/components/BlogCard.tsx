@@ -16,8 +16,8 @@ export const BlogCard = ({ blog }: { blog: BlogType }) => {
             rel="noreferrer"
             initial={reduce ? false : { opacity: 0, y: 20 }}
             animate={reduce ? undefined : { opacity: 1, y: 0 }}
-            whileHover={reduce ? undefined : { y: -8 }}
-            className="focus-ring group relative block h-[420px] w-full overflow-hidden rounded-2xl border border-border transition-all duration-500 hover:border-brand-green/40"
+            whileTap={{ scale: 0.99 }}
+            className="focus-ring group relative block h-[420px] w-full overflow-hidden rounded-2xl border border-border transition-colors duration-300 hover:border-brand-green/40"
         >
             {/* Background Image */}
             <div className="absolute inset-0">
@@ -62,7 +62,7 @@ export const BlogCard = ({ blog }: { blog: BlogType }) => {
                         <span className="text-sm font-medium text-brand-light">
                             {t.common.readMore}
                         </span>
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/40 transition-all duration-300 group-hover:border-brand-green group-hover:bg-brand-green">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/40 transition-colors duration-300 group-hover:border-brand-green group-hover:bg-brand-green">
                             <ExternalLink className="h-5 w-5 text-white transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white dark:group-hover:text-background" />
                         </div>
                     </div>

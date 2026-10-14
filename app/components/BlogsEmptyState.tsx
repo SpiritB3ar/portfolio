@@ -21,7 +21,7 @@ export const BlogsEmptyState = () => {
             <button
                 type="button"
                 onClick={() => dispatchOpenChat()}
-                className="focus-ring group mt-6 inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:border-brand-green/40 hover:text-brand-medium dark:hover:text-brand-green"
+                className="focus-ring group mt-6 inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:border-brand-green/40 hover:text-brand-medium dark:hover:text-brand-green pressable active:scale-95"
             >
                 <Sparkles className="h-4 w-4 text-brand-medium dark:text-brand-green" />
                 <span>{t.blogs.emptyCta}</span>

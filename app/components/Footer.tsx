@@ -40,9 +40,9 @@ export const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold tracking-wider text-foreground uppercase">
+            <h2 className="mb-4 text-sm font-semibold tracking-wider text-foreground uppercase">
               {t.footer.quickLinks}
-            </h3>
+            </h2>
             <ul className="space-y-2">
               {[
                 { name: t.nav.home, href: "/" },
@@ -51,6 +51,7 @@ export const Footer = () => {
                 { name: t.nav.projects, href: "/projects" },
                 { name: t.nav.blogs, href: "/blogs" },
                 { name: t.nav.resources, href: "/resources" },
+                { name: t.nav.ai, href: "/ai" },
               ].map((link) => (
                 <li key={link.href}>
                   <Link
@@ -67,9 +68,9 @@ export const Footer = () => {
           {/* Connect */}
           {footerSocials.length > 0 && (
             <div>
-              <h3 className="mb-4 text-sm font-semibold tracking-wider text-foreground uppercase">
+              <h2 className="mb-4 text-sm font-semibold tracking-wider text-foreground uppercase">
                 {t.footer.connect}
-              </h3>
+              </h2>
               <div className="flex gap-3">
                 {footerSocials.map((item) => {
                   const Icon = iconMap[item.icon] || Globe;
@@ -81,7 +82,7 @@ export const Footer = () => {
                       target={isExternal ? "_blank" : undefined}
                       rel="noopener noreferrer"
                       aria-label={item.name}
-                      className="flex justify-center items-center w-10 h-10 text-muted-foreground bg-muted rounded-xl transition-colors hover:bg-brand-green hover:text-white focus-ring"
+                      className="flex justify-center items-center w-10 h-10 text-muted-foreground bg-muted rounded-xl transition-colors hover:bg-brand-green hover:text-white focus-ring pressable active:scale-90"
                     >
                       <Icon className="w-5 h-5" size={20} />
                     </a>

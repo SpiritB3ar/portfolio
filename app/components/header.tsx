@@ -48,7 +48,8 @@ const Header: React.FC<HeaderProps> = ({ active, onOpenPalette }) => {
         { name: t.nav.experience, linkTo: "/experience" },
         { name: t.nav.projects, linkTo: "/projects" },
         { name: t.nav.blogs, linkTo: "/blogs" },
-        { name: t.nav.resources, linkTo: "/resources" }
+        { name: t.nav.resources, linkTo: "/resources" },
+        { name: t.nav.ai, linkTo: "/ai" }
     ]
 
     return (
@@ -60,7 +61,7 @@ const Header: React.FC<HeaderProps> = ({ active, onOpenPalette }) => {
                 className="fixed top-0 right-0 left-0 z-50 px-4 mx-auto mt-6 w-full max-w-4xl"
             >
                 <div className={`
-                    flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-300
+                    flex items-center gap-2 px-3 py-2 rounded-full transition-[box-shadow,border-color,background-color] duration-300
                     border-border bg-card/80 dark:bg-card/50
                     border shadow-lg shadow-black/5
                     ${scrolled ? 'shadow-xl shadow-black/10' : ''}`}>
@@ -85,7 +86,7 @@ const Header: React.FC<HeaderProps> = ({ active, onOpenPalette }) => {
                         <button
                             type="button"
                             onClick={onOpenPalette}
-                            className="flex items-center gap-2 rounded-full border border-border bg-background/60 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground focus-ring"
+                            className="pressable active:scale-95 flex items-center gap-2 rounded-full border border-border bg-background/60 px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground focus-ring"
                         >
                             <Search size={13} />
                             <span className="hidden lg:inline">{t.palette.title}</span>
@@ -198,7 +199,7 @@ export const MenuItem = ({ name, linkTo, active, isMobile }: { name: string, lin
             <Link
                 href={linkTo}
                 className={`
-                    block px-4 py-3 rounded-xl text-base font-semibold transition-all focus-ring
+                    block px-4 py-3 rounded-xl text-base font-semibold pressable active:scale-[0.99] focus-ring
                     ${isActive
                         ? 'bg-muted text-brand-medium dark:text-brand-green'
                         : 'text-muted-foreground hover:text-foreground hover:bg-muted'

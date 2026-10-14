@@ -1,5 +1,7 @@
+import { NextRequest } from "next/server";
 import db from "@/lib/db";
-import { ok, serverError } from "@/lib/api";
+import { ok, created, serverError, parseBody } from "@/lib/api";
+import { aboutSchema } from "@/lib/validators";
 
 export async function GET() {
     try {
@@ -7,5 +9,20 @@ export async function GET() {
         return ok(aboutMe);
     } catch (error) {
         return serverError(error, "Failed to fetch about content");
+    }
+}
+
+export async function POST(request: NextRequest) {
+    try {
+        const parsed = await parseBody(request, aboutSchema);
+        if ("response" in parsed) return parsed.response;
+        const { data } = parsed;
+
+        const paragraph = await db.aboutContent.create({
+            data: { paragraph: data.paragraph },
+        });
+        return created(paragraph);
+    } catch (error) {
+        return serverError(error, "Failed to create about paragraph");
     }
 }

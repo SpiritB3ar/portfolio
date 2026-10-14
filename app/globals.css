@@ -93,6 +93,13 @@
   .focus-ring {
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-green focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
+
+  /* Press feedback: exact transition props, instant-feel 160ms (pair with active:scale-*) */
+  .pressable {
+    transition-property: transform, border-color, background-color, color, box-shadow;
+    transition-duration: 160ms;
+    transition-timing-function: ease-out;
+  }
 }
 
 @layer utilities {

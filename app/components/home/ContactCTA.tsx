@@ -39,7 +39,7 @@ export const ContactCTA = ({ homeData, socialLinks }: ContactCTAProps) => {
                 href={cvFile}
                 target="_blank"
                 rel="noreferrer"
-                className="focus-ring group flex items-center gap-3 rounded-full bg-brand-green px-7 py-3.5 font-semibold text-white transition-colors duration-300 hover:bg-brand-medium dark:text-background"
+                className="focus-ring group flex items-center gap-3 rounded-full bg-brand-green px-7 py-3.5 font-semibold text-white transition-colors duration-300 hover:bg-brand-medium dark:text-background pressable active:scale-[0.98]"
               >
                 <span>{t.common.downloadCV}</span>
                 <Download className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
@@ -47,7 +47,7 @@ export const ContactCTA = ({ homeData, socialLinks }: ContactCTAProps) => {
             )}
             <a
               href="mailto:cardenascode7@outlook.com"
-              className="focus-ring group flex items-center gap-2 rounded-full border border-border px-6 py-3.5 font-medium text-foreground transition-colors hover:border-brand-green hover:text-brand-medium dark:hover:text-brand-green"
+              className="focus-ring group flex items-center gap-2 rounded-full border border-border px-6 py-3.5 font-medium text-foreground transition-colors hover:border-brand-green hover:text-brand-medium dark:hover:text-brand-green pressable active:scale-[0.98]"
             >
               <span>{t.about.sendEmail}</span>
               <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -57,13 +57,12 @@ export const ContactCTA = ({ homeData, socialLinks }: ContactCTAProps) => {
           {socialLinks?.length > 0 && (
             <div className="mt-12 flex items-center justify-center gap-3">
               {socialLinks.map((item, index) => (
-                <motion.div
+                <div
                   key={index}
-                  whileHover={{ y: -3 }}
-                  className="flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-card transition-colors hover:border-brand-green/50 focus-within:ring-2 focus-within:ring-brand-green"
+                  className="flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-card pressable active:scale-95 hover:border-brand-green/50 focus-within:ring-2 focus-within:ring-brand-green"
                 >
                   <SocialLink item={item} />
-                </motion.div>
+                </div>
               ))}
             </div>
           )}

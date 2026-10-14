@@ -20,6 +20,7 @@ const SITE_MAP = [
     "/projects — Projects / Proyectos",
     "/blogs — Blogs",
     "/resources — Resources / Recursos",
+    "/ai — AI Engineering / Ingeniería de IA",
 ].join("\n");
 
 let cache: { at: number; en: string; es: string } | null = null;
