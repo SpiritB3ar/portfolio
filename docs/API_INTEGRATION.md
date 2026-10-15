@@ -97,13 +97,6 @@ in the body. `publishedAt`/`startDate`/`endDate` accept ISO date strings.
 
 *(Read-only. Documented gap.)*
 
-### Blogs — `Blog`
-| Method | Path | Returns |
-| --- | --- | --- |
-| GET | `/api/blogs` | `Blog[]` (ordered `createdAt desc`) |
-
-*(Read-only. Documented gap.)*
-
 ### Projects — `Project`
 | Method | Path | Body | Returns |
 | --- | --- | --- | --- |
@@ -117,29 +110,6 @@ in the body. `publishedAt`/`startDate`/`endDate` accept ISO date strings.
 > canonical fields and their legacy mirrors so old and new readers agree:
 > `cover = coverImage`, `link = liveUrl ?? githubUrl`, `about = description`.
 > See §5.
-
-### Resources — `Resource`
-| Method | Path | Query / Body | Returns |
-| --- | --- | --- | --- |
-| GET | `/api/resources` | query: `categoryId`, `tags` (comma list, `hasEvery`), `type` | `Resource[]` (incl. `category`, ordered `publishedAt desc`) |
-| POST | `/api/resources` | `{ title, description, content, coverImage, type, categoryId, tags, author, publishedAt, link?, readTimeMinutes? }` | `201` |
-| GET | `/api/resources/{slug}` | — | `Resource` (incl. `category`) or `404` |
-| PUT | `/api/resources/{slug}` | same as POST | `200` / `404` / `409` |
-| DELETE | `/api/resources/{slug}` | — | `200 { message }` |
-
-### Resource categories — `ResourceCategory`
-| Method | Path | Body | Returns |
-| --- | --- | --- | --- |
-| GET | `/api/resource-categories` | — | `ResourceCategory[]` (ordered `name asc`) |
-| POST | `/api/resource-categories` | `{ name, description? }` | `201` |
-| GET/PUT/DELETE | `/api/resource-categories/{slug}` | PUT: `{ name, description? }` | `200`/`404`/`409` (DELETE `409` if resources still reference it) |
-
-### Categories — `ResourceCategory` (⚠ duplicate of the above)
-`/api/categories` and `/api/categories/{slug}` operate on the **same**
-`ResourceCategory` model with identical behavior. The **admin UI** uses
-`/api/categories`; the **public frontend** uses `/api/resource-categories`.
-Prefer `/api/resource-categories` for new code; the pair should be consolidated
-in the future.
 
 ### Skill categories — `SkillCategory`
 | Method | Path | Body | Returns |
@@ -159,7 +129,7 @@ in the future.
 | Method | Path | Body | Returns |
 | --- | --- | --- | --- |
 | GET | `/api/experiences` | — | `Experience[]` (ordered `startDate desc`) |
-| POST | `/api/experiences` | `{ title, company, description, startDate, technologies, endDate?, location?, image? }` | `201` |
+| POST | `/api/experiences` | `{ title, company, description, startDate, technologies, endDate?, location?, image?, clientImage? }` | `201` |
 | GET/PUT/DELETE | `/api/experiences/{slug}` | PUT: same as POST | `200`/`404`/`409` |
 
 ### Educations — `Education`
@@ -179,12 +149,9 @@ All models have `id`, `createdAt`, `updatedAt`.
 **UserDetail** — `welcomeTitle`, `welcomeNote`, `welcomeDescription`, `userImage`, `cvFile?`
 **UserSocialLink** — `name`, `link`, `icon`
 **AboutContent** — `paragraph`
-**Blog** — `title` (unique), `cover`, `link`
-**Resource** — `title` (unique), `slug` (unique), `description`, `content`, `coverImage`, `type`, `categoryId` → `category`, `tags[]`, `author`, `publishedAt`, `link?`, `readTimeMinutes?`
-**ResourceCategory** — `name` (unique), `slug` (unique), `description?`, `resources[]`
 **SkillCategory** — `name` (unique), `slug` (unique), `description?`, `icon?`, `color?`, `order`, `skills[]`
 **Skill** — `name`, `slug` (unique), `proficiency` (0–100), `categoryId` → `category`, `order`
-**Experience** — `title`, `slug` (unique), `company?`, `description?`, `location?`, `image?`, `startDate`, `endDate?`, `technologies[]`, `inputs[]`, plus legacy `name?`
+**Experience** — `title`, `slug` (unique), `company?`, `description?`, `location?`, `image?`, `clientImage?`, `startDate`, `endDate?`, `technologies[]`, `inputs[]`, plus legacy `name?`
 **Education** — `institution`, `degree`, `field`, `slug` (unique), `startDate`, `endDate?`, `order`
 
 **Project** — canonical vs legacy fields (the API keeps them in sync — see §4):
@@ -214,10 +181,7 @@ prerender with real content at build time):
 | `getHomeData()` | `userDetail.findFirst()` | `UserDetail \| null` |
 | `getSocialLinks()` | `userSocialLink.findMany()` | `UserSocialLink[]` |
 | `getAboutParagraphs()` | `aboutContent.findMany()` | `AboutContent[]` |
-| `getBlogs()` | `blog.findMany()` | `Blog[]` |
 | `getProjects()` | `project.findMany({ include: { tools: true } })` | `Project[]` |
-| `getResources()` | `resource.findMany({ include: { category: true } })` | `Resource[]` |
-| `getResourceCategories()` | `resourceCategory.findMany()` | `ResourceCategory[]` |
 | `getSkillCategories()` | `skillCategory.findMany({ include: { skills: true } })` | `SkillCategory[]` |
 | `getExperiences()` | `experience.findMany({ include: { inputs: true } })` | `Experience[]` |
 | `getEducations()` | `education.findMany()` | `Education[]` |

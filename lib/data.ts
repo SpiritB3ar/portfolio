@@ -13,18 +13,6 @@ export const getProjects = () =>
 export const getAboutParagraphs = () =>
   db.aboutContent.findMany({ orderBy: { createdAt: "asc" } });
 
-export const getBlogs = () =>
-  db.blog.findMany({ orderBy: { createdAt: "desc" } });
-
-export const getResources = () =>
-  db.resource.findMany({
-    include: { category: true },
-    orderBy: { publishedAt: "desc" },
-  });
-
-export const getResourceCategories = () =>
-  db.resourceCategory.findMany({ orderBy: { name: "asc" } });
-
 export const getSkillCategories = () =>
   db.skillCategory.findMany({
     include: { skills: { orderBy: { order: "asc" } } },

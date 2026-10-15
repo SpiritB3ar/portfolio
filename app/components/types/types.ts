@@ -55,22 +55,6 @@ export interface ProjectType {
     publishedAt?: Date | null
 }
 
-export interface BlogType {
-    title: string
-    cover: string
-    link: string
-    createdAt?: Date
-}
-
-export type ResourceCategoryType = {
-    id: string;
-    name: string;
-    slug: string;
-    description?: string | null;
-    createdAt: Date;
-    updatedAt: Date;
-};
-
 export type SkillCategoryType = {
     id: string;
     name: string;
@@ -92,24 +76,6 @@ export type SkillType = {
     categoryId: string;
     category?: SkillCategoryType;
     order: number;
-    createdAt: Date;
-    updatedAt: Date;
-};
-
-export type ResourceType = {
-    id: string;
-    title: string;
-    slug: string;
-    description: string;
-    content: string;
-    coverImage: string;
-    link?: string | null;
-    type: string;
-    category: ResourceCategoryType;
-    tags: string[];
-    author: string;
-    publishedAt: Date;
-    readTimeMinutes?: number | null;
     createdAt: Date;
     updatedAt: Date;
 };

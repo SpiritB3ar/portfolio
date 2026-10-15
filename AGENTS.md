@@ -6,7 +6,7 @@ Guía para agentes de IA (Claude Code, opencode, Cursor, etc.) que trabajen en e
 
 Portfolio personal Next.js 16 (App Router, React 19) con:
 
-- Render público server-side (Home, About, Experience, Projects, Blogs, Resources).
+- Render público server-side (Home, About, Experience, Projects).
 - UI de autoría/admin (`/admin`).
 - Contenido multilingüe (en/es) con i18n propio (no next-intl).
 - MongoDB + Prisma, y un asistente de reclutadores (Gemini + RAG estático) montado como shell AI-first (⌘K + chat).
@@ -121,3 +121,13 @@ Lecturas públicas van directo a Prisma (sin HTTP, prerenderizables). Mutaciones
 3. `npm run build` exitoso.
 4. Smoke manual relevante con `npm run dev` (temas, i18n, rutas afectadas).
 5. Si tocaste tokens/paleta: revisar también `/admin` (comparte `globals.css`).
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

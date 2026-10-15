@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search, Sparkles, CornerDownLeft, ArrowRight, FileText, Hash } from "lucide-react";
+import { Search, Sparkles, CornerDownLeft, ArrowRight, Hash, House, User, Briefcase, FolderKanban, Brain } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useLanguage } from "@/app/providers/LanguageProvider";
 import { askAssistant, renderMessage } from "./RecruiterChat";
 import { dispatchOpenChat } from "./chat-events";
@@ -10,7 +11,7 @@ import type { AssistantChatMessage } from "@/app/components/types/types";
 
 type Props = { open: boolean; onOpen: () => void; onClose: () => void };
 
-type PageEntry = { label: string; href: string; anchor?: boolean };
+type PageEntry = { label: string; href: string; anchor?: boolean; icon: LucideIcon };
 
 export default function CommandPalette({ open, onOpen, onClose }: Props) {
     const { lang, t } = useLanguage();
@@ -60,15 +61,13 @@ export default function CommandPalette({ open, onOpen, onClose }: Props) {
 
     const pages: PageEntry[] = useMemo(
         () => [
-            { label: t.nav.home, href: "/" },
-            { label: t.nav.about, href: "/about" },
-            { label: t.nav.experience, href: "/experience" },
-            { label: t.nav.projects, href: "/projects" },
-            { label: t.nav.blogs, href: "/blogs" },
-            { label: t.nav.resources, href: "/resources" },
-            { label: t.nav.ai, href: "/ai" },
-            { label: t.home.aboutTitle, href: "/#about", anchor: true },
-            { label: t.home.selectedWork, href: "/#featured", anchor: true },
+            { label: t.nav.home, href: "/", icon: House },
+            { label: t.nav.about, href: "/about", icon: User },
+            { label: t.nav.experience, href: "/experience", icon: Briefcase },
+            { label: t.nav.projects, href: "/projects", icon: FolderKanban },
+            { label: t.nav.ai, href: "/ai", icon: Brain },
+            { label: t.home.aboutTitle, href: "/#about", anchor: true, icon: Hash },
+            { label: t.home.selectedWork, href: "/#featured", anchor: true, icon: Hash },
         ],
         [t]
     );
@@ -221,6 +220,7 @@ export default function CommandPalette({ open, onOpen, onClose }: Props) {
                                     )}
                                     {filtered.map((p, i) => {
                                         const idx = showAsk ? i + 1 : i;
+                                        const Icon = p.icon;
                                         return (
                                             <button
                                                 key={p.href}
@@ -232,11 +232,7 @@ export default function CommandPalette({ open, onOpen, onClose }: Props) {
                                                     active === idx ? "bg-muted text-foreground" : "text-muted-foreground"
                                                 } focus-ring`}
                                             >
-                                                {p.anchor ? (
-                                                    <Hash size={15} className="shrink-0" />
-                                                ) : (
-                                                    <FileText size={15} className="shrink-0" />
-                                                )}
+                                                <Icon size={15} className="shrink-0" />
                                                 <span className="min-w-0 truncate">{p.label}</span>
                                                 <span className="ml-auto shrink-0 font-mono text-[10px] opacity-60">
                                                     {p.href}

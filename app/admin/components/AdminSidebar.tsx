@@ -10,7 +10,6 @@ import {
   UserRound,
   Briefcase,
   FolderKanban,
-  BookOpen,
   FolderTree,
   Lightbulb,
   GraduationCap,
@@ -33,8 +32,6 @@ const menuItems = [
   { href: "/admin/projects", label: "Projects", icon: FolderKanban, description: "Manage portfolio projects" },
   { href: "/admin/experiences", label: "Experiences", icon: Briefcase, description: "Work history" },
   { href: "/admin/educations", label: "Education", icon: GraduationCap, description: "Academic background" },
-  { href: "/admin/resources", label: "Resources", icon: BookOpen, description: "Learning resources" },
-  { href: "/admin/categories", label: "Categories", icon: FolderTree, description: "Resource categories" },
   { href: "/admin/skill-categories", label: "Skill Categories", icon: FolderTree, description: "Organize skills" },
   { href: "/admin/skills", label: "Skills", icon: Lightbulb, description: "Technical skills" },
 ];

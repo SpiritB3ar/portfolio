@@ -24,22 +24,6 @@ export const toList = (value: string | string[]): string[] =>
 
 const nonEmpty = (label: string) => z.string().trim().min(1, `${label} is required`);
 
-// ── Resource ────────────────────────────────────────────────────────────────
-export const resourceSchema = z.object({
-    title: nonEmpty("title"),
-    description: nonEmpty("description"),
-    content: nonEmpty("content"),
-    coverImage: nonEmpty("coverImage"),
-    link: z.string().optional().nullable(),
-    type: nonEmpty("type"),
-    categoryId: nonEmpty("categoryId"),
-    tags: stringList,
-    author: nonEmpty("author"),
-    publishedAt: z.coerce.date(),
-    readTimeMinutes: z.coerce.number().int().optional().nullable(),
-});
-export type ResourceInput = z.infer<typeof resourceSchema>;
-
 // ── Project ─────────────────────────────────────────────────────────────────
 export const projectSchema = z.object({
     title: nonEmpty("title"),
@@ -98,13 +82,6 @@ export const skillCategorySchema = z.object({
 });
 export type SkillCategoryInput = z.infer<typeof skillCategorySchema>;
 
-// ── Resource category (shared by /api/categories and /api/resource-categories)
-export const resourceCategorySchema = z.object({
-    name: nonEmpty("name"),
-    description: z.string().optional().nullable(),
-});
-export type ResourceCategoryInput = z.infer<typeof resourceCategorySchema>;
-
 // ── User detail (home/hero content) ─────────────────────────────────────────
 export const userDetailSchema = z.object({
     welcomeTitle: nonEmpty("welcomeTitle"),
@@ -114,14 +91,6 @@ export const userDetailSchema = z.object({
     userImage: nonEmpty("userImage"),
 });
 export type UserDetailInput = z.infer<typeof userDetailSchema>;
-
-// ── Blog (no write endpoint yet — schema kept for the integration doc) ───────
-export const blogSchema = z.object({
-    title: nonEmpty("title"),
-    cover: nonEmpty("cover"),
-    link: nonEmpty("link"),
-});
-export type BlogInput = z.infer<typeof blogSchema>;
 
 // ── Social link (GET/POST /api/user-social-links, GET/PUT/DELETE [id]) ──────
 export const socialLinkSchema = z.object({

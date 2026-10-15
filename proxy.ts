@@ -20,8 +20,6 @@ export async function proxy(req: NextRequest) {
 
 export const config = {
     matcher: [
-        '/api/resources/:path*',
-        '/api/resource-categories/:path*',
         '/api/projects/:path*',
         '/api/experiences/:path*',
         '/api/educations/:path*',

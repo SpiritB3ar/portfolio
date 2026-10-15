@@ -67,9 +67,6 @@
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
-  },
   "pnpm": {
     "onlyBuiltDependencies": [
       "prisma",

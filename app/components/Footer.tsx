@@ -50,8 +50,6 @@ export const Footer = () => {
                 { name: t.nav.about, href: "/about" },
                 { name: t.nav.experience, href: "/experience" },
                 { name: t.nav.projects, href: "/projects" },
-                { name: t.nav.blogs, href: "/blogs" },
-                { name: t.nav.resources, href: "/resources" },
                 { name: t.nav.ai, href: "/ai" },
               ].map((link) => (
                 <li key={link.href}>

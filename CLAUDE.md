@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Next.js 16 (App Router, React 19) portfolio site with server-rendered public pages, a content-management UI, multilingual content (English/Spanish), and a MongoDB-backed Prisma data layer. Surfaces: Home, About, Experience, Projects, Blogs, Resources, Skills — plus an authoring UI for each.
+Next.js 16 (App Router, React 19) portfolio site with server-rendered public pages, a content-management UI, multilingual content (English/Spanish), and a MongoDB-backed Prisma data layer. Surfaces: Home, About, Experience, Projects — plus an authoring UI for each.
 
 ## Development Commands
 

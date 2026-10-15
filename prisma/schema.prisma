@@ -98,44 +98,6 @@ model ProjectTool {
   updatedAt   DateTime  @updatedAt
 }
 
-model Blog {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  title     String   @unique
-  cover     String // URL or path to the image
-  link      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model ResourceCategory {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  name        String    @unique
-  slug        String    @unique
-  description String?
-  resources   Resource[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-}
-
-model Resource {
-  id              String    @id @default(auto()) @map("_id") @db.ObjectId
-  title           String    @unique
-  slug            String    @unique
-  description     String
-  content         String
-  coverImage      String
-  link            String?
-  type            String // 'Article', 'Video', 'Ebook', 'Tutorial', 'Tool', 'Case Study'
-  categoryId      String    @db.ObjectId
-  category        ResourceCategory @relation(fields: [categoryId], references: [id])
-  tags            String[]
-  author          String
-  publishedAt     DateTime
-  readTimeMinutes Int?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-}
-
 model SkillCategory {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String   @unique

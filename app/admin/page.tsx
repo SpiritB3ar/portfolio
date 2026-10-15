@@ -6,8 +6,6 @@ import Link from "next/link";
 import {
   FolderKanban,
   Briefcase,
-  BookOpen,
-  FolderTree,
   TrendingUp,
   ArrowRight,
 } from "lucide-react";
@@ -20,14 +18,14 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchJSON } from "@/lib/request-util";
-import { ResourceType, ProjectType, ExperienceType, ResourceCategoryType } from "../components/types/types";
+import { ProjectType, ExperienceType } from "../components/types/types";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   ChartConfig,
 } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis } from "recharts";
 
 const CHART_COLORS = [
   "hsl(var(--chart-1))",
@@ -40,7 +38,6 @@ const CHART_COLORS = [
 const contentChartConfig = {
   projects: { label: "Projects", color: "hsl(var(--chart-1))" },
   experiences: { label: "Experiences", color: "hsl(var(--chart-2))" },
-  resources: { label: "Resources", color: "hsl(var(--chart-3))" },
 } satisfies ChartConfig;
 
 const AdminDashboard = () => {
@@ -60,52 +57,15 @@ const AdminDashboard = () => {
     },
   });
 
-  const { data: resources = [], isLoading: loadingResources } = useQuery({
-    queryKey: ["resources"],
-    queryFn: async () => {
-      const data = await fetchJSON<ResourceType[]>("/api/resources");
-      return data ?? [];
-    },
-  });
-
-  const { data: categories = [], isLoading: loadingCategories } = useQuery({
-    queryKey: ["resource-categories"],
-    queryFn: async () => {
-      const data = await fetchJSON<ResourceCategoryType[]>("/api/resource-categories");
-      return data ?? [];
-    },
-  });
-
-  const isLoading = loadingProjects || loadingExperiences || loadingResources || loadingCategories;
+  const isLoading = loadingProjects || loadingExperiences;
 
   const contentData = useMemo(
     () => [
       { name: "Projects", value: projects.length, fill: "var(--color-projects)" },
       { name: "Experiences", value: experiences.length, fill: "var(--color-experiences)" },
-      { name: "Resources", value: resources.length, fill: "var(--color-resources)" },
     ],
-    [projects, experiences, resources]
+    [projects, experiences]
   );
-
-  const resourceTypeData = useMemo(() => {
-    const counts: Record<string, number> = {};
-    resources.forEach((r: ResourceType) => {
-      counts[r.type] = (counts[r.type] || 0) + 1;
-    });
-    return Object.entries(counts).map(([type, count], i) => ({
-      name: type,
-      value: count,
-      fill: CHART_COLORS[i % CHART_COLORS.length],
-    }));
-  }, [resources]);
-
-  const resourceTypeConfig = useMemo(() => {
-    const config: ChartConfig = {};
-    resourceTypeData.forEach((item) => {
-      config[item.name] = { label: item.name, color: item.fill };
-    });
-    return config;
-  }, [resourceTypeData]);
 
   const stats = [
     {
@@ -126,24 +86,6 @@ const AdminDashboard = () => {
       color: "text-purple-600 dark:text-purple-400",
       bg: "bg-purple-50 dark:bg-purple-950",
     },
-    {
-      title: "Resources",
-      value: resources.length,
-      description: "Learning resources",
-      icon: BookOpen,
-      href: "/admin/resources",
-      color: "text-green-600 dark:text-green-400",
-      bg: "bg-green-50 dark:bg-green-950",
-    },
-    {
-      title: "Categories",
-      value: categories.length,
-      description: "Resource categories",
-      icon: FolderTree,
-      href: "/admin/categories",
-      color: "text-orange-600 dark:text-orange-400",
-      bg: "bg-orange-50 dark:bg-orange-950",
-    },
   ];
 
   return (
@@ -156,9 +98,9 @@ const AdminDashboard = () => {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {isLoading
-          ? Array.from({ length: 4 }).map((_, i) => (
+          ? Array.from({ length: 2 }).map((_, i) => (
               <Card key={i}>
                 <CardHeader className="pb-2">
                   <Skeleton className="h-4 w-24" />
@@ -197,7 +139,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6">
         {/* Content Overview Bar Chart */}
         <Card>
           <CardHeader>
@@ -224,46 +166,6 @@ const AdminDashboard = () => {
             )}
           </CardContent>
         </Card>
-
-        {/* Resources by Type Pie Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Resources by Type</CardTitle>
-            <CardDescription>
-              Distribution of resources across types
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <Skeleton className="h-[250px] w-full" />
-            ) : resourceTypeData.length > 0 ? (
-              <ChartContainer config={resourceTypeConfig} className="h-[250px] w-full">
-                <PieChart accessibilityLayer>
-                  <ChartTooltip
-                    content={<ChartTooltipContent hideLabel />}
-                  />
-                  <Pie
-                    data={resourceTypeData}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    strokeWidth={2}
-                  >
-                    {resourceTypeData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.fill} />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ChartContainer>
-            ) : (
-              <div className="flex h-[250px] items-center justify-center text-sm text-muted-foreground">
-                No resources yet
-              </div>
-            )}
-          </CardContent>
-        </Card>
       </div>
 
       {/* Quick Actions */}
@@ -273,7 +175,7 @@ const AdminDashboard = () => {
           <CardDescription>Jump to a section</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3">
             {stats.map((stat) => {
               const Icon = stat.icon;
               return (

@@ -18,8 +18,6 @@ const SITE_MAP = [
     "/about — About / Sobre mí",
     "/experience — Experience / Experiencia",
     "/projects — Projects / Proyectos",
-    "/blogs — Blogs",
-    "/resources — Resources / Recursos",
     "/ai — AI Engineering / Ingeniería de IA",
 ].join("\n");
 
