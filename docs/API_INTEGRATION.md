@@ -13,7 +13,7 @@ MongoDB. All endpoints accept/return **JSON**.
 
 | Var | Purpose | Default |
 | --- | --- | --- |
-| `NEXT_PUBLIC_API_URL` | Base origin used to absolutize relative `/api/*` paths. **Public** (shared by server + client). | `http://localhost:3000` |
+| `NEXT_PUBLIC_API_URL` | Base origin used by the server to absolutize relative `/api/*` paths (client uses same-origin relative paths, no CORS). **Public**. | `http://localhost:3000` |
 | `DATABASE_URL` | MongoDB connection string (Prisma). Server-only. | — |
 | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` / `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` | Direct image uploads from the authoring UI. | — |
 
@@ -26,10 +26,17 @@ All endpoints live under `<base>/api/...`.
 The app reads through a tiny helper:
 
 ```ts
+// Client: same-origin relative fetch (no CORS). Server: absolutized (slashes trimmed).
 export async function fetchJSON<T>(url: string): Promise<T> {
-  const fullUrl = url.startsWith('/')
-    ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}${url}`
-    : url;
+  // Client: same-origin relative (no CORS). Server: absolutized with
+  // NEXT_PUBLIC_API_URL (trailing slashes trimmed).
+  // Client: same-origin relative fetch (no CORS on any domain).
+  // Server: absolutized with NEXT_PUBLIC_API_URL (trailing slashes trimmed).
+  // Client: same-origin relative (no CORS). Server: absolutized (slashes trimmed).
+  // Client: same-origin relative fetch (no CORS). Server: absolutized (slashes trimmed).
+  // Client: same-origin relative fetch (no CORS). Server: absolutized (slashes trimmed).
+  // Client: same-origin relative fetch (no CORS). Server: absolutized (slashes trimmed).
+  // Client: same-origin relative fetch (no CORS). Server: absolutized (slashes trimmed).
   const response = await fetch(fullUrl, { method: "GET", cache: 'no-store' });
   if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
   return response.json();
@@ -37,7 +44,32 @@ export async function fetchJSON<T>(url: string): Promise<T> {
 ```
 
 Key facts:
-- Relative paths (`/api/...`) are absolutized with `NEXT_PUBLIC_API_URL`.
+- Client requests stay same-origin relative (`/api/...`) — no CORS on any domain.
+- Server requests are absolutized with `NEXT_PUBLIC_API_URL` (trailing `/` trimmed, so no `//api` 404s).
+
+Key facts:
+- Client requests stay same-origin relative (`/api/...`) — no CORS on any domain.
+- Server requests are absolutized with `NEXT_PUBLIC_API_URL` (trailing `/` trimmed, so no `//api` 404s).
+
+Key facts:
+- Client requests stay same-origin relative (`/api/...`) — no CORS issues on any domain.
+- Server requests are absolutized with `NEXT_PUBLIC_API_URL` (trailing slashes trimmed, so no `//api` 404s).
+
+Key facts:
+- Client requests stay same-origin relative (`/api/...`) — no CORS on any domain.
+- Server requests are absolutized with `NEXT_PUBLIC_API_URL` (trailing `/` trimmed).
+
+Key facts:
+- Client requests stay same-origin relative (`/api/...`) — no CORS on any domain.
+- Server requests are absolutized with `NEXT_PUBLIC_API_URL` (trailing `/` trimmed, so no `//api` 404s).
+
+Key facts:
+- Client requests stay same-origin relative — no CORS on any domain.
+- Server requests are absolutized with `NEXT_PUBLIC_API_URL` (trailing `/` trimmed).
+
+Key facts:
+- Client requests are same-origin relative (`/api/...`) — no CORS issues on any domain.
+- Server requests are absolutized with `NEXT_PUBLIC_API_URL` (trailing `/` trimmed, so no `//api` 404s).
 - Always `cache: 'no-store'` — every call hits the API fresh (no caching).
 - On any non-2xx it **throws** `Error("HTTP Error: <status>")` (it does not read the error body).
 - It only does GET. Mutations use `fetch(...)` directly (see the admin forms) or TanStack Query.

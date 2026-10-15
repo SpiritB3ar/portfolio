@@ -32,7 +32,7 @@ npx prisma db seed          # seed (ts-node, requiere DATABASE_URL)
 En `.env.example`. Importantes:
 
 - `DATABASE_URL` — MongoDB (requerida por Prisma).
-- `NEXT_PUBLIC_API_URL` — base para `lib/request-util.ts#fetchJSON` (absolutiza `/api/*`); es **pública**.
+- `NEXT_PUBLIC_API_URL` — base para `lib/request-util.ts#fetchJSON` solo en servidor (absolutiza `/api/*`); el cliente pide en relativo same-origin (sin CORS); es **pública**.
 - `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`, `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` — uploads directos desde la UI de autoría.
 - `GEMINI_API_KEY` — clave del asistente; **solo server-side**, nunca exponer al cliente.
 - `ASSISTANT_MODEL` (default `gemini-3.8-flash`), `AI_PROVIDER` (`gemini`).
