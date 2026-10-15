@@ -5,6 +5,7 @@ import { ThemeProvider } from "./providers/ThemeProvider";
 import TanstackProvider from "./providers/tanstack.provider";
 import { Locale } from "./lib/dictionary";
 import MainLayout from "./components/MainLayout";
+import { getHomeData, getSocialLinks } from "@/lib/data";
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -43,9 +44,27 @@ export default async function RootLayout({
      }
   }
 
+  // Structured data for SEO: Person entity with real profile data.
+  const [homeData, socialLinks] = await Promise.all([getHomeData(), getSocialLinks()]);
+  const jobTitle = homeData?.welcomeNote?.split('|')[0]?.trim() || 'Software Engineer';
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: homeData?.welcomeTitle ?? "Ronald Cardenas",
+    jobTitle,
+    description: homeData?.welcomeDescription ?? undefined,
+    image: homeData?.userImage ?? undefined,
+    url: "https://www.corleo.dev",
+    sameAs: socialLinks.map((s) => s.link).filter((l) => l.startsWith("http")),
+  };
+
   return (
     <html lang={initialLang} suppressHydrationWarning>
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `

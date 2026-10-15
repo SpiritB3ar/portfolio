@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HomeDataType } from "./types/types";
 import { useLanguage } from "../providers/LanguageProvider";
 import { saveAs } from "file-saver";
@@ -18,6 +18,15 @@ const BodyContent = ({ homeData }: ContentType) => {
   const { t } = useLanguage();
   const reduce = useReducedMotion();
   const [isDownloading, setIsDownloading] = useState(false);
+
+  // Rotating ask suggestions (from the assistant's own suggestion list).
+  const askOptions = t.assistant.suggestions.length > 0 ? t.assistant.suggestions : [t.home.askPlaceholder];
+  const [askIndex, setAskIndex] = useState(0);
+  useEffect(() => {
+    if (askOptions.length < 2) return;
+    const id = setInterval(() => setAskIndex((i) => (i + 1) % askOptions.length), 4000);
+    return () => clearInterval(id);
+  }, [askOptions.length]);
 
   const handleDownloadCV = async () => {
     if (!homeData?.cvFile) return;
@@ -97,9 +106,15 @@ const BodyContent = ({ homeData }: ContentType) => {
           className="focus-ring group flex w-full max-w-xl items-center gap-3 rounded-full border border-border bg-card/80 px-5 py-4 text-left shadow-sm transition-colors hover:border-brand-green"
         >
           <Sparkles size={16} className="shrink-0 text-brand-medium dark:text-brand-green" />
-          <span className="min-w-0 flex-1 truncate text-sm text-muted-foreground transition-colors group-hover:text-foreground">
-            {t.home.askPlaceholder}
-          </span>
+          <motion.span
+            key={askIndex}
+            initial={reduce ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4 }}
+            className="min-w-0 flex-1 truncate text-sm text-muted-foreground transition-colors group-hover:text-foreground"
+          >
+            {askOptions[askIndex % askOptions.length]}
+          </motion.span>
           <ArrowUpRight
             size={16}
             className="shrink-0 text-muted-foreground transition-[transform,color] duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand-medium dark:group-hover:text-brand-green"

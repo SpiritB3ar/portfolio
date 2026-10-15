@@ -1,8 +1,14 @@
 "use client"
 
 import React, { useState } from 'react'
+import dynamic from 'next/dynamic';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+
+// Dev-only: separate chunk, never loaded nor rendered in production.
+const ReactQueryDevtools = dynamic(
+  () => import("@tanstack/react-query-devtools").then((m) => m.ReactQueryDevtools),
+  { ssr: false }
+);
 
 
 type TanstackProviderProps = {
@@ -15,7 +21,7 @@ const TanstackProvider = ({ children }: TanstackProviderProps): React.ReactEleme
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      <ReactQueryDevtools initialIsOpen={false} />
+      {process.env.NODE_ENV === "development" && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
   );
 };
