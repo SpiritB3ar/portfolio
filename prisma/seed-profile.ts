@@ -50,7 +50,7 @@ async function main() {
 
   // ── 2. UserSocialLinks ─────────────────────────────────────────
   const socialLinksData = [
-    { name: 'LinkedIn', link: 'https://www.linkedin.com/in/ronalcardenas-c', icon: 'linkedin' },
+    { name: 'LinkedIn', link: 'https://www.linkedin.com/in/ronal-cardenas-c/', icon: 'linkedin' },
     { name: 'Website', link: 'https://www.corleo.dev/', icon: 'globe' },
     { name: 'Email', link: 'mailto:cardenascode7@outlook.com', icon: 'mail' },
     { name: 'GitHub', link: 'https://github.com/', icon: 'github' },
@@ -236,6 +236,12 @@ async function main() {
       skills: [
         { name: 'AWS Glue', proficiency: 70, order: 0 },
         { name: 'AI-Powered Software Design', proficiency: 75, order: 1 },
+        { name: 'GitHub Copilot', proficiency: 88, order: 2 },
+        { name: 'Claude Code', proficiency: 86, order: 3 },
+        { name: 'OpenCode', proficiency: 82, order: 4 },
+        { name: 'OpenAI Codex', proficiency: 78, order: 5 },
+        { name: 'Microsoft Foundry', proficiency: 80, order: 6 },
+        { name: 'Amazon Bedrock', proficiency: 78, order: 7 },
       ],
     },
     {

@@ -66,19 +66,19 @@ const ExperienceCard = ({ item, index, isLast }: { item: ExperiencePathProps; in
                     whileInView={reduce ? undefined : { scale: 1, opacity: 1 }}
                     viewport={{ once: true, margin: '-50px' }}
                     transition={{ duration: 0.3, delay: index * 0.06, ease: [0.21, 0.6, 0.35, 1] }}
-                    className="relative z-10 flex h-14 w-14 items-center justify-center rounded-full border-2 border-brand-green bg-background transition-transform duration-300 group-hover:scale-105 sm:h-16 sm:w-16"
+                    className="relative z-10 flex h-16 w-16 items-center justify-center rounded-full border-2 border-brand-green bg-background transition-transform duration-300 group-hover:scale-105 sm:h-20 sm:w-20"
                 >
                     {item.cover ? (
-                        <img src={item.cover} alt={item.title} className="h-9 w-9 rounded-full bg-white object-contain p-1 sm:h-10 sm:w-10" />
+                        <img src={item.cover} alt={item.title} className="h-11 w-11 rounded-full bg-white object-contain p-1 sm:h-12 sm:w-12" />
                     ) : (
-                        <Briefcase className="h-6 w-6 text-brand-green sm:h-7 sm:w-7" />
+                        <Briefcase className="h-7 w-7 text-brand-green sm:h-8 sm:w-8" />
                     )}
                     {item.clientLogo && (
                         <img
                             src={item.clientLogo}
                             alt={`${item.title} client`}
                             title="Client"
-                            className="absolute -bottom-1 -right-2 h-6 max-w-10 rounded-full border border-border bg-white object-contain px-1 py-0.5"
+                            className="absolute -bottom-1 -right-2 h-7 max-w-12 rounded-full border border-border bg-white object-contain px-1 py-0.5"
                         />
                     )}
                 </motion.div>

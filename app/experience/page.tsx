@@ -1,30 +1,21 @@
 import ExperienceTimeline from '../components/ExperienceTimeline'
 import EducationTimeline from '../components/EducationTimeline'
 import { ExperiencePathProps } from '../components/ExperienceTimeline'
-import { getExperiences, getEducations, getSkillCategories } from '@/lib/data'
+import { getExperiences, getEducations } from '@/lib/data'
 import { ExperienceTitle } from '../components/ExperienceTitle'
-import { ExperienceIntro } from '../components/ExperienceIntro'
 import { CollapsibleSection } from '../components/CollapsibleSection'
 import { serverT } from '../lib/server-i18n'
 
-const AI_CATEGORY_SLUG = 'ai-machine-learning'
-
 const Experience = async () => {
     const t = await serverT()
-    const [experiences, educations, skillCategories] = await Promise.all([
+    const [experiences, educations] = await Promise.all([
         getExperienceData(),
         getEducations(),
-        getSkillCategories()
     ]);
-
-    const aiCategory = skillCategories?.find(
-        (c) => c.slug === AI_CATEGORY_SLUG || c.name.toLowerCase().includes('ai')
-    ) ?? null
 
     return (
         <div className="flex flex-col">
             <ExperienceTitle />
-            <ExperienceIntro aiCategory={aiCategory} />
 
             <div className="border-b border-border">
                 <CollapsibleSection

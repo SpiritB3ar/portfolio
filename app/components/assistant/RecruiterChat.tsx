@@ -3,10 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { MessageCircle, Send, X } from "lucide-react";
+import { MessageCircle, Send, X, RotateCcw, Trash2, Mic, Volume2, VolumeX } from "lucide-react";
 import { useLanguage } from "@/app/providers/LanguageProvider";
 import type { AssistantChatMessage, AssistantReply } from "@/app/components/types/types";
 import { listenOpenChat } from "./chat-events";
+import { useVoice } from "./useVoice";
 
 const MAX_HISTORY = 12;
 
@@ -97,6 +98,9 @@ export default function RecruiterChat() {
     const [input, setInput] = useState("");
     const [loading, setLoading] = useState(false);
     const [messages, setMessages] = useState<AssistantChatMessage[]>([]);
+    const [failedQuery, setFailedQuery] = useState<string | null>(null);
+    const voice = useVoice(lang);
+    const { speakOn, speak } = voice;
     const bottomRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -123,23 +127,43 @@ export default function RecruiterChat() {
         []
     );
 
+    // Lee en voz alta la última respuesta cuando el modo voz está activo.
+    useEffect(() => {
+        if (!speakOn || !open) return;
+        const last = messages[messages.length - 1];
+        if (last?.role === "assistant") speak(last.content);
+    }, [messages, open, speakOn, speak]);
+
+    // Corta la voz al cerrar el dock.
+    useEffect(() => {
+        if (!open && typeof window !== "undefined") window.speechSynthesis?.cancel();
+    }, [open ]);
+
     const send = async (text?: string) => {
         const content = (text ?? input).trim();
         if (!content || loading) return;
         const next: AssistantChatMessage[] = [...messages, { role: "user" as const, content }].slice(-MAX_HISTORY);
         setMessages(next);
         setInput("");
+        setFailedQuery(null);
         setLoading(true);
         try {
             const reply = await askAssistant(next, lang);
             setMessages((prev): AssistantChatMessage[] => [...prev, { role: "assistant" as const, content: reply }].slice(-MAX_HISTORY));
         } catch {
+            setFailedQuery(content);
             setMessages((prev): AssistantChatMessage[] =>
                 [...prev, { role: "assistant" as const, content: t.assistant.unavailable }].slice(-MAX_HISTORY)
             );
         } finally {
             setLoading(false);
         }
+    };
+
+    const clearConversation = () => {
+        setMessages([]);
+        setFailedQuery(null);
+        setInput("");
     };
 
     return (
@@ -155,13 +179,35 @@ export default function RecruiterChat() {
                                 {t.assistant.subtitle}
                             </p>
                         </div>
-                        <button
-                            aria-label={t.assistant.close}
-                            onClick={() => setOpen(false)}
-                            className="rounded-full p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
-                        >
-                            <X size={18} />
-                        </button>
+                        <div className="flex items-center gap-1">
+                            <button
+                                aria-label={t.assistant.readAloud}
+                                title={t.assistant.readAloud}
+                                onClick={voice.toggleSpeak}
+                                className={`rounded-full p-1.5 transition-colors hover:bg-muted ${
+                                    speakOn ? "text-brand-medium dark:text-brand-green" : "text-muted-foreground hover:text-foreground"
+                                }`}
+                            >
+                                {speakOn ? <Volume2 size={16} /> : <VolumeX size={16} />}
+                            </button>
+                            {messages.length > 0 && (
+                                <button
+                                    aria-label={t.assistant.clear}
+                                    title={t.assistant.clear}
+                                    onClick={clearConversation}
+                                    className="rounded-full p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
+                                >
+                                    <Trash2 size={16} />
+                                </button>
+                            )}
+                            <button
+                                aria-label={t.assistant.close}
+                                onClick={() => setOpen(false)}
+                                className="rounded-full p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
+                            >
+                                <X size={18} />
+                            </button>
+                        </div>
                     </div>
 
                     <div className="flex-1 overflow-x-hidden overflow-y-auto px-4 py-3 space-y-3">
@@ -183,6 +229,17 @@ export default function RecruiterChat() {
                                 <div className="rounded-2xl bg-muted px-3 py-2 text-sm text-muted-foreground">
                                     {t.assistant.thinking}
                                 </div>
+                            </div>
+                        )}
+                        {!loading && failedQuery && (
+                            <div className="flex justify-start pt-1">
+                                <button
+                                    onClick={() => send(failedQuery)}
+                                    className="inline-flex items-center gap-1.5 rounded-xl border border-brand-green/30 bg-brand-green/10 px-3 py-1.5 text-xs font-medium text-brand-medium transition-colors hover:bg-brand-green/20 dark:text-brand-green"
+                                >
+                                    <RotateCcw size={13} />
+                                    {t.assistant.retry}
+                                </button>
                             </div>
                         )}
                         {!loading && (
@@ -219,10 +276,29 @@ export default function RecruiterChat() {
                             ref={inputRef}
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
-                            placeholder={t.assistant.placeholder}
+                            placeholder={voice.listening ? t.assistant.listening : t.assistant.placeholder}
                             maxLength={2000}
                             className="focus-ring min-w-0 flex-1 rounded-xl border border-border bg-background/70 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-brand-green"
                         />
+                        {voice.supported && (
+                            <button
+                                type="button"
+                                aria-label={voice.listening ? t.assistant.listening : t.assistant.dictate}
+                                title={voice.listening ? t.assistant.listening : t.assistant.dictate}
+                                onClick={() =>
+                                    voice.toggleListening((text) =>
+                                        setInput((prev) => (prev ? `${prev} ` : "") + text)
+                                    )
+                                }
+                                className={`rounded-xl p-2.5 transition-colors pressable active:scale-90 ${
+                                    voice.listening
+                                        ? "bg-red-500/15 text-red-500 animate-pulse"
+                                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                                }`}
+                            >
+                                <Mic size={16} />
+                            </button>
+                        )}
                         <button
                             type="submit"
                             aria-label={t.assistant.send}

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { HomeDataType } from "./types/types";
 import { useLanguage } from "../providers/LanguageProvider";
 import { saveAs } from "file-saver";
-import { Download, Sparkles, Loader2, ArrowUpRight } from "lucide-react";
+import { Download, Sparkles, Loader2, ArrowUpRight, Bot } from "lucide-react";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { toast } from "sonner";
 import { dispatchOpenChat } from "./assistant/chat-events";
@@ -141,10 +141,23 @@ const BodyContent = ({ homeData }: ContentType) => {
                 src={userImage}
               />
             )}
-            {/* Cinematic teal grade */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#03100E]/70 via-transparent to-transparent" />
-            <div className="absolute inset-0 bg-brand-dark/10 mix-blend-multiply dark:bg-brand-dark/20" />
-          </div>
+                {/* Cinematic teal grade */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#03100E]/70 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-brand-dark/10 mix-blend-multiply dark:bg-brand-dark/20" />
+            </div>
+            {/* Floating AI badge */}
+            <motion.div
+                variants={rise}
+                className="absolute -bottom-5 left-5 flex items-center gap-2.5 rounded-2xl border border-border bg-card px-4 py-3 shadow-lg"
+            >
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-green/15 text-brand-medium dark:text-brand-green">
+                    <Bot size={18} />
+                </span>
+                <span>
+                    <span className="block text-sm font-semibold text-foreground">{t.home.aiBadgeTitle}</span>
+                    <span className="block font-mono text-[11px] text-muted-foreground">{t.home.aiBadgeSub}</span>
+                </span>
+            </motion.div>
         </div>
       </motion.div>
     </motion.section>
