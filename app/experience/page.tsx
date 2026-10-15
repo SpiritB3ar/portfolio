@@ -69,7 +69,7 @@ const getExperienceData = async () => {
         experiences.push({
             title: i.company || i.name || '',
             position: i.title,
-            cover: i.image,
+            cover: i.image ?? '',
             company: i.company,
             description: i.description,
             location: i.location,
