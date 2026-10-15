@@ -76,7 +76,7 @@ const getExperienceData = async () => {
             technologies: i.technologies,
             activities,
             startDate: i.startDate.toISOString(),
-            endDate: i.endDate?.toISOString()
+            endDate: i.endDate?.toISOString() ?? ''
         })
     }
 
