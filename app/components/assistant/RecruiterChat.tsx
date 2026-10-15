@@ -9,6 +9,7 @@ import type { AssistantChatMessage, AssistantReply } from "@/app/components/type
 import type { AssistantMode } from "@/lib/ai/types";
 import { listenOpenChat } from "./chat-events";
 import { useVoice } from "./useVoice";
+import { readErrorMessage } from "@/lib/request-util";
 
 const MAX_HISTORY = 12;
 
@@ -88,8 +89,7 @@ export async function askAssistantStream(
         body: JSON.stringify({ messages: messages.slice(-MAX_HISTORY), lang, mode, stream: true }),
     });
     if (!res.ok || !res.body) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(typeof body?.message === "string" ? body.message : `HTTP ${res.status}`);
+        throw new Error(await readErrorMessage(res, `HTTP ${res.status}`));
     }
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
@@ -140,7 +140,7 @@ export async function askAssistant(
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ messages: messages.slice(-MAX_HISTORY), lang }),
             });
-            const body = await res.json().catch(() => ({}));
+            const body = (await res.json().catch(() => ({}))) as { message?: unknown };
             if (!res.ok) {
                 // 429/502/503 = sobrecarga transitoria → reintentar con backoff.
                 if ([429, 502, 503].includes(res.status) && attempt < MAX_ATTEMPTS) {

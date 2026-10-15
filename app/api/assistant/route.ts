@@ -79,7 +79,8 @@ export async function POST(request: NextRequest) {
         if ("response" in parsed) return parsed.response;
         const { data } = parsed;
 
-        if (!process.env.GEMINI_API_KEY) {
+        const providerName = (process.env.AI_PROVIDER ?? "gemini").toLowerCase();
+        if (providerName !== "cloudflare" && !process.env.GEMINI_API_KEY) {
             return fail(503, "Assistant is not configured yet. Please contact via the links on this page.");
         }
 

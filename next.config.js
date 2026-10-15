@@ -30,3 +30,11 @@ const nextConfig = {
 }
 
 module.exports = nextConfig
+
+// Cloudflare dev integration: exposes getCloudflareContext() in `next dev`
+// (env bindings come from .dev.vars). No-op for `next build`/Vercel.
+try {
+  require("@opennextjs/cloudflare/next").initOpenNextCloudflareForDev();
+} catch {
+  // @opennextjs/cloudflare not installed (e.g. main branch) — ignore.
+}

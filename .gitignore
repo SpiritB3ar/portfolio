@@ -78,6 +78,11 @@ typings/
 # Next.js build output
 .next
 
+# OpenNext Cloudflare build output + local dev vars
+.open-next/
+.dev.vars
+.wrangler/
+
 # Nuxt.js build / generate output
 .nuxt
 dist

@@ -42,7 +42,14 @@ const ProfilePage = () => {
     queryFn: async () => {
       const res = await fetch('/api/user-details');
       if (!res.ok) throw new Error('Failed to fetch profile');
-      return res.json();
+      return (await res.json()) as {
+        id: string;
+        welcomeTitle: string;
+        welcomeNote: string;
+        welcomeDescription: string;
+        cvFile?: string | null;
+        userImage: string;
+      };
     },
   });
 

@@ -1,0 +1,2 @@
+# Local dev vars for `wrangler dev` / opennext preview (NEVER commit secrets here).
+NEXTJS_ENV=development

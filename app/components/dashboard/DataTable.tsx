@@ -36,6 +36,7 @@ import {
 import Modal from "../modal/Modal";
 import { toast } from "sonner";
 import { getAdminApiKey } from "@/lib/admin-auth";
+import { readErrorMessage } from "@/lib/request-util";
 
 type DataTableProps<TData> = {
   entityName: string;
@@ -126,12 +127,7 @@ function DataTable<TData>({
         body: JSON.stringify(formData),
       });
       if (!response.ok) {
-        let message = `Failed to save the ${entityName}`;
-        try {
-          const body = await response.json();
-          if (body?.message) message = body.message;
-        } catch {}
-        throw new Error(message);
+        throw new Error(await readErrorMessage(response, `Failed to save the ${entityName}`));
       }
       toast.success(`${entityName} ${editData ? "updated" : "created"} successfully`);
       setIsModalOpen(false);
@@ -152,12 +148,7 @@ function DataTable<TData>({
         headers: { "x-api-key": getAdminApiKey() },
       });
       if (!response.ok) {
-        let message = `Failed to delete the ${entityName}`;
-        try {
-          const body = await response.json();
-          if (body?.message) message = body.message;
-        } catch {}
-        throw new Error(message);
+        throw new Error(await readErrorMessage(response, `Failed to delete the ${entityName}`));
       }
       toast.success(`${entityName} deleted successfully`);
       onDataUpdate();

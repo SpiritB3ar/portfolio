@@ -122,6 +122,14 @@ Lecturas públicas van directo a Prisma (sin HTTP, prerenderizables). Mutaciones
 4. Smoke manual relevante con `npm run dev` (temas, i18n, rutas afectadas).
 5. Si tocaste tokens/paleta: revisar también `/admin` (comparte `globals.css`).
 
+## Rama `cloudflare-opennext` (deploy alternativo en Workers)
+
+- Adapter `@opennextjs/cloudflare` + `wrangler.jsonc` (R2 `portfolio-opennext-cache`, binding `AI`, `nodejs_compat`). Proxy (`proxy.ts`) incluido en el bundle.
+- Asistente con Workers AI: `AI_PROVIDER=cloudflare` usa `lib/ai/cloudflare.ts` (Llama 3.3 70B, override con `CLOUDFLARE_AI_MODEL`); chat + stream por `env.AI`. Sin binding, la factory sigue en Gemini.
+- BD en Workers: Prisma 6 no corre binarios ahí — usar **Accelerate**: `prisma generate --no-engine` + `DATABASE_URL="prisma://accelerate.prisma-data.net/?api_key=…"`. Cero cambios de código Prisma.
+- `pnpm build:cf` / `deploy` / `preview` en `package.json`. El empaquetado esbuild falla en Windows (symlinks pnpm) — correr `preview`/`deploy` desde WSL o CI Linux.
+- Pendiente con tu cuenta: crear proyecto Accelerate, bucket R2, `wrangler secret put DATABASE_URL ADMIN_API_KEY`, `wrangler login`.
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 ## This is NOT the Next.js you know

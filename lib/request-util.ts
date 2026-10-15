@@ -11,12 +11,21 @@ export async function fetchJSON<T>(url: string): Promise<T> {
     });
 
     if (!response.ok) {
-        let message = `HTTP Error: ${response.status}`;
-        try {
-            const body = await response.json();
-            if (body?.message) message = body.message;
-        } catch {}
-        throw new Error(message);
+        throw new Error(await readErrorMessage(response, `HTTP Error: ${response.status}`));
     }
-    return response.json();
+    return (await response.json()) as T;
+}
+
+/**
+ * Safely reads `{ message }` from an error JSON body.
+ * Explicitly typed: @cloudflare/workers-types declares
+ * `Response.json()` as `Promise<unknown>`, so untyped
+ * `body?.message` reads fail compilation once it is referenced.
+ */
+export async function readErrorMessage(response: Response, fallback: string): Promise<string> {
+    try {
+        const body = (await response.json()) as { message?: unknown };
+        if (typeof body?.message === "string" && body.message) return body.message;
+    } catch {}
+    return fallback;
 }
