@@ -29,7 +29,7 @@ Node.js >= 24.0.0 is required (`package.json` engines).
 Defined in `.env.example`:
 
 - `DATABASE_URL` — MongoDB connection string (required by Prisma)
-- `NEXT_PUBLIC_API_URL` — Base URL used by `lib/request-util.ts#fetchJSON` to absolutize relative `/api/*` paths (defaults to `http://localhost:3000`). It is **public** (prefixed `NEXT_PUBLIC_`), so server and client code share the same value.
+- `ADMIN_API_KEY` + `NEXT_PUBLIC_ADMIN_API_KEY` (same value) — root `middleware.ts` requires the `x-api-key` header on POST/PUT/DELETE; the admin UI sends it from the client. **If `ADMIN_API_KEY` is missing in Vercel, every mutation returns 401.**
 - `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`, `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` — used by `next-cloudinary` for direct uploads from the authoring UI.
 
 There is no `API_URL` (non-public) variable — earlier docs that referenced one are wrong.
@@ -45,22 +45,16 @@ The legacy `app/dashboard/*` surface (CRUDTable, DataGrid, AG Grid, `DashBoardSi
 ### Data Flow
 
 ```
-Server Component page  ──►  app/requests/requests.ts   (getXxxV2 helpers)
-                                  │
-                                  ▼
-                       lib/request-util.ts#fetchJSON   (cache: 'no-store')
-                                  │
-                                  ▼  HTTP /api/*
-                       app/api/<resource>/route.ts     (NextRequest/NextResponse)
-                                  │
-                                  ▼
-                            lib/db.ts (Prisma singleton)
-                                  │
-                                  ▼
-                                MongoDB
+Server Component page  ──►  lib/data.ts   (direct Prisma, prerendered at build)
+                                   │
+                                   ▼
+                             lib/db.ts (Prisma singleton)
+                                   │
+                                   ▼
+                                 MongoDB
 ```
 
-Public pages fetch through `app/requests/requests.ts` (named `getXxxV2`) so they re-hit the API rather than calling Prisma directly. `fetchJSON` always sets `cache: 'no-store'` — every page-load roundtrips to the API. Client-side mutations go through TanStack Query (`@tanstack/react-query`) configured in `app/providers/tanstack.provider.tsx`.
+Public pages query Prisma directly through `lib/data.ts` so they prerender with real content at build time (no HTTP self-fetch). Client-side reads/mutations go through TanStack Query (`@tanstack/react-query`) against same-origin `/api/*` via `lib/request-util.ts#fetchJSON` (client-only, relative URLs). Mutations require the `x-api-key` header, enforced by root `middleware.ts` (GETs stay public).
 
 **Prisma client singleton** (`lib/db.ts`): exported as default `db`. Always import from `lib/db.ts` rather than instantiating `new PrismaClient()` — the singleton pattern under `globalThis.prisma` prevents connection-pool exhaustion in dev with hot reload.
 

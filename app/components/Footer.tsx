@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useLanguage } from "../providers/LanguageProvider";
 import { useQuery } from "@tanstack/react-query";
-import { getSocialLinksV2 } from "../requests/requests";
+import { fetchJSON } from "@/lib/request-util";
 import { LogoMark } from "./LogoMark";
 import { iconMap } from "./SocialLink";
 import { Globe } from "lucide-react";
@@ -14,7 +14,8 @@ export const Footer = () => {
 
   const { data: socialLinks } = useQuery<SocialLinkType[]>({
     queryKey: ["social-links"],
-    queryFn: getSocialLinksV2,
+    queryFn: () => fetchJSON<SocialLinkType[]>("/api/user-social-links"),
+    staleTime: 5 * 60 * 1000,
   });
 
   const footerSocials = (socialLinks ?? []).filter((s) => iconMap[s.icon]);

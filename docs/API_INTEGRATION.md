@@ -13,8 +13,8 @@ MongoDB. All endpoints accept/return **JSON**.
 
 | Var | Purpose | Default |
 | --- | --- | --- |
-| `NEXT_PUBLIC_API_URL` | Base origin used by the server to absolutize relative `/api/*` paths (client uses same-origin relative paths, no CORS). **Public**. | `http://localhost:3000` |
 | `DATABASE_URL` | MongoDB connection string (Prisma). Server-only. | — |
+| `ADMIN_API_KEY` / `NEXT_PUBLIC_ADMIN_API_KEY` (same value) | `x-api-key` header required by root `middleware.ts` on POST/PUT/DELETE. | — |
 | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` / `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` | Direct image uploads from the authoring UI. | — |
 
 All endpoints live under `<base>/api/...`.
@@ -23,56 +23,21 @@ All endpoints live under `<base>/api/...`.
 
 ## 2. Fetching — `fetchJSON` ([lib/request-util.ts](../lib/request-util.ts))
 
-The app reads through a tiny helper:
+Client components read through a tiny helper (same-origin relative
+`/api/*` — no CORS on any domain, no env var needed):
 
 ```ts
-// Client: same-origin relative fetch (no CORS). Server: absolutized (slashes trimmed).
 export async function fetchJSON<T>(url: string): Promise<T> {
-  // Client: same-origin relative (no CORS). Server: absolutized with
-  // NEXT_PUBLIC_API_URL (trailing slashes trimmed).
-  // Client: same-origin relative fetch (no CORS on any domain).
-  // Server: absolutized with NEXT_PUBLIC_API_URL (trailing slashes trimmed).
-  // Client: same-origin relative (no CORS). Server: absolutized (slashes trimmed).
-  // Client: same-origin relative fetch (no CORS). Server: absolutized (slashes trimmed).
-  // Client: same-origin relative fetch (no CORS). Server: absolutized (slashes trimmed).
-  // Client: same-origin relative fetch (no CORS). Server: absolutized (slashes trimmed).
-  // Client: same-origin relative fetch (no CORS). Server: absolutized (slashes trimmed).
-  const response = await fetch(fullUrl, { method: "GET", cache: 'no-store' });
+  const response = await fetch(url, { method: "GET" });
   if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
   return response.json();
 }
 ```
 
 Key facts:
-- Client requests stay same-origin relative (`/api/...`) — no CORS on any domain.
-- Server requests are absolutized with `NEXT_PUBLIC_API_URL` (trailing `/` trimmed, so no `//api` 404s).
-
-Key facts:
-- Client requests stay same-origin relative (`/api/...`) — no CORS on any domain.
-- Server requests are absolutized with `NEXT_PUBLIC_API_URL` (trailing `/` trimmed, so no `//api` 404s).
-
-Key facts:
-- Client requests stay same-origin relative (`/api/...`) — no CORS issues on any domain.
-- Server requests are absolutized with `NEXT_PUBLIC_API_URL` (trailing slashes trimmed, so no `//api` 404s).
-
-Key facts:
-- Client requests stay same-origin relative (`/api/...`) — no CORS on any domain.
-- Server requests are absolutized with `NEXT_PUBLIC_API_URL` (trailing `/` trimmed).
-
-Key facts:
-- Client requests stay same-origin relative (`/api/...`) — no CORS on any domain.
-- Server requests are absolutized with `NEXT_PUBLIC_API_URL` (trailing `/` trimmed, so no `//api` 404s).
-
-Key facts:
-- Client requests stay same-origin relative — no CORS on any domain.
-- Server requests are absolutized with `NEXT_PUBLIC_API_URL` (trailing `/` trimmed).
-
-Key facts:
-- Client requests are same-origin relative (`/api/...`) — no CORS issues on any domain.
-- Server requests are absolutized with `NEXT_PUBLIC_API_URL` (trailing `/` trimmed, so no `//api` 404s).
-- Always `cache: 'no-store'` — every call hits the API fresh (no caching).
-- On any non-2xx it **throws** `Error("HTTP Error: <status>")` (it does not read the error body).
-- It only does GET. Mutations use `fetch(...)` directly (see the admin forms) or TanStack Query.
+- Client-only. Server Components must NOT use it — they query Prisma directly via [lib/data.ts](../lib/data.ts) so pages prerender at build time.
+- On any non-2xx it **throws** `Error("HTTP Error: <status>")`, preferring the `{ message }` body when present.
+- It only does GET. Mutations use `fetch(...)` directly (see the admin forms) with the `x-api-key` header, or TanStack Query.
 
 ---
 
@@ -239,22 +204,23 @@ ones — both are now populated.
 
 ---
 
-## 6. Existing frontend readers — `getXxxV2` ([app/requests/requests.ts](../app/requests/requests.ts))
+## 6. Server-side readers — `lib/data.ts`
 
-Server Components fetch through these (each wraps `fetchJSON` and returns a safe
-empty/`null` fallback on error):
+Server Components query Prisma directly (no HTTP self-fetch, so pages
+prerender with real content at build time):
 
-| Helper | Endpoint | Returns |
+| Helper | Prisma query | Returns |
 | --- | --- | --- |
-| `getHomeDataV2()` | `/api/user-details` | `HomeDataType \| null` |
-| `getSocialLinksV2()` | `/api/user-social-links` | `SocialLinkType[]` |
-| `getAboutParagraphsV2()` | `/api/about-me` | `AboutType[]` |
-| `getBlogsV2()` | `/api/blogs` | `BlogType[]` |
-| `getProjectsV2()` | `/api/projects` | `ProjectType[]` |
-| `getResourcesV2(categoryId?, tags?, type?)` | `/api/resources?…` | `ResourceType[]` |
-| `getResourceCategoriesV2()` | `/api/resource-categories` | `ResourceCategoryType[]` |
-| `getSkillCategoriesV2()` | `/api/skill-categories` | `SkillCategoryType[]` |
-| `getExperiencesV2()` | `/api/experiences` | `ExperienceType[]` |
+| `getHomeData()` | `userDetail.findFirst()` | `UserDetail \| null` |
+| `getSocialLinks()` | `userSocialLink.findMany()` | `UserSocialLink[]` |
+| `getAboutParagraphs()` | `aboutContent.findMany()` | `AboutContent[]` |
+| `getBlogs()` | `blog.findMany()` | `Blog[]` |
+| `getProjects()` | `project.findMany({ include: { tools: true } })` | `Project[]` |
+| `getResources()` | `resource.findMany({ include: { category: true } })` | `Resource[]` |
+| `getResourceCategories()` | `resourceCategory.findMany()` | `ResourceCategory[]` |
+| `getSkillCategories()` | `skillCategory.findMany({ include: { skills: true } })` | `SkillCategory[]` |
+| `getExperiences()` | `experience.findMany({ include: { inputs: true } })` | `Experience[]` |
+| `getEducations()` | `education.findMany()` | `Education[]` |
 
 ---
 
@@ -286,8 +252,6 @@ curl http://localhost:3000/api/projects/does-not-exist
 
 ## 8. Known gaps / TODO
 
-- **No write auth** on POST/PUT/DELETE (highest-priority follow-up).
-- **No create/update endpoints** for `blogs`, `about-me`, `user-social-links` (GET-only) — add if the admin needs to manage them via API.
-- **Duplicate** `/api/categories` ↔ `/api/resource-categories` — consolidate (point the admin at `/api/resource-categories`, then remove `/api/categories`).
+- **Write auth depends on env**: root `middleware.ts` rejects mutations without a matching `x-api-key`, so `ADMIN_API_KEY` must be set in every environment (Vercel included) or the admin panel gets 401s.
 - **No pagination** — list endpoints return all rows; add `?page`/`?limit` if data grows.
 - **Project legacy fields** (`cover`/`link`/`about`/`name`) are mirrored, not yet retired — a future migration can drop them once all readers use the canonical fields.

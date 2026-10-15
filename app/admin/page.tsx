@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchJSON } from "@/lib/request-util";
-import { ResourceType, ProjectType, ExperienceType } from "../components/types/types";
+import { ResourceType, ProjectType, ExperienceType, ResourceCategoryType } from "../components/types/types";
 import {
   ChartContainer,
   ChartTooltip,
@@ -71,7 +71,7 @@ const AdminDashboard = () => {
   const { data: categories = [], isLoading: loadingCategories } = useQuery({
     queryKey: ["resource-categories"],
     queryFn: async () => {
-      const data = await fetchJSON<any[]>("/api/resource-categories");
+      const data = await fetchJSON<ResourceCategoryType[]>("/api/resource-categories");
       return data ?? [];
     },
   });

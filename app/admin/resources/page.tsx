@@ -13,7 +13,7 @@ import DataTable from '@/app/components/dashboard/DataTable';
 import PageHeader from '../components/PageHeader';
 
 const fetchResources = async (): Promise<ResourceType[] | []> => {
-  const data = await fetchJSON<ResourceType[]>("/api/resources") as any;
+  const data = await fetchJSON<ResourceType[]>("/api/resources");
   return data ?? [];
 };
 

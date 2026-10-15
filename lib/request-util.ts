@@ -1,30 +1,12 @@
-import { ProjectType, SocialLinkType } from "../app/components/types/types";
-
-
-
+/**
+ * Client-side JSON fetcher for same-origin `/api/*` routes.
+ *
+ * Always relative: no CORS issues on any domain, no env var needed.
+ * Server Components must NOT use this — they query Prisma directly
+ * via `lib/data.ts` so pages can prerender at build time.
+ */
 export async function fetchJSON<T>(url: string): Promise<T> {
-    let fullUrl: string;
-    if (url.startsWith('http')) {
-        fullUrl = url;
-    } else if (url.startsWith('undefined')) {
-        fullUrl = url.replace(/^undefined/, '/');
-    } else if (typeof window !== "undefined") {
-        // Client: same-origin relative request — avoids CORS entirely
-        // no matter which domain serves the page.
-        fullUrl = url.startsWith('/') ? url : `/${url}`;
-    } else {
-        // Server: absolute URL required (no origin context).
-        const baseUrl = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/+$/, "");
-        if (baseUrl) {
-            fullUrl = `${baseUrl}${url.startsWith('/') ? url : `/${url}`}`;
-        } else if (process.env.VERCEL_URL) {
-            fullUrl = `https://${process.env.VERCEL_URL}${url.startsWith('/') ? url : `/${url}`}`;
-        } else {
-            fullUrl = url;
-        }
-    }
-
-    const response = await fetch(fullUrl, {
+    const response = await fetch(url, {
         method: "GET"
     });
 

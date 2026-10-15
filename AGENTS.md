@@ -32,7 +32,7 @@ npx prisma db seed          # seed (ts-node, requiere DATABASE_URL)
 En `.env.example`. Importantes:
 
 - `DATABASE_URL` — MongoDB (requerida por Prisma).
-- `NEXT_PUBLIC_API_URL` — base para `lib/request-util.ts#fetchJSON` solo en servidor (absolutiza `/api/*`); el cliente pide en relativo same-origin (sin CORS); es **pública**.
+- `ADMIN_API_KEY` + `NEXT_PUBLIC_ADMIN_API_KEY` (mismo valor) — el middleware raíz (`middleware.ts`) exige `x-api-key` en POST/PUT/DELETE; el admin la envía desde el cliente. **Si `ADMIN_API_KEY` no está en Vercel, toda mutación responde 401.**
 - `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`, `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` — uploads directos desde la UI de autoría.
 - `GEMINI_API_KEY` — clave del asistente; **solo server-side**, nunca exponer al cliente.
 - `ASSISTANT_MODEL` (default `gemini-3.8-flash`), `AI_PROVIDER` (`gemini`).
@@ -52,7 +52,7 @@ No existe `API_URL` (sin prefijo público) — docs que la mencionan están mal.
 
 - `parseBody` + zod para validar; `fail`/`serverError` de `lib/api.ts`.
 - Errores: `{ message }` al cliente; nunca exponer detalles internos (stack, provider errors).
-- Slug: usar la versión inline de los routes (`/[^\w\s-]/g`, `/[\s_-]+/g`), NO `lib/slug-util.ts` (bugueada con `\\s` doble).
+- Slug: usar `generateSlug` de `lib/slug-util.ts` (única fuente de verdad).
 - Al crear registros con slug, check de colisión → `409`.
 
 ### Prisma / MongoDB
@@ -107,12 +107,11 @@ prisma/schema.prisma
 ## Flujo de datos (público)
 
 ```
-Server Component page → app/requests/requests.ts (getXxxV2)
-  → lib/request-util.ts#fetchJSON (cache: 'no-store')
-  → HTTP /api/* → Prisma (lib/db.ts) → MongoDB
+Server Component page → lib/data.ts (Prisma directo, prerender en build)
+  → lib/db.ts (singleton) → MongoDB
 ```
 
-Cada load re-hittea la API (sin cache). Mutaciones del cliente van por TanStack Query (`app/providers/tanstack.provider.tsx`).
+Lecturas públicas van directo a Prisma (sin HTTP, prerenderizables). Mutaciones del cliente van por TanStack Query (`app/providers/tanstack.provider.tsx`) contra `/api/*` con header `x-api-key`, protegido por `middleware.ts` raíz (GETs públicos, resto exige `ADMIN_API_KEY`). `lib/request-util.ts#fetchJSON` es solo-cliente (relativo same-origin).
 
 ## Verificación antes de afirmar "listo"
 
