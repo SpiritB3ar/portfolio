@@ -2,7 +2,7 @@ export interface HomeDataType {
     welcomeTitle: string
     welcomeNote: string
     welcomeDescription: string
-    cvFile: string
+    cvFile: string | null
     userImage: string
 }
 
@@ -43,30 +43,30 @@ export interface ProjectType {
     tools: { name: string }[]
     technologies: string[]
     title: string
-    about?: string
-    description?: string
-    cover: string
+    about?: string | null
+    description?: string | null
+    cover: string | null
     coverImage?: string
-    link: string
-    liveUrl?: string
-    githubUrl?: string
-    category?: string
+    link: string | null
+    liveUrl?: string | null
+    githubUrl?: string | null
+    category?: string | null
     slug: string
-    publishedAt?: string
+    publishedAt?: Date | null
 }
 
 export interface BlogType {
     title: string
     cover: string
     link: string
-    createdAt?: string
+    createdAt?: Date
 }
 
 export type ResourceCategoryType = {
     id: string;
     name: string;
     slug: string;
-    description?: string;
+    description?: string | null;
     createdAt: Date;
     updatedAt: Date;
 };
@@ -75,9 +75,9 @@ export type SkillCategoryType = {
     id: string;
     name: string;
     slug: string;
-    description?: string;
-    icon?: string;
-    color?: string;
+    description?: string | null;
+    icon?: string | null;
+    color?: string | null;
     order: number;
     skills?: SkillType[];
     createdAt: Date;
@@ -103,13 +103,13 @@ export type ResourceType = {
     description: string;
     content: string;
     coverImage: string;
-    link?: string;
+    link?: string | null;
     type: 'Article' | 'Video' | 'Ebook' | 'Tutorial' | 'Tool' | 'Case Study';
     category: ResourceCategoryType;
     tags: string[];
     author: string;
     publishedAt: Date;
-    readTimeMinutes?: number;
+    readTimeMinutes?: number | null;
     createdAt: Date;
     updatedAt: Date;
 };
@@ -121,7 +121,7 @@ export type EducationType = {
     field: string;
     slug: string;
     startDate: Date;
-    endDate?: Date;
+    endDate?: Date | null;
     order: number;
     createdAt: Date;
     updatedAt: Date;

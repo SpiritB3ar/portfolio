@@ -1,7 +1,7 @@
 import ExperienceTimeline from '../components/ExperienceTimeline'
 import EducationTimeline from '../components/EducationTimeline'
 import { ExperiencePathProps } from '../components/ExperienceTimeline'
-import { getExperiencesV2, getEducationsV2, getSkillCategoriesV2 } from '../requests/requests'
+import { getExperiences, getEducations, getSkillCategories } from '@/lib/data'
 import { ExperienceTitle } from '../components/ExperienceTitle'
 import { ExperienceIntro } from '../components/ExperienceIntro'
 import { CollapsibleSection } from '../components/CollapsibleSection'
@@ -13,8 +13,8 @@ const Experience = async () => {
     const t = serverT()
     const [experiences, educations, skillCategories] = await Promise.all([
         getExperienceData(),
-        getEducationsV2(),
-        getSkillCategoriesV2()
+        getEducations(),
+        getSkillCategories()
     ]);
 
     const aiCategory = skillCategories?.find(
@@ -57,7 +57,7 @@ const Experience = async () => {
 export default Experience
 
 const getExperienceData = async () => {
-    const results = await getExperiencesV2();
+    const results = await getExperiences();
     const experiences: ExperiencePathProps[] = []
     for (let i of results) {
         const activities: string[] = []
@@ -75,8 +75,8 @@ const getExperienceData = async () => {
             location: i.location,
             technologies: i.technologies,
             activities,
-            startDate: i.start,
-            endDate: i.end
+            startDate: i.startDate,
+            endDate: i.endDate
         })
     }
 

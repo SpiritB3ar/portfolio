@@ -1,11 +1,11 @@
 import React from 'react'
-import { getBlogsV2 } from '../requests/requests'
+import { getBlogs } from '@/lib/data'
 import { BlogsTitle } from '../components/BlogsTitle'
 import { BlogCard } from '../components/BlogCard'
 import { BlogsEmptyState } from '../components/BlogsEmptyState'
 
 const Blog = async () => {
-    const blogs = await getBlogsV2();
+    const blogs = await getBlogs();
 
     return (
         <div className="flex flex-col">

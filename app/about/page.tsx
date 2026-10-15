@@ -1,11 +1,11 @@
 import React from 'react'
 import { AboutType } from '../components/types/types'
-import { getAboutParagraphsV2, getSkillCategoriesV2 } from '../requests/requests'
+import { getAboutParagraphs, getSkillCategories } from '@/lib/data'
 import AboutBody from '../components/AboutBody'
 
 const About = async () => {
-  const paragraphs = await getAboutParagraphsV2()
-  const skillCategories = await getSkillCategoriesV2()
+  const paragraphs = await getAboutParagraphs()
+  const skillCategories = await getSkillCategories()
 
   return (
     <>

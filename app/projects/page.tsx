@@ -1,12 +1,12 @@
 import React from 'react'
 import ProjectCard from '../components/ProjectCard'
-import { getProjectsV2 } from '../requests/requests'
+import { getProjects } from '@/lib/data'
 import { ProjectsHeader } from '../components/ProjectsHeader'
 import { serverT } from '../lib/server-i18n'
 
 const Projects = async () => {
     const t = serverT()
-    const projects = await getProjectsV2()
+    const projects = await getProjects()
 
     // Compute dynamic stats
     const totalProjects = projects?.length || 0;

@@ -1,20 +1,15 @@
 import BodyContent from "./components/BodyContent";
-import {
-  getHomeDataV2,
-  getSocialLinksV2,
-  getProjectsV2,
-  getAboutParagraphsV2,
-} from "./requests/requests";
+import { getHomeData, getSocialLinks, getProjects, getAboutParagraphs } from "@/lib/data";
 import { FeaturedProjects } from "./components/FeaturedProjects";
 import { TechMarquee } from "./components/home/TechMarquee";
 import { AboutTeaser } from "./components/home/AboutTeaser";
 import { ContactCTA } from "./components/home/ContactCTA";
 
 export default async function Home() {
-  const homeData = await getHomeDataV2();
-  const socialLinks = await getSocialLinksV2();
-  const projects = await getProjectsV2();
-  const about = await getAboutParagraphsV2();
+  const homeData = await getHomeData();
+  const socialLinks = await getSocialLinks();
+  const projects = await getProjects();
+  const about = await getAboutParagraphs();
 
   return (
     <>
