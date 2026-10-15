@@ -1,7 +1,7 @@
 "use client"
 import Link from "next/link"
 import { MenuClose, MenuOpen } from "./svgs"
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import { Search } from "lucide-react";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useLanguage } from "../providers/LanguageProvider";
@@ -14,17 +14,19 @@ type HeaderProps = { active: string; onOpenPalette: () => void };
 const Header: React.FC<HeaderProps> = ({ active, onOpenPalette }) => {
     const [menuOpen, setMenuOpen] = useState<boolean>(false);
     const [scrolled, setScrolled] = useState(false);
-    const [isMac, setIsMac] = useState(true);
+    // Client-only platform hint without setState-in-effect or hydration
+    // mismatch (server snapshot defaults to `true`).
+    const isMac = useSyncExternalStore(
+        () => () => {},
+        () => /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent),
+        () => true
+    );
     const { t } = useLanguage();
     const { scrollY } = useScroll();
 
     useMotionValueEvent(scrollY, "change", (latest) => {
         setScrolled(latest > 20);
     });
-
-    useEffect(() => {
-        setIsMac(/Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent));
-    }, []);
 
     // Prevent scrolling when mobile menu is open
     useEffect(() => {

@@ -4,10 +4,11 @@ import { generateSlug } from "@/lib/slug-util";
 import { ok, fail, serverError, parseBody } from "@/lib/api";
 import { skillCategorySchema } from "@/lib/validators";
 
-export async function GET(request: NextRequest, { params }: { params: { slug: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
     try {
         const category = await db.skillCategory.findUnique({
-            where: { slug: params.slug },
+            where: { slug: slug },
             include: { skills: { orderBy: { order: "asc" } } },
         });
         if (!category) return fail(404, "Skill category not found");
@@ -17,20 +18,21 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
     }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { slug: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
     try {
         const parsed = await parseBody(request, skillCategorySchema);
         if ("response" in parsed) return parsed.response;
         const { data } = parsed;
 
         const newSlug = generateSlug(data.name);
-        if (newSlug !== params.slug) {
+        if (newSlug !== slug) {
             const clash = await db.skillCategory.findUnique({ where: { slug: newSlug } });
             if (clash) return fail(409, "Category with this new name already exists");
         }
 
         const updated = await db.skillCategory.update({
-            where: { slug: params.slug },
+            where: { slug: slug },
             data: {
                 name: data.name,
                 slug: newSlug,
@@ -46,10 +48,11 @@ export async function PUT(request: NextRequest, { params }: { params: { slug: st
     }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { slug: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
     try {
         const category = await db.skillCategory.findUnique({
-            where: { slug: params.slug },
+            where: { slug: slug },
             include: { skills: true },
         });
         if (!category) return fail(404, "Category not found");
@@ -57,7 +60,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { slug:
             return fail(409, "Cannot delete category with existing skills. Please delete or reassign the skills first.");
         }
 
-        await db.skillCategory.delete({ where: { slug: params.slug } });
+        await db.skillCategory.delete({ where: { slug: slug } });
         return ok({ message: "Skill category deleted successfully" });
     } catch (error) {
         return serverError(error, "Failed to delete skill category");

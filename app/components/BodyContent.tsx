@@ -1,11 +1,11 @@
 "use client";
 import Image from "next/image";
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { HomeDataType } from "./types/types";
 import { useLanguage } from "../providers/LanguageProvider";
 import { saveAs } from "file-saver";
 import { Download, Sparkles, Loader2, ArrowUpRight } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { toast } from "sonner";
 import { dispatchOpenChat } from "./assistant/chat-events";
 
@@ -19,7 +19,7 @@ const BodyContent = ({ homeData }: ContentType) => {
   const reduce = useReducedMotion();
   const [isDownloading, setIsDownloading] = useState(false);
 
-  const handleDownloadCV = useCallback(async () => {
+  const handleDownloadCV = async () => {
     if (!homeData?.cvFile) return;
 
     setIsDownloading(true);
@@ -36,7 +36,7 @@ const BodyContent = ({ homeData }: ContentType) => {
     } finally {
       setIsDownloading(false);
     }
-  }, [homeData?.cvFile, t]);
+  };
 
   // Split the headline so the final word carries the mint accent.
   const headline = (homeData?.welcomeNote || "").trim();
@@ -44,11 +44,11 @@ const BodyContent = ({ homeData }: ContentType) => {
   const accentWord = parts.length > 1 ? parts.pop() : "";
   const leadWords = parts.join(" ");
 
-  const stagger = {
+  const stagger: Variants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
   };
-  const rise = reduce
+  const rise: Variants = reduce
     ? { hidden: { opacity: 1, y: 0 }, visible: { opacity: 1, y: 0 } }
     : {
         hidden: { opacity: 0, y: 24 },

@@ -1,15 +1,15 @@
 import { cookies, headers } from "next/headers";
 import { getDictionary, Locale } from "./lib/dictionary";
 
-const resolveLocale = (): Locale => {
-    const localeCookie = cookies().get("NEXT_LOCALE")?.value;
+const resolveLocale = async (): Promise<Locale> => {
+    const localeCookie = (await cookies()).get("NEXT_LOCALE")?.value;
     if (localeCookie === "es" || localeCookie === "en") return localeCookie;
-    const acceptLang = headers().get("accept-language") || "";
+    const acceptLang = (await headers()).get("accept-language") || "";
     return acceptLang.startsWith("es") ? "es" : "en";
 };
 
-export default function Loading() {
-    const t = getDictionary(resolveLocale());
+export default async function Loading() {
+    const t = getDictionary(await resolveLocale());
 
     return (
         <div

@@ -5,10 +5,9 @@ import { ZodSchema } from "zod";
  * Shared API response helpers — the single, consistent contract for every
  * route under `app/api/**`.
  *
- * Success responses are returned raw (object/array) so the frontend `getXxxV2`
- * readers keep working unchanged. Error responses are always `{ message }` with
- * the correct status code — the raw `error`/exception is NEVER sent to the
- * client (only `console.error`'d server-side).
+ * Success responses are returned raw (object/array). Error responses are always
+ * `{ message }` with the correct status code — the raw `error`/exception is
+ * NEVER sent to the client (only `console.error`'d server-side).
  */
 
 /** 200 OK with a JSON body. */

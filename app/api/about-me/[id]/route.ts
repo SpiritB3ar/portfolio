@@ -5,10 +5,11 @@ import { aboutSchema } from "@/lib/validators";
 
 const isObjectId = (value: string) => /^[0-9a-fA-F]{24}$/.test(value);
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-    if (!isObjectId(params.id)) return fail(400, "Invalid about paragraph id");
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+    if (!isObjectId(id)) return fail(400, "Invalid about paragraph id");
     try {
-        const paragraph = await db.aboutContent.findUnique({ where: { id: params.id } });
+        const paragraph = await db.aboutContent.findUnique({ where: { id: id } });
         if (!paragraph) return fail(404, "About paragraph not found");
         return ok(paragraph);
     } catch (error) {
@@ -16,18 +17,19 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
-    if (!isObjectId(params.id)) return fail(400, "Invalid about paragraph id");
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+    if (!isObjectId(id)) return fail(400, "Invalid about paragraph id");
     try {
         const parsed = await parseBody(request, aboutSchema);
         if ("response" in parsed) return parsed.response;
         const { data } = parsed;
 
-        const current = await db.aboutContent.findUnique({ where: { id: params.id } });
+        const current = await db.aboutContent.findUnique({ where: { id: id } });
         if (!current) return fail(404, "About paragraph not found");
 
         const updated = await db.aboutContent.update({
-            where: { id: params.id },
+            where: { id: id },
             data: { paragraph: data.paragraph },
         });
         return ok(updated);
@@ -36,13 +38,14 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
-    if (!isObjectId(params.id)) return fail(400, "Invalid about paragraph id");
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+    if (!isObjectId(id)) return fail(400, "Invalid about paragraph id");
     try {
-        const paragraph = await db.aboutContent.findUnique({ where: { id: params.id } });
+        const paragraph = await db.aboutContent.findUnique({ where: { id: id } });
         if (!paragraph) return fail(404, "About paragraph not found");
 
-        await db.aboutContent.delete({ where: { id: params.id } });
+        await db.aboutContent.delete({ where: { id: id } });
         return ok({ message: "About paragraph deleted successfully" });
     } catch (error) {
         return serverError(error, "Failed to delete about paragraph");

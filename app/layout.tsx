@@ -23,12 +23,12 @@ export const metadata: Metadata = {
   description: "dranzr — building modern digital products and experiences.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const localeCookie = cookieStore.get('NEXT_LOCALE')?.value;
   
   let initialLang: Locale = 'en'; // Default to English ("Rest of world")
@@ -36,7 +36,7 @@ export default function RootLayout({
   if (localeCookie && (localeCookie === 'es' || localeCookie === 'en')) {
      initialLang = localeCookie as Locale;
   } else {
-     const headersList = headers();
+     const headersList = await headers();
      const acceptLang = headersList.get('accept-language') || '';
      if (acceptLang.startsWith('es')) {
         initialLang = 'es'; // Spanish for LatAm/Spanish speakers

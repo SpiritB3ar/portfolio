@@ -4,7 +4,7 @@ import { AboutType, SkillCategoryType } from './types/types';
 import Skillbar from './Skillbar';
 import { Mail, MapPin, Briefcase, Calendar, Code2, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../providers/LanguageProvider';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { PageHeader } from './PageHeader';
 
 interface ContentType {
@@ -16,12 +16,12 @@ const AboutBody = ({ paragraphs, skillCategories }: ContentType) => {
     const { t } = useLanguage();
     const reduce = useReducedMotion();
 
-    const fade = {
+    const fade: Variants = {
         hidden: { opacity: 0, y: reduce ? 0 : 24 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.21, 0.6, 0.35, 1] } }
     };
 
-    const stagger = {
+    const stagger: Variants = {
         hidden: { opacity: 0 },
         visible: { opacity: 1, transition: { staggerChildren: 0.12 } }
     };

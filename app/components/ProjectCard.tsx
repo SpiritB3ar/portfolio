@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react";
-import { ExternalLink, Code2, X, Github, Calendar, Folder } from "lucide-react";
+import { ExternalLink, Code2, X, Calendar, Folder } from "lucide-react";
+import { GithubIcon } from "./BrandIcons";
 import { ProjectType } from "./types/types";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Image from "next/image";
@@ -102,7 +103,7 @@ const ProjectCard = ({ project, index = 0, isNew = false, featured = false }: { 
                                 className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors duration-200 hover:border-brand-green hover:text-brand-green hover:bg-brand-green/10 pressable active:scale-90"
                                 aria-label="GitHub"
                             >
-                                <Github className="h-4 w-4" />
+                                <GithubIcon className="h-4 w-4" />
                             </a>
                         )}
                         {href !== "#" && (

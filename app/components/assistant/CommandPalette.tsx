@@ -37,12 +37,22 @@ export default function CommandPalette({ open, onOpen, onClose }: Props) {
         return () => window.removeEventListener("keydown", onKey);
     }, [open, onOpen, onClose]);
 
-    useEffect(() => {
+    // Reset transient palette state when it opens. Done during render (the
+    // documented pattern for resetting state on prop change) instead of an
+    // effect to avoid a cascading re-render.
+    const [prevOpen, setPrevOpen] = useState(open);
+    if (prevOpen !== open) {
+        setPrevOpen(open);
         if (open) {
             setQuery("");
             setActive(0);
             setAnswer(null);
             setAsking(false);
+        }
+    }
+
+    useEffect(() => {
+        if (open) {
             askIdRef.current++;
             requestAnimationFrame(() => inputRef.current?.focus());
         }

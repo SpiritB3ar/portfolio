@@ -1,47 +1,12 @@
 "use client"
 import { motion } from "framer-motion";
 import { Moon, Sun } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useLanguage } from "../providers/LanguageProvider";
+import { useTheme } from "../providers/ThemeProvider";
 
 export const ThemeToggle = () => {
-    const [theme, setTheme] = useState<'light' | 'dark'>('dark');
-    const [mounted, setMounted] = useState(false);
+    const { theme, toggleTheme, mounted } = useTheme();
     const { t } = useLanguage();
-
-    useEffect(() => {
-        // Check localStorage or system preference
-        const savedTheme = localStorage.getItem('theme') as 'light' | 'dark';
-        let initialTheme: 'light' | 'dark';
-        
-        if (savedTheme) {
-            initialTheme = savedTheme;
-        } else {
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            initialTheme = prefersDark ? 'dark' : 'light';
-        }
-        
-        setTheme(initialTheme);
-        // Apply theme immediately
-        if (initialTheme === 'dark') {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-        setMounted(true);
-    }, []);
-
-    const toggleTheme = () => {
-        const newTheme = theme === 'light' ? 'dark' : 'light';
-        setTheme(newTheme);
-        localStorage.setItem('theme', newTheme);
-        
-        if (newTheme === 'dark') {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    };
 
     if (!mounted) {
         return <div className="w-12 h-12" />; // Placeholder to prevent layout shift

@@ -1,45 +1,18 @@
 "use client";
 
 import { Toaster as Sonner } from "sonner";
-import { useEffect, useState } from "react";
+import { useTheme } from "../../providers/ThemeProvider";
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const [mounted, setMounted] = useState(false);
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
-
-  useEffect(() => {
-    setMounted(true);
-
-    // Read theme from localStorage or system preference
-    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
-    if (savedTheme) {
-      setTheme(savedTheme);
-    } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setTheme(prefersDark ? 'dark' : 'light');
-    }
-
-    // Listen for theme changes
-    const observer = new MutationObserver(() => {
-      const isDark = document.documentElement.classList.contains('dark');
-      setTheme(isDark ? 'dark' : 'light');
-    });
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
-
-    return () => observer.disconnect();
-  }, []);
+  const { theme, mounted } = useTheme();
 
   if (!mounted) return null;
 
   return (
     <Sonner
-      theme={theme as ToasterProps["theme"]}
+      theme={theme}
       className="toaster group"
       toastOptions={{
         classNames: {

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Next.js 14 (App Router) portfolio site with server-rendered public pages, a content-management UI, multilingual content (English/Spanish), and a MongoDB-backed Prisma data layer. Surfaces: Home, About, Experience, Projects, Blogs, Resources, Skills — plus an authoring UI for each.
+Next.js 16 (App Router, React 19) portfolio site with server-rendered public pages, a content-management UI, multilingual content (English/Spanish), and a MongoDB-backed Prisma data layer. Surfaces: Home, About, Experience, Projects, Blogs, Resources, Skills — plus an authoring UI for each.
 
 ## Development Commands
 
@@ -12,7 +12,7 @@ Next.js 14 (App Router) portfolio site with server-rendered public pages, a cont
 npm run dev                 # Next dev server (default: http://localhost:3000)
 npm run build               # Production build
 npm start                   # Run the built app
-npm run lint                # next lint (eslint-config-next)
+npm run lint                # eslint . (flat config, eslint-config-next)
 
 npx prisma generate         # Regenerate Prisma client
 npx prisma db push          # Sync schema.prisma to MongoDB (no migrations — Mongo provider)
@@ -29,7 +29,7 @@ Node.js >= 24.0.0 is required (`package.json` engines).
 Defined in `.env.example`:
 
 - `DATABASE_URL` — MongoDB connection string (required by Prisma)
-- `ADMIN_API_KEY` + `NEXT_PUBLIC_ADMIN_API_KEY` (same value) — root `middleware.ts` requires the `x-api-key` header on POST/PUT/DELETE; the admin UI sends it from the client. **If `ADMIN_API_KEY` is missing in Vercel, every mutation returns 401.**
+- `ADMIN_API_KEY` + `NEXT_PUBLIC_ADMIN_API_KEY` (same value) — root `proxy.ts` requires the `x-api-key` header on POST/PUT/DELETE; the admin UI sends it from the client. **If `ADMIN_API_KEY` is missing in Vercel, every mutation returns 401.**
 - `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`, `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` — used by `next-cloudinary` for direct uploads from the authoring UI.
 
 There is no `API_URL` (non-public) variable — earlier docs that referenced one are wrong.
@@ -54,7 +54,7 @@ Server Component page  ──►  lib/data.ts   (direct Prisma, prerendered at b
                                  MongoDB
 ```
 
-Public pages query Prisma directly through `lib/data.ts` so they prerender with real content at build time (no HTTP self-fetch). Client-side reads/mutations go through TanStack Query (`@tanstack/react-query`) against same-origin `/api/*` via `lib/request-util.ts#fetchJSON` (client-only, relative URLs). Mutations require the `x-api-key` header, enforced by root `middleware.ts` (GETs stay public).
+Public pages query Prisma directly through `lib/data.ts` so they prerender with real content at build time (no HTTP self-fetch). Client-side reads/mutations go through TanStack Query (`@tanstack/react-query`) against same-origin `/api/*` via `lib/request-util.ts#fetchJSON` (client-only, relative URLs). Mutations require the `x-api-key` header, enforced by root `proxy.ts` (GETs stay public).
 
 **Prisma client singleton** (`lib/db.ts`): exported as default `db`. Always import from `lib/db.ts` rather than instantiating `new PrismaClient()` — the singleton pattern under `globalThis.prisma` prevents connection-pool exhaustion in dev with hot reload.
 
@@ -105,7 +105,7 @@ Tailwind CSS + custom configuration. Fonts loaded via `next/font/google`: `Poire
 1. Model in `prisma/schema.prisma` (add `slug @unique` if user-facing).
 2. `app/api/<name>/route.ts` (GET, POST) and `app/api/<name>/[slug]/route.ts` (GET, PUT, DELETE).
 3. Type in `app/components/types/types.ts`.
-4. Reader in `app/requests/requests.ts` as `getXxxV2`.
+4. Reader in `lib/data.ts` (direct Prisma query).
 5. Public page in `app/<name>/page.tsx` (Server Component).
 6. Admin page in `app/admin/<name>/page.tsx` + `app/admin/components/<Name>Form.tsx`.
 7. Add a sidebar link in `app/admin/components/AdminSidebar.tsx`.

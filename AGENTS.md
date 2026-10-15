@@ -4,7 +4,7 @@ Guía para agentes de IA (Claude Code, opencode, Cursor, etc.) que trabajen en e
 
 ## Qué es este proyecto
 
-Portfolio personal Next.js 14 (App Router) con:
+Portfolio personal Next.js 16 (App Router, React 19) con:
 
 - Render público server-side (Home, About, Experience, Projects, Blogs, Resources).
 - UI de autoría/admin (`/admin`).
@@ -16,7 +16,7 @@ Portfolio personal Next.js 14 (App Router) con:
 ```bash
 npm run dev                 # dev server (http://localhost:3000)
 npm run build               # build producción
-npm run lint                # next lint
+npm run lint                # eslint . (flat config)
 npx tsc --noEmit            # typecheck (NO hay `npm run typecheck`)
 npx prisma generate         # regenerar cliente Prisma
 npx prisma db push          # sync schema.prisma → MongoDB (sin migraciones)
@@ -32,7 +32,7 @@ npx prisma db seed          # seed (ts-node, requiere DATABASE_URL)
 En `.env.example`. Importantes:
 
 - `DATABASE_URL` — MongoDB (requerida por Prisma).
-- `ADMIN_API_KEY` + `NEXT_PUBLIC_ADMIN_API_KEY` (mismo valor) — el middleware raíz (`middleware.ts`) exige `x-api-key` en POST/PUT/DELETE; el admin la envía desde el cliente. **Si `ADMIN_API_KEY` no está en Vercel, toda mutación responde 401.**
+- `ADMIN_API_KEY` + `NEXT_PUBLIC_ADMIN_API_KEY` (mismo valor) — el proxy raíz (`proxy.ts`, `export function proxy`) exige `x-api-key` en POST/PUT/DELETE; el admin la envía desde el cliente. **Si `ADMIN_API_KEY` no está en Vercel, toda mutación responde 401.**
 - `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`, `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` — uploads directos desde la UI de autoría.
 - `GEMINI_API_KEY` — clave del asistente; **solo server-side**, nunca exponer al cliente.
 - `ASSISTANT_MODEL` (default `gemini-3.8-flash`), `AI_PROVIDER` (`gemini`).
@@ -57,7 +57,8 @@ No existe `API_URL` (sin prefijo público) — docs que la mencionan están mal.
 
 ### Prisma / MongoDB
 
-- Provider MongoDB: solo `db push` (no hay migraciones SQL).
+- Provider MongoDB: solo `db push` (no hay migraciones SQL). **Prisma pineado en 6.x — v7 no tiene conector MongoDB, no actualizar.**
+- `params` de routes dinámicos y `cookies()`/`headers()` son async: siempre `await`.
 - Siempre importar Prisma desde `lib/db.ts` (singleton) — nunca `new PrismaClient()` en módulos.
 - `Project` ↔ `ProjectTool` es many-to-many vía arrays `String[] @db.ObjectId` (`toolIDs`/`projectIDs`), estilo Mongo.
 
@@ -96,9 +97,9 @@ app/
     types/types.ts          # tipos compartidos — actualizar al cambiar modelos/respuestas
   api/assistant/route.ts    # endpoint del asistente
   lib/dictionary.ts         # i18n en/es
-  requests/requests.ts      # getXxxV2 (fetch a /api/* con cache: 'no-store')
 lib/
   ai/                       # gemini.ts, provider.ts, profile-context.ts, rate-limit.ts
+  data.ts                   # lecturas server (Prisma directo, prerender)
   db.ts                     # singleton Prisma
   validators.ts             # zod schemas (assistantSchema, etc.)
 prisma/schema.prisma
@@ -111,7 +112,7 @@ Server Component page → lib/data.ts (Prisma directo, prerender en build)
   → lib/db.ts (singleton) → MongoDB
 ```
 
-Lecturas públicas van directo a Prisma (sin HTTP, prerenderizables). Mutaciones del cliente van por TanStack Query (`app/providers/tanstack.provider.tsx`) contra `/api/*` con header `x-api-key`, protegido por `middleware.ts` raíz (GETs públicos, resto exige `ADMIN_API_KEY`). `lib/request-util.ts#fetchJSON` es solo-cliente (relativo same-origin).
+Lecturas públicas van directo a Prisma (sin HTTP, prerenderizables). Mutaciones del cliente van por TanStack Query (`app/providers/tanstack.provider.tsx`) contra `/api/*` con header `x-api-key`, protegido por `proxy.ts` raíz (GETs públicos, resto exige `ADMIN_API_KEY`). `lib/request-util.ts#fetchJSON` es solo-cliente (relativo same-origin).
 
 ## Verificación antes de afirmar "listo"
 

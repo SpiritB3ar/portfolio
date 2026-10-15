@@ -5,10 +5,11 @@ import { socialLinkSchema } from "@/lib/validators";
 
 const isObjectId = (value: string) => /^[0-9a-fA-F]{24}$/.test(value);
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-    if (!isObjectId(params.id)) return fail(400, "Invalid social link id");
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+    if (!isObjectId(id)) return fail(400, "Invalid social link id");
     try {
-        const link = await db.userSocialLink.findUnique({ where: { id: params.id } });
+        const link = await db.userSocialLink.findUnique({ where: { id: id } });
         if (!link) return fail(404, "Social link not found");
         return ok(link);
     } catch (error) {
@@ -16,14 +17,15 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
-    if (!isObjectId(params.id)) return fail(400, "Invalid social link id");
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+    if (!isObjectId(id)) return fail(400, "Invalid social link id");
     try {
         const parsed = await parseBody(request, socialLinkSchema);
         if ("response" in parsed) return parsed.response;
         const { data } = parsed;
 
-        const current = await db.userSocialLink.findUnique({ where: { id: params.id } });
+        const current = await db.userSocialLink.findUnique({ where: { id: id } });
         if (!current) return fail(404, "Social link not found");
 
         if (data.name !== current.name) {
@@ -32,7 +34,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
         }
 
         const updated = await db.userSocialLink.update({
-            where: { id: params.id },
+            where: { id: id },
             data: { name: data.name, link: data.link, icon: data.icon },
         });
         return ok(updated);
@@ -41,13 +43,14 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
-    if (!isObjectId(params.id)) return fail(400, "Invalid social link id");
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+    if (!isObjectId(id)) return fail(400, "Invalid social link id");
     try {
-        const link = await db.userSocialLink.findUnique({ where: { id: params.id } });
+        const link = await db.userSocialLink.findUnique({ where: { id: id } });
         if (!link) return fail(404, "Social link not found");
 
-        await db.userSocialLink.delete({ where: { id: params.id } });
+        await db.userSocialLink.delete({ where: { id: id } });
         return ok({ message: "Social link deleted successfully" });
     } catch (error) {
         return serverError(error, "Failed to delete social link");

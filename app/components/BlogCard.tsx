@@ -50,7 +50,9 @@ export const BlogCard = ({ blog }: { blog: BlogType }) => {
                     <div className="flex items-center gap-4 font-mono text-[11px] text-white/70">
                         <div className="flex items-center gap-2">
                             <Calendar className="h-3.5 w-3.5" />
-                            <span>{new Date(blog.createdAt || Date.now()).toLocaleDateString()}</span>
+                            {blog.createdAt && (
+                                <span>{new Date(blog.createdAt).toLocaleDateString()}</span>
+                            )}
                         </div>
                         <div className="flex items-center gap-2">
                             <Clock className="h-3.5 w-3.5" />

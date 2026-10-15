@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 // prerender; POST/PUT/DELETE require the x-api-key header to match
 // ADMIN_API_KEY (must be set in the environment — otherwise every
 // mutation is rejected with 401).
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
     if (req.method === 'GET') {
         return NextResponse.next();
     }

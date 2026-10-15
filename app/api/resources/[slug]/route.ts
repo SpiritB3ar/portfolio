@@ -4,10 +4,11 @@ import { generateSlug } from "@/lib/slug-util";
 import { ok, fail, serverError, parseBody } from "@/lib/api";
 import { resourceSchema, toList } from "@/lib/validators";
 
-export async function GET(request: NextRequest, { params }: { params: { slug: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
     try {
         const resource = await db.resource.findUnique({
-            where: { slug: params.slug },
+            where: { slug: slug },
             include: { category: true },
         });
         if (!resource) return fail(404, "Resource not found");
@@ -17,20 +18,21 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
     }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { slug: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
     try {
         const parsed = await parseBody(request, resourceSchema);
         if ("response" in parsed) return parsed.response;
         const { data } = parsed;
 
         const newSlug = generateSlug(data.title);
-        if (newSlug !== params.slug) {
+        if (newSlug !== slug) {
             const clash = await db.resource.findUnique({ where: { slug: newSlug } });
             if (clash) return fail(409, "Resource with this new title already exists");
         }
 
         const updated = await db.resource.update({
-            where: { slug: params.slug },
+            where: { slug: slug },
             data: {
                 title: data.title,
                 slug: newSlug,
@@ -52,9 +54,10 @@ export async function PUT(request: NextRequest, { params }: { params: { slug: st
     }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { slug: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
     try {
-        await db.resource.delete({ where: { slug: params.slug } });
+        await db.resource.delete({ where: { slug: slug } });
         return ok({ message: "Resource deleted successfully" });
     } catch (error) {
         return serverError(error, "Failed to delete resource");

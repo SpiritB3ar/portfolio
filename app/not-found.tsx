@@ -2,15 +2,15 @@ import Link from "next/link";
 import { cookies, headers } from "next/headers";
 import { getDictionary, Locale } from "./lib/dictionary";
 
-const resolveLocale = (): Locale => {
-    const localeCookie = cookies().get("NEXT_LOCALE")?.value;
+const resolveLocale = async (): Promise<Locale> => {
+    const localeCookie = (await cookies()).get("NEXT_LOCALE")?.value;
     if (localeCookie === "es" || localeCookie === "en") return localeCookie;
-    const acceptLang = headers().get("accept-language") || "";
+    const acceptLang = (await headers()).get("accept-language") || "";
     return acceptLang.startsWith("es") ? "es" : "en";
 };
 
-export default function NotFound() {
-    const t = getDictionary(resolveLocale());
+export default async function NotFound() {
+    const t = getDictionary(await resolveLocale());
 
     return (
         <section className="relative z-10 flex min-h-[60dvh] flex-col items-center justify-center gap-5 py-24 text-center">

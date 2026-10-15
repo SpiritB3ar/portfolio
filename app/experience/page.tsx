@@ -10,7 +10,7 @@ import { serverT } from '../lib/server-i18n'
 const AI_CATEGORY_SLUG = 'ai-machine-learning'
 
 const Experience = async () => {
-    const t = serverT()
+    const t = await serverT()
     const [experiences, educations, skillCategories] = await Promise.all([
         getExperienceData(),
         getEducations(),

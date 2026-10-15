@@ -5,7 +5,7 @@ import { ProjectsHeader } from '../components/ProjectsHeader'
 import { serverT } from '../lib/server-i18n'
 
 const Projects = async () => {
-    const t = serverT()
+    const t = await serverT()
     const projects = await getProjects()
 
     // Compute dynamic stats

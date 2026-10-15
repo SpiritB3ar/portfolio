@@ -1,7 +1,7 @@
 # API Integration Guide (Frontend)
 
 Authoritative reference for consuming the portfolio backend (`app/api/**`). The
-API is a set of Next.js 14 App Router route handlers backed by Prisma +
+API is a set of Next.js 16 App Router route handlers backed by Prisma +
 MongoDB. All endpoints accept/return **JSON**.
 
 > Generated alongside the backend standardization pass. If a route's behavior
@@ -14,7 +14,7 @@ MongoDB. All endpoints accept/return **JSON**.
 | Var | Purpose | Default |
 | --- | --- | --- |
 | `DATABASE_URL` | MongoDB connection string (Prisma). Server-only. | — |
-| `ADMIN_API_KEY` / `NEXT_PUBLIC_ADMIN_API_KEY` (same value) | `x-api-key` header required by root `middleware.ts` on POST/PUT/DELETE. | — |
+| `ADMIN_API_KEY` / `NEXT_PUBLIC_ADMIN_API_KEY` (same value) | `x-api-key` header required by root `proxy.ts` on POST/PUT/DELETE. | — |
 | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` / `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` | Direct image uploads from the authoring UI. | — |
 
 All endpoints live under `<base>/api/...`.
@@ -252,6 +252,6 @@ curl http://localhost:3000/api/projects/does-not-exist
 
 ## 8. Known gaps / TODO
 
-- **Write auth depends on env**: root `middleware.ts` rejects mutations without a matching `x-api-key`, so `ADMIN_API_KEY` must be set in every environment (Vercel included) or the admin panel gets 401s.
+- **Write auth depends on env**: root `proxy.ts` rejects mutations without a matching `x-api-key`, so `ADMIN_API_KEY` must be set in every environment (Vercel included) or the admin panel gets 401s.
 - **No pagination** — list endpoints return all rows; add `?page`/`?limit` if data grows.
 - **Project legacy fields** (`cover`/`link`/`about`/`name`) are mirrored, not yet retired — a future migration can drop them once all readers use the canonical fields.
