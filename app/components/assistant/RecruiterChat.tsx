@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { MessageCircle, Send, X, RotateCcw, Trash2, Mic, Volume2, VolumeX } from "lucide-react";
+import { Bot, Send, X, RotateCcw, Trash2, Mic, Volume2, VolumeX, GraduationCap } from "lucide-react";
 import { useLanguage } from "@/app/providers/LanguageProvider";
 import type { AssistantChatMessage, AssistantReply } from "@/app/components/types/types";
+import type { AssistantMode } from "@/lib/ai/types";
 import { listenOpenChat } from "./chat-events";
 import { useVoice } from "./useVoice";
 
@@ -75,6 +76,57 @@ function renderMessage(content: string): ReactNode[] {
 
 export { renderMessage };
 
+export async function askAssistantStream(
+    messages: AssistantChatMessage[],
+    lang: "en" | "es",
+    mode: AssistantMode,
+    onDelta: (fullText: string) => void
+): Promise<string> {
+    const res = await fetch("/api/assistant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: messages.slice(-MAX_HISTORY), lang, mode, stream: true }),
+    });
+    if (!res.ok || !res.body) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(typeof body?.message === "string" ? body.message : `HTTP ${res.status}`);
+    }
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let full = "";
+    let buf = "";
+    for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        let idx: number;
+        while ((idx = buf.indexOf("\n\n")) >= 0) {
+            const line = buf.slice(0, idx).trim();
+            buf = buf.slice(idx + 2);
+            if (!line.startsWith("data:")) continue;
+            const payload = line.slice(5).trim();
+            if (payload === "[DONE]") {
+                try {
+                    await reader.cancel();
+                } catch {}
+                return full;
+            }
+            try {
+                const evt = JSON.parse(payload) as { delta?: string; error?: string };
+                if (evt.error) throw new Error("upstream");
+                if (evt.delta) {
+                    full += evt.delta;
+                    onDelta(full);
+                }
+            } catch (e) {
+                if (e instanceof Error && e.message === "upstream") throw e;
+                // Ignore malformed frames; the stream continues.
+            }
+        }
+    }
+    return full;
+}
+
 export async function askAssistant(
     messages: AssistantChatMessage[],
     lang: "en" | "es"
@@ -130,6 +182,21 @@ export default function RecruiterChat() {
     const [failedQuery, setFailedQuery] = useState<string | null>(null);
     const voice = useVoice(lang);
     const { speakOn, speak } = voice;
+    // First-visit discovery: ping ring + proactive teaser bubble. Mounted-only
+    // localStorage read (no SSR/hydration mismatch, no setState-in-effect).
+    const seenAssistant = useSyncExternalStore(
+        () => () => {},
+        () => localStorage.getItem("assistant-seen") === "1",
+        () => true
+    );
+    const [tease, setTease] = useState(false);
+
+    const markSeen = () => {
+        try {
+            localStorage.setItem("assistant-seen", "1");
+        } catch {}
+        setTease(false);
+    };
     const bottomRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -148,6 +215,7 @@ export default function RecruiterChat() {
     useEffect(
         () =>
             listenOpenChat((seed) => {
+                markSeen();
                 setOpen(true);
                 if (seed && seed.length > 0) {
                     setMessages((prev) => [...prev, ...seed].slice(-MAX_HISTORY));
@@ -156,19 +224,30 @@ export default function RecruiterChat() {
         []
     );
 
-    // Lee en voz alta la última respuesta cuando el modo voz está activo.
+    // Burbuja proactiva unos segundos después de llegar (solo primera visita).
     useEffect(() => {
-        if (!speakOn || !open) return;
+        if (seenAssistant) return;
+        const id = setTimeout(() => setTease(true), 6000);
+        return () => clearTimeout(id);
+    }, [seenAssistant]);
+
+    // Lee en voz alta la última respuesta cuando el modo voz está activo.
+    // Se omite mientras carga para no releer cada token del streaming.
+    useEffect(() => {
+        if (!speakOn || !open || loading) return;
         const last = messages[messages.length - 1];
-        if (last?.role === "assistant") speak(last.content);
-    }, [messages, open, speakOn, speak]);
+        if (last?.role === "assistant" && last.content) speak(last.content);
+    }, [messages, open, speakOn, speak, loading]);
 
     // Corta la voz al cerrar el dock.
     useEffect(() => {
         if (!open && typeof window !== "undefined") window.speechSynthesis?.cancel();
     }, [open ]);
 
-    const send = async (text?: string) => {
+    const [mode, setMode] = useState<AssistantMode>("chat");
+
+    const send = async (text?: string, overrideMode?: AssistantMode) => {
+        const activeMode = overrideMode ?? mode;
         const content = (text ?? input).trim();
         if (!content || loading) return;
         const next: AssistantChatMessage[] = [...messages, { role: "user" as const, content }].slice(-MAX_HISTORY);
@@ -176,17 +255,38 @@ export default function RecruiterChat() {
         setInput("");
         setFailedQuery(null);
         setLoading(true);
+        // Placeholder que el streaming va rellenando token a token.
+        setMessages((prev): AssistantChatMessage[] =>
+            [...prev, { role: "assistant" as const, content: "" }].slice(-MAX_HISTORY)
+        );
         try {
-            const reply = await askAssistant(next, lang);
-            setMessages((prev): AssistantChatMessage[] => [...prev, { role: "assistant" as const, content: reply }].slice(-MAX_HISTORY));
+            const full = await askAssistantStream(next, lang, activeMode, (partial) => {
+                setMessages((prev): AssistantChatMessage[] => {
+                    const copy = [...prev];
+                    copy[copy.length - 1] = { role: "assistant" as const, content: partial };
+                    return copy;
+                });
+            });
+            if (!full.trim()) throw new Error("empty");
         } catch {
             setFailedQuery(content);
             setMessages((prev): AssistantChatMessage[] =>
-                [...prev, { role: "assistant" as const, content: t.assistant.unavailable }].slice(-MAX_HISTORY)
+                [...prev.slice(0, -1), { role: "assistant" as const, content: t.assistant.unavailable }].slice(
+                    -MAX_HISTORY
+                )
             );
         } finally {
             setLoading(false);
         }
+    };
+
+    const toggleInterview = () => {
+        if (mode === "interview") {
+            setMode("chat");
+            return;
+        }
+        setMode("interview");
+        void send(t.assistant.interviewStart, "interview");
     };
 
     const clearConversation = () => {
@@ -209,6 +309,18 @@ export default function RecruiterChat() {
                             </p>
                         </div>
                         <div className="flex items-center gap-1">
+                            <button
+                                aria-label={t.assistant.interview}
+                                title={t.assistant.interview}
+                                onClick={toggleInterview}
+                                className={`rounded-full p-1.5 transition-colors hover:bg-muted ${
+                                    mode === "interview"
+                                        ? "text-brand-medium dark:text-brand-green"
+                                        : "text-muted-foreground hover:text-foreground"
+                                }`}
+                            >
+                                <GraduationCap size={16} />
+                            </button>
                             <button
                                 aria-label={t.assistant.readAloud}
                                 title={t.assistant.readAloud}
@@ -240,7 +352,17 @@ export default function RecruiterChat() {
                     </div>
 
                     <div className="flex-1 overflow-x-hidden overflow-y-auto px-4 py-3 space-y-3">
-                        {messages.map((m, i) => (
+                        {mode === "interview" && (
+                            <div className="flex justify-center">
+                                <span className="rounded-full border border-brand-green/30 bg-brand-green/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-brand-medium dark:text-brand-green">
+                                    {t.assistant.interviewActive}
+                                </span>
+                            </div>
+                        )}
+                        {messages.map((m, i) => {
+                            // Oculta el placeholder vacío mientras llega el primer token.
+                            if (m.role === "assistant" && !m.content) return null;
+                            return (
                             <div key={i} className={`flex min-w-0 ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                                 <div
                                     className={`min-w-0 max-w-[88%] break-words rounded-2xl px-3 py-2 text-sm leading-relaxed [overflow-wrap:anywhere] ${
@@ -252,7 +374,8 @@ export default function RecruiterChat() {
                                     {m.role === "assistant" ? renderMessage(m.content) : m.content}
                                 </div>
                             </div>
-                        ))}
+                            );
+                        })}
                         {loading && (
                             <div className="flex justify-start">
                                 <div className="rounded-2xl bg-muted px-3 py-2 text-sm text-muted-foreground">
@@ -340,12 +463,48 @@ export default function RecruiterChat() {
                 </div>
             )}
 
+            {!open && tease && (
+                <div className="w-[calc(100vw-2rem)] max-w-xs rounded-2xl border border-border bg-popover p-4 shadow-2xl">
+                    <div className="flex items-start justify-between gap-2">
+                        <p className="text-sm font-medium leading-snug text-foreground">
+                            {t.assistant.tease}
+                        </p>
+                        <button
+                            aria-label={t.assistant.close}
+                            onClick={markSeen}
+                            className="rounded-full p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                        >
+                            <X size={14} />
+                        </button>
+                    </div>
+                    <button
+                        onClick={() => {
+                            markSeen();
+                            setOpen(true);
+                        }}
+                        className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-medium dark:text-background pressable active:scale-[0.98]"
+                    >
+                        <Bot size={16} />
+                        {t.assistant.teaseCta}
+                    </button>
+                </div>
+            )}
+
             <button
                 aria-label={open ? t.assistant.close : t.assistant.open}
-                onClick={() => setOpen((v) => !v)}
-                className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-green text-white shadow-xl transition-colors hover:bg-brand-medium dark:text-background pressable active:scale-90"
+                onClick={() => {
+                    markSeen();
+                    setOpen((v) => !v);
+                }}
+                className="relative flex h-14 w-14 items-center justify-center rounded-full bg-brand-green text-white shadow-xl transition-colors hover:bg-brand-medium dark:text-background pressable active:scale-90"
             >
-                {open ? <X size={22} /> : <MessageCircle size={22} />}
+                {!seenAssistant && !open && (
+                    <span
+                        aria-hidden
+                        className="absolute inset-0 animate-ping rounded-full bg-brand-green/40 motion-reduce:hidden"
+                    />
+                )}
+                {open ? <X size={24} /> : <Bot size={26} />}
             </button>
         </div>
     );

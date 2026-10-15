@@ -13,10 +13,15 @@ export interface ChatMessage {
 
 export type AssistantLang = "en" | "es";
 
+/** Conversation mode: free Q&A or mock technical interview. */
+export type AssistantMode = "chat" | "interview";
+
 /** POST /api/assistant request body. */
 export interface AssistantRequest {
     messages: ChatMessage[];
     lang: AssistantLang;
+    stream?: boolean;
+    mode?: AssistantMode;
 }
 
 /** POST /api/assistant success body. `cached` is true when the reply
@@ -35,4 +40,6 @@ export interface AIProvider {
      *  when a fallback model was used). Set on success, undefined before. */
     usedModelId?: string;
     chat(messages: ChatMessage[]): Promise<string>;
+    /** Token streaming (optional). Falls back to `chat` when absent. */
+    stream?(messages: ChatMessage[]): AsyncIterable<string>;
 }

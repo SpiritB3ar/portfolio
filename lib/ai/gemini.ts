@@ -78,6 +78,7 @@ export class GeminiProvider implements AIProvider {
     }
 
     async chat(messages: ChatMessage[]): Promise<string> {
+
         const system = messages.find((m) => m.role === "system")?.content;
         const history = messages.filter((m) => m.role !== "system");
 
@@ -140,5 +141,36 @@ export class GeminiProvider implements AIProvider {
         throw lastError instanceof Error
             ? lastError
             : new Error("Assistant request failed after retries");
+    }
+
+    /**
+     * Token streaming (primary model only — no fallback chain mid-stream).
+     * Yields RAW chunk text; the caller concatenates. Throws before the
+     * first chunk on failure so the route can answer 500/503 instead.
+     */
+    async *stream(messages: ChatMessage[]): AsyncIterable<string> {
+        const system = messages.find((m) => m.role === "system")?.content;
+        const history = messages.filter((m) => m.role !== "system");
+
+        const contents = history.map((m) => ({
+            role: m.role === "assistant" ? "model" : "user",
+            parts: [{ text: m.content }],
+        }));
+
+        this.usedModelId = this.modelId;
+        const response = await this.client.models.generateContentStream({
+            model: this.modelId,
+            contents,
+            config: {
+                ...(system ? { systemInstruction: system } : {}),
+                temperature: 0.3,
+                maxOutputTokens: 1024,
+            },
+        });
+
+        for await (const chunk of response) {
+            const text = chunk.text;
+            if (text) yield text;
+        }
     }
 }

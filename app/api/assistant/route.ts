@@ -11,9 +11,48 @@ import {
 import { getProvider } from "@/lib/ai/provider";
 import { isRateLimited } from "@/lib/ai/rate-limit";
 import type { ChatMessage } from "@/lib/ai/types";
+import type { AIProvider } from "@/lib/ai/types";
 
 /** The full chain (primary retries + fallback + cache) can take a while. */
 export const maxDuration = 60;
+
+/**
+ * Server-Sent Events reply: `data: {"delta":"…"}` chunks + `data: [DONE]`.
+ * Auth/rate-limit/validation errors are returned as JSON BEFORE the stream
+ * starts; mid-stream failures send `data: {"error":"upstream"}` instead.
+ * Streaming bypasses the reply cache (partials can't be cached).
+ */
+function streamReply(provider: AIProvider, messages: ChatMessage[]): Response {
+    const encoder = new TextEncoder();
+    const send = (payload: string) => encoder.encode(`data: ${payload}\n\n`);
+    const readable = new ReadableStream<Uint8Array>({
+        async start(controller) {
+            try {
+                if (provider.stream) {
+                    for await (const delta of provider.stream(messages)) {
+                        controller.enqueue(send(JSON.stringify({ delta })));
+                    }
+                } else {
+                    const reply = await provider.chat(messages);
+                    controller.enqueue(send(JSON.stringify({ delta: reply })));
+                }
+                controller.enqueue(send("[DONE]"));
+                controller.close();
+            } catch (error) {
+                console.error("Assistant stream failed", error);
+                controller.enqueue(send(JSON.stringify({ error: "upstream" })));
+                controller.close();
+            }
+        },
+    });
+    return new Response(readable, {
+        headers: {
+            "Content-Type": "text/event-stream",
+            "Cache-Control": "no-cache",
+            Connection: "keep-alive",
+        },
+    });
+}
 
 /**
  * POST /api/assistant — recruiter Q&A (Fase 1: Gemini + RAG).
@@ -44,11 +83,15 @@ export async function POST(request: NextRequest) {
             return fail(503, "Assistant is not configured yet. Please contact via the links on this page.");
         }
 
-        const system = await buildSystemMessage(data.lang ?? "en");
+        const system = await buildSystemMessage(data.lang ?? "en", data.mode ?? "chat");
         const messages: ChatMessage[] = [system, ...data.messages];
-        cacheKey = buildReplyCacheKey(data.lang ?? "en", data.messages);
 
         const provider = getProvider();
+        if (data.stream) {
+            return streamReply(provider, messages);
+        }
+        cacheKey = buildReplyCacheKey(data.lang ?? "en", data.messages);
+
         const reply = await provider.chat(messages);
 
         if (cacheKey) {
