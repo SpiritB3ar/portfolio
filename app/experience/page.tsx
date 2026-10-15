@@ -70,13 +70,13 @@ const getExperienceData = async () => {
             title: i.company || i.name || '',
             position: i.title,
             cover: i.image ?? '',
-            company: i.company,
-            description: i.description,
-            location: i.location,
+            company: i.company ?? undefined,
+            description: i.description ?? undefined,
+            location: i.location ?? undefined,
             technologies: i.technologies,
             activities,
             startDate: i.startDate,
-            endDate: i.endDate
+            endDate: i.endDate ?? undefined
         })
     }
 
