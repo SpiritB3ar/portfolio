@@ -75,8 +75,8 @@ const getExperienceData = async () => {
             location: i.location ?? undefined,
             technologies: i.technologies,
             activities,
-            startDate: i.startDate,
-            endDate: i.endDate ?? undefined
+            startDate: i.startDate.toISOString(),
+            endDate: i.endDate?.toISOString()
         })
     }
 
