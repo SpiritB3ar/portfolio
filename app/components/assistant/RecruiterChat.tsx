@@ -79,16 +79,45 @@ export async function askAssistant(
     messages: AssistantChatMessage[],
     lang: "en" | "es"
 ): Promise<string> {
-    const res = await fetch("/api/assistant", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: messages.slice(-MAX_HISTORY), lang }),
-    });
-    const body = await res.json().catch(() => ({}));
-    if (!res.ok) {
-        throw new Error(typeof body?.message === "string" ? body.message : `HTTP ${res.status}`);
+    const MAX_ATTEMPTS = 3;
+    let lastError: unknown = null;
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+        try {
+            const res = await fetch("/api/assistant", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ messages: messages.slice(-MAX_HISTORY), lang }),
+            });
+            const body = await res.json().catch(() => ({}));
+            if (!res.ok) {
+                // 429/502/503 = sobrecarga transitoria → reintentar con backoff.
+                if ([429, 502, 503].includes(res.status) && attempt < MAX_ATTEMPTS) {
+                    await new Promise((r) =>
+                        setTimeout(r, 700 * 2 ** (attempt - 1) + Math.random() * 200)
+                    );
+                    continue;
+                }
+                throw new Error(typeof body?.message === "string" ? body.message : `HTTP ${res.status}`);
+            }
+            return (body as AssistantReply).reply ?? "";
+        } catch (error) {
+            lastError = error;
+            // Fallo de red (fetch lanza TypeError) → reintentar; el resto ya viene formateado.
+            const isNetworkFailure =
+                error instanceof TypeError ||
+                /fetch failed|network|timeout|timed out/i.test(
+                    error instanceof Error ? error.message : ""
+                );
+            if (isNetworkFailure && attempt < MAX_ATTEMPTS) {
+                await new Promise((r) =>
+                    setTimeout(r, 700 * 2 ** (attempt - 1) + Math.random() * 200)
+                );
+                continue;
+            }
+            throw error;
+        }
     }
-    return (body as AssistantReply).reply ?? "";
+    throw lastError instanceof Error ? lastError : new Error("Assistant request failed");
 }
 
 /** Floating recruiter-assistant widget (Fase 1: text chatbot, Gemini + RAG). */

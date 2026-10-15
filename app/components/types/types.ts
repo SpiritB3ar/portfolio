@@ -135,4 +135,6 @@ export type AssistantChatMessage = {
 export type AssistantReply = {
     reply: string;
     model: string;
+    /** True when the reply came from the server-side fallback cache. */
+    cached?: boolean;
 };

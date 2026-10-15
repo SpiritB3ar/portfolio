@@ -19,15 +19,20 @@ export interface AssistantRequest {
     lang: AssistantLang;
 }
 
-/** POST /api/assistant success body. */
+/** POST /api/assistant success body. `cached` is true when the reply
+ *  comes from the in-memory fallback cache (upstream was down). */
 export interface AssistantResponse {
     reply: string;
     model: string;
+    cached?: boolean;
 }
 
 /** Minimal provider contract — implemented by lib/ai/gemini.ts today,
  *  lib/ai/cloudflare.ts in Fase 4. */
 export interface AIProvider {
     readonly modelId: string;
+    /** Model that actually produced the last reply (differs from modelId
+     *  when a fallback model was used). Set on success, undefined before. */
+    usedModelId?: string;
     chat(messages: ChatMessage[]): Promise<string>;
 }
