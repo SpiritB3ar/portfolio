@@ -12,6 +12,7 @@ export interface ExperiencePathProps {
     position: string
     cover: string
     company?: string
+    clientLogo?: string
     description?: string
     location?: string
     technologies?: string[]
@@ -44,7 +45,16 @@ const ExperienceCard = ({ item, index, isLast }: { item: ExperiencePathProps; in
     const reduce = useReducedMotion();
     const { lang, t } = useLanguage();
 
-    const dateLabel = `${formatDate(item.startDate, lang)} · ${item.endDate ? formatDate(item.endDate, lang) : t.common.present}`;
+    const dateLabel = item.endDate
+        ? `${formatDate(item.startDate, lang)} · ${formatDate(item.endDate, lang)}`
+        : formatDate(item.startDate, lang);
+
+    // Descriptions pasted with "🔹" separators or line breaks render as
+    // bullets; plain text stays a paragraph.
+    const descriptionBullets = (item.description ?? "")
+        .split(/\r?\n|🔹/)
+        .map((s) => s.trim())
+        .filter(Boolean);
 
     return (
         <div className="relative flex gap-6 sm:gap-10 group">
@@ -56,12 +66,20 @@ const ExperienceCard = ({ item, index, isLast }: { item: ExperiencePathProps; in
                     whileInView={reduce ? undefined : { scale: 1, opacity: 1 }}
                     viewport={{ once: true, margin: '-50px' }}
                     transition={{ duration: 0.3, delay: index * 0.06, ease: [0.21, 0.6, 0.35, 1] }}
-                    className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full border-2 border-brand-green bg-background transition-transform duration-300 group-hover:scale-105 sm:h-14 sm:w-14"
+                    className="relative z-10 flex h-14 w-14 items-center justify-center rounded-full border-2 border-brand-green bg-background transition-transform duration-300 group-hover:scale-105 sm:h-16 sm:w-16"
                 >
                     {item.cover ? (
-                        <img src={item.cover} alt={item.title} className="h-7 w-7 rounded-full object-contain sm:h-8 sm:w-8" />
+                        <img src={item.cover} alt={item.title} className="h-9 w-9 rounded-full bg-white object-contain p-1 sm:h-10 sm:w-10" />
                     ) : (
-                        <Briefcase className="h-5 w-5 text-brand-green sm:h-6 sm:w-6" />
+                        <Briefcase className="h-6 w-6 text-brand-green sm:h-7 sm:w-7" />
+                    )}
+                    {item.clientLogo && (
+                        <img
+                            src={item.clientLogo}
+                            alt={`${item.title} client`}
+                            title="Client"
+                            className="absolute -bottom-1 -right-2 h-6 max-w-10 rounded-full border border-border bg-white object-contain px-1 py-0.5"
+                        />
                     )}
                 </motion.div>
                 {/* Line */}
@@ -114,11 +132,20 @@ const ExperienceCard = ({ item, index, isLast }: { item: ExperiencePathProps; in
                         </div>
 
                         {/* Description */}
-                        {item.description && (
+                        {descriptionBullets.length > 1 ? (
+                            <ul className="space-y-2.5 mb-5">
+                                {descriptionBullets.map((line, i) => (
+                                    <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground leading-relaxed">
+                                        <ChevronRight className="h-4 w-4 text-brand-green shrink-0 mt-0.5" />
+                                        <span>{line}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : item.description ? (
                             <p className="text-sm text-muted-foreground mb-5 leading-relaxed">
                                 {item.description}
                             </p>
-                        )}
+                        ) : null}
 
                         {/* Activities */}
                         {item.activities.length > 0 && (

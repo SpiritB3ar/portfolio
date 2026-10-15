@@ -61,6 +61,7 @@ export const experienceSchema = z.object({
     description: nonEmpty("description"),
     location: z.string().optional().nullable(),
     image: z.string().optional().nullable(),
+    clientImage: z.string().optional().nullable(),
     startDate: z.coerce.date(),
     endDate: z.coerce.date().optional().nullable(),
     technologies: stringList,

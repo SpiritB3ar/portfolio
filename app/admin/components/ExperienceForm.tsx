@@ -16,6 +16,7 @@ import {
 import { z } from "zod";
 import { fetchJSON } from "../../../lib/request-util";
 import { Textarea } from "@/components/ui/textarea";
+import ImageUpload from "@/app/components/ui/image-upload";
 import CustomDatePicker from "@/app/components/dashboard/DatePicker";
 
 type ExperienceFormProps = {
@@ -28,6 +29,8 @@ const experienceFormDataSchema = z.object({
   title: z.string().min(1, "Title is required"),
   company: z.string().min(1, "Company is required"),
   description: z.string().min(1, "Description is required"),
+  image: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  clientImage: z.string().url("Must be a valid URL").optional().or(z.literal("")),
   startDate: z.date({
     required_error: "Start date is required",
   }),
@@ -51,6 +54,8 @@ const ExperienceForm = forwardRef<
       title: "",
       company: "",
       description: "",
+      image: "",
+      clientImage: "",
       startDate: undefined,
       endDate: null,
       technologies: "",
@@ -118,6 +123,40 @@ const ExperienceForm = forwardRef<
               <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea placeholder="Description of your role and responsibilities" {...field} rows={5} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="image"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Company Logo (Optional)</FormLabel>
+              <FormControl>
+                <ImageUpload
+                  value={field.value ?? ""}
+                  onChange={field.onChange}
+                  className="mt-2"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="clientImage"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Client Logo (Optional, for consultancy roles)</FormLabel>
+              <FormControl>
+                <ImageUpload
+                  value={field.value ?? ""}
+                  onChange={field.onChange}
+                  className="mt-2"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

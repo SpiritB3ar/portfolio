@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
                 description: data.description,
                 location: data.location ?? null,
                 image: data.image ?? null,
+                clientImage: data.clientImage ?? null,
                 startDate: data.startDate,
                 endDate: data.endDate ?? null,
                 technologies: toList(data.technologies),

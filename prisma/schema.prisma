@@ -42,6 +42,7 @@ model AboutContent {
 model Experience {
   id           String            @id @default(auto()) @map("_id") @db.ObjectId
   image        String? // URL or path to the image
+  clientImage  String? // Optional client logo (for consultancy roles)
   company      String?
   name         String? // potentially legacy
   slug         String            @unique

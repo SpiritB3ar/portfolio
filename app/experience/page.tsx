@@ -71,6 +71,7 @@ const getExperienceData = async () => {
             position: i.title,
             cover: i.image ?? '',
             company: i.company ?? undefined,
+            clientLogo: i.clientImage ?? undefined,
             description: i.description ?? undefined,
             location: i.location ?? undefined,
             technologies: i.technologies,
