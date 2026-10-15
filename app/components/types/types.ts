@@ -104,7 +104,7 @@ export type ResourceType = {
     content: string;
     coverImage: string;
     link?: string | null;
-    type: 'Article' | 'Video' | 'Ebook' | 'Tutorial' | 'Tool' | 'Case Study';
+    type: string;
     category: ResourceCategoryType;
     tags: string[];
     author: string;
