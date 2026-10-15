@@ -15,7 +15,13 @@ export async function fetchJSON<T>(url: string): Promise<T> {
     } else {
         // Server: absolute URL required (no origin context).
         const baseUrl = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/+$/, "");
-        fullUrl = baseUrl ? `${baseUrl}${url.startsWith('/') ? url : `/${url}`}` : url;
+        if (baseUrl) {
+            fullUrl = `${baseUrl}${url.startsWith('/') ? url : `/${url}`}`;
+        } else if (process.env.VERCEL_URL) {
+            fullUrl = `https://${process.env.VERCEL_URL}${url.startsWith('/') ? url : `/${url}`}`;
+        } else {
+            fullUrl = url;
+        }
     }
 
     const response = await fetch(fullUrl, {
