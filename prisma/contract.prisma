@@ -1,0 +1,145 @@
+// use prisma-8
+// Prisma 8 data contract (MongoDB). Storage names pinned with @@map to the
+// existing collections so reads/writes hit the same documents as Prisma 6.
+
+model UserDetail {
+  id                 ObjectId @id @map("_id")
+  welcomeTitle       String
+  welcomeNote        String
+  welcomeDescription String
+  cvFile             String?
+  userImage          String
+  createdAt          temporal.createdAt()
+  updatedAt          temporal.updatedAt()
+
+  @@map("UserDetail")
+}
+
+model UserSocialLink {
+  id        ObjectId @id @map("_id")
+  name      String
+  link      String
+  icon      String
+  createdAt temporal.createdAt()
+  updatedAt temporal.updatedAt()
+
+  @@map("UserSocialLinks")
+}
+
+model AboutContent {
+  id        ObjectId @id @map("_id")
+  paragraph String
+  createdAt temporal.createdAt()
+  updatedAt temporal.updatedAt()
+
+  @@map("AboutContent")
+}
+
+model Experience {
+  id           ObjectId @id @map("_id")
+  image        String?
+  clientImage  String?
+  company      String?
+  name         String?
+  slug         String   @unique
+  title        String
+  description  String?
+  location     String?
+  startDate    Date
+  endDate      Date?
+  technologies String[]
+  inputs       ExperienceInput[]
+  createdAt    temporal.createdAt()
+  updatedAt    temporal.updatedAt()
+
+  @@map("Experience")
+}
+
+model ExperienceInput {
+  id           ObjectId   @id @map("_id")
+  content      String
+  experienceId ObjectId
+  experience   Experience @relation(fields: [experienceId], references: [id])
+  createdAt    temporal.createdAt()
+  updatedAt    temporal.updatedAt()
+
+  @@map("ExperienceInput")
+}
+
+model Project {
+  id           ObjectId @id @map("_id")
+  title        String
+  slug         String   @unique
+  description  String
+  content      String?
+  about        String?
+  toolIDs      ObjectId[]
+  coverImage   String
+  cover        String?
+  githubUrl    String?
+  liveUrl      String?
+  link         String?
+  category     String?
+  technologies String[]
+  publishedAt  Date?
+  createdAt    temporal.createdAt()
+  updatedAt    temporal.updatedAt()
+
+  @@map("Project")
+}
+
+model ProjectTool {
+  id          ObjectId @id @map("_id")
+  name        String   @unique
+  image       String
+  description String
+  projectIDs  ObjectId[]
+  createdAt   temporal.createdAt()
+  updatedAt   temporal.updatedAt()
+
+  @@map("ProjectTool")
+}
+
+model SkillCategory {
+  id          ObjectId @id @map("_id")
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  icon        String?
+  color       String?
+  order       Int32
+  skills      Skill[]
+  createdAt   temporal.createdAt()
+  updatedAt   temporal.updatedAt()
+
+  @@map("SkillCategory")
+}
+
+model Skill {
+  id          ObjectId      @id @map("_id")
+  name        String
+  slug        String        @unique
+  proficiency Int32
+  categoryId  ObjectId
+  category    SkillCategory @relation(fields: [categoryId], references: [id])
+  order       Int32
+  createdAt   temporal.createdAt()
+  updatedAt   temporal.updatedAt()
+
+  @@map("Skill")
+}
+
+model Education {
+  id          ObjectId @id @map("_id")
+  institution String
+  degree      String
+  field       String
+  slug        String   @unique
+  startDate   Date
+  endDate     Date?
+  order       Int32
+  createdAt   temporal.createdAt()
+  updatedAt   temporal.updatedAt()
+
+  @@map("Education")
+}

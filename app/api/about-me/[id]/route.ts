@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import db from "@/lib/db";
+import { withId } from "@/lib/mongo-util";
 import { ok, fail, serverError, parseBody } from "@/lib/api";
 import { aboutSchema } from "@/lib/validators";
 
@@ -9,9 +10,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const { id } = await params;
     if (!isObjectId(id)) return fail(400, "Invalid about paragraph id");
     try {
-        const paragraph = await db.aboutContent.findUnique({ where: { id: id } });
+        const paragraph = await db.orm.AboutContent.where({ _id: id }).first();
         if (!paragraph) return fail(404, "About paragraph not found");
-        return ok(paragraph);
+        return ok(withId(paragraph));
     } catch (error) {
         return serverError(error, "Failed to fetch about paragraph");
     }
@@ -25,14 +26,9 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         if ("response" in parsed) return parsed.response;
         const { data } = parsed;
 
-        const current = await db.aboutContent.findUnique({ where: { id: id } });
-        if (!current) return fail(404, "About paragraph not found");
-
-        const updated = await db.aboutContent.update({
-            where: { id: id },
-            data: { paragraph: data.paragraph },
-        });
-        return ok(updated);
+        const updated = await db.orm.AboutContent.where({ _id: id }).update({ paragraph: data.paragraph });
+        if (!updated) return fail(404, "About paragraph not found");
+        return ok(withId(updated));
     } catch (error) {
         return serverError(error, "Failed to update about paragraph");
     }
@@ -42,10 +38,10 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     const { id } = await params;
     if (!isObjectId(id)) return fail(400, "Invalid about paragraph id");
     try {
-        const paragraph = await db.aboutContent.findUnique({ where: { id: id } });
+        const paragraph = await db.orm.AboutContent.where({ _id: id }).first();
         if (!paragraph) return fail(404, "About paragraph not found");
 
-        await db.aboutContent.delete({ where: { id: id } });
+        await db.orm.AboutContent.where({ _id: id }).delete();
         return ok({ message: "About paragraph deleted successfully" });
     } catch (error) {
         return serverError(error, "Failed to delete about paragraph");

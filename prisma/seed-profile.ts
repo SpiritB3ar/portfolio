@@ -1,6 +1,5 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import "dotenv/config";
+import db from "../lib/db";
 
 function generateSlug(title: string): string {
   return title
@@ -15,35 +14,30 @@ async function main() {
   console.log('Seeding profile data from LinkedIn...');
 
   // ── 1. UserDetail (singleton) ──────────────────────────────────
-  const existingProfile = await prisma.userDetail.findFirst();
+  const existingProfile = (await db.orm.UserDetail.all()).at(0) ?? null;
   if (existingProfile) {
-    await prisma.userDetail.update({
-      where: { id: existingProfile.id },
-      data: {
-        welcomeTitle: 'Ronald Cardenas',
-        welcomeNote: 'Sr Backend Developer | AI Engineer | Cloud Architecture (AWS, Azure, GCP)',
-        welcomeDescription:
-          'Ingeniero de Software con más de 4 años de experiencia desarrollando soluciones escalables en entornos cloud. ' +
-          'Experiencia en proyectos de banca, seguros y pagos digitales, participando en el diseño técnico de soluciones, ' +
-          'arquitecturas backend y revisión de código (PRs). Trabajo con microservicios y arquitectura hexagonal, aplicando ' +
-          'buenas prácticas para construir software limpio, robusto y mantenible. Me motiva resolver problemas complejos ' +
-          'y desarrollar soluciones con impacto real.',
-      },
+    await db.orm.UserDetail.where({ _id: existingProfile._id }).update({
+      welcomeTitle: 'Ronald Cardenas',
+      welcomeNote: 'Sr Backend Developer | AI Engineer | Cloud Architecture (AWS, Azure, GCP)',
+      welcomeDescription:
+        'Ingeniero de Software con más de 4 años de experiencia desarrollando soluciones escalables en entornos cloud. ' +
+        'Experiencia en proyectos de banca, seguros y pagos digitales, participando en el diseño técnico de soluciones, ' +
+        'arquitecturas backend y revisión de código (PRs). Trabajo con microservicios y arquitectura hexagonal, aplicando ' +
+        'buenas prácticas para construir software limpio, robusto y mantenible. Me motiva resolver problemas complejos ' +
+        'y desarrollar soluciones con impacto real.',
     });
     console.log('  ✓ UserDetail updated');
   } else {
-    await prisma.userDetail.create({
-      data: {
-        welcomeTitle: 'Ronald Cardenas',
-        welcomeNote: 'Sr Backend Developer | AI Engineer | Cloud Architecture (AWS, Azure, GCP)',
-        welcomeDescription:
-          'Ingeniero de Software con más de 4 años de experiencia desarrollando soluciones escalables en entornos cloud. ' +
-          'Experiencia en proyectos de banca, seguros y pagos digitales, participando en el diseño técnico de soluciones, ' +
-          'arquitecturas backend y revisión de código (PRs). Trabajo con microservicios y arquitectura hexagonal, aplicando ' +
-          'buenas prácticas para construir software limpio, robusto y mantenible. Me motiva resolver problemas complejos ' +
-          'y desarrollar soluciones con impacto real.',
-        userImage: '',
-      },
+    await db.orm.UserDetail.create({
+      welcomeTitle: 'Ronald Cardenas',
+      welcomeNote: 'Sr Backend Developer | AI Engineer | Cloud Architecture (AWS, Azure, GCP)',
+      welcomeDescription:
+        'Ingeniero de Software con más de 4 años de experiencia desarrollando soluciones escalables en entornos cloud. ' +
+        'Experiencia en proyectos de banca, seguros y pagos digitales, participando en el diseño técnico de soluciones, ' +
+        'arquitecturas backend y revisión de código (PRs). Trabajo con microservicios y arquitectura hexagonal, aplicando ' +
+        'buenas prácticas para construir software limpio, robusto y mantenible. Me motiva resolver problemas complejos ' +
+        'y desarrollar soluciones con impacto real.',
+      userImage: '',
     });
     console.log('  ✓ UserDetail created');
   }
@@ -59,11 +53,11 @@ async function main() {
   ];
 
   for (const sl of socialLinksData) {
-    const existing = await prisma.userSocialLink.findFirst({ where: { name: sl.name } });
+    const existing = await db.orm.UserSocialLinks.where({ name: sl.name }).first();
     if (existing) {
-      await prisma.userSocialLink.update({ where: { id: existing.id }, data: { link: sl.link, icon: sl.icon } });
+      await db.orm.UserSocialLinks.where({ _id: existing._id }).update({ link: sl.link, icon: sl.icon });
     } else {
-      await prisma.userSocialLink.create({ data: sl });
+      await db.orm.UserSocialLinks.create(sl);
     }
   }
   console.log('  ✓ Social links seeded');
@@ -76,11 +70,11 @@ async function main() {
     'buenas prácticas para construir software limpio, robusto y mantenible. Me motiva resolver problemas complejos ' +
     'y desarrollar soluciones con impacto real.';
 
-  const existingAbout = await prisma.aboutContent.findFirst();
+  const existingAbout = (await db.orm.AboutContent.all()).at(0) ?? null;
   if (existingAbout) {
-    await prisma.aboutContent.update({ where: { id: existingAbout.id }, data: { paragraph: aboutText } });
+    await db.orm.AboutContent.where({ _id: existingAbout._id }).update({ paragraph: aboutText });
   } else {
-    await prisma.aboutContent.create({ data: { paragraph: aboutText } });
+    await db.orm.AboutContent.create({ paragraph: aboutText });
   }
   console.log('  ✓ About content seeded');
 
@@ -153,37 +147,34 @@ async function main() {
 
   for (const expData of experiencesData) {
     const slug = generateSlug(`${expData.title}-${expData.company}`);
-    const existing = await prisma.experience.findUnique({ where: { slug } });
+    const existing = await db.orm.Experience.where({ slug }).first();
 
     if (existing) {
       // Update existing experience
       const { inputs: inputContents, ...expFields } = expData;
-      await prisma.experience.update({
-        where: { id: existing.id },
-        data: {
-          ...expFields,
-          slug,
-        },
+      await db.orm.Experience.where({ _id: existing._id }).update({
+        ...expFields,
+        slug,
       });
       // Replace inputs
-      await prisma.experienceInput.deleteMany({ where: { experienceId: existing.id } });
+      await db.orm.ExperienceInput.where({ experienceId: existing._id }).deleteAndCount();
       for (const content of inputContents) {
-        await prisma.experienceInput.create({
-          data: { content, experienceId: existing.id },
+        await db.orm.ExperienceInput.create({
+          content,
+          experienceId: existing._id,
         });
       }
       console.log(`  ✓ Experience updated: ${expData.title} @ ${expData.company}`);
     } else {
       const { inputs: inputContents, ...expFields } = expData;
-      const created = await prisma.experience.create({
-        data: {
-          ...expFields,
-          slug,
-        },
+      const created = await db.orm.Experience.create({
+        ...expFields,
+        slug,
       });
       for (const content of inputContents) {
-        await prisma.experienceInput.create({
-          data: { content, experienceId: created.id },
+        await db.orm.ExperienceInput.create({
+          content,
+          experienceId: created._id,
         });
       }
       console.log(`  ✓ Experience created: ${expData.title} @ ${expData.company}`);
@@ -261,42 +252,36 @@ async function main() {
     const slug = generateSlug(catData.name);
     const { skills: skillsData, ...catFields } = catData;
 
-    const existingCat = await prisma.skillCategory.findUnique({ where: { slug } });
+    const existingCat = await db.orm.SkillCategory.where({ slug }).first();
     let categoryId: string;
 
     if (existingCat) {
-      await prisma.skillCategory.update({
-        where: { id: existingCat.id },
-        data: { ...catFields, slug },
-      });
-      categoryId = existingCat.id;
+      await db.orm.SkillCategory.where({ _id: existingCat._id }).update({ ...catFields, slug });
+      categoryId = existingCat._id;
       console.log(`  ✓ SkillCategory updated: ${catData.name}`);
     } else {
-      const created = await prisma.skillCategory.create({
-        data: { ...catFields, slug },
-      });
-      categoryId = created.id;
+      const created = await db.orm.SkillCategory.create({ ...catFields, slug });
+      categoryId = created._id;
       console.log(`  ✓ SkillCategory created: ${catData.name}`);
     }
 
     for (const skillData of skillsData) {
       const skillSlug = generateSlug(skillData.name);
-      const existingSkill = await prisma.skill.findUnique({ where: { slug: skillSlug } });
+      const existingSkill = await db.orm.Skill.where({ slug: skillSlug }).first();
 
       if (existingSkill) {
-        await prisma.skill.update({
-          where: { id: existingSkill.id },
-          data: { proficiency: skillData.proficiency, order: skillData.order, categoryId },
+        await db.orm.Skill.where({ _id: existingSkill._id }).update({
+          proficiency: skillData.proficiency,
+          order: skillData.order,
+          categoryId,
         });
       } else {
-        await prisma.skill.create({
-          data: {
-            name: skillData.name,
-            slug: skillSlug,
-            proficiency: skillData.proficiency,
-            order: skillData.order,
-            categoryId,
-          },
+        await db.orm.Skill.create({
+          name: skillData.name,
+          slug: skillSlug,
+          proficiency: skillData.proficiency,
+          order: skillData.order,
+          categoryId,
         });
       }
     }
@@ -325,18 +310,13 @@ async function main() {
 
   for (const eduData of educationData) {
     const slug = generateSlug(`${eduData.degree}-${eduData.institution}`);
-    const existing = await prisma.education.findUnique({ where: { slug } });
+    const existing = await db.orm.Education.where({ slug }).first();
 
     if (existing) {
-      await prisma.education.update({
-        where: { id: existing.id },
-        data: { ...eduData, slug },
-      });
+      await db.orm.Education.where({ _id: existing._id }).update({ ...eduData, slug });
       console.log(`  ✓ Education updated: ${eduData.degree} @ ${eduData.institution}`);
     } else {
-      await prisma.education.create({
-        data: { ...eduData, slug },
-      });
+      await db.orm.Education.create({ ...eduData, slug });
       console.log(`  ✓ Education created: ${eduData.degree} @ ${eduData.institution}`);
     }
   }
@@ -350,5 +330,5 @@ main()
     process.exit(1);
   })
   .finally(async () => {
-    await prisma.$disconnect();
+    await db.close();
   });

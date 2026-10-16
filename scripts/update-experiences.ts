@@ -7,11 +7,10 @@
  *    O, si tienes `ts-node` configurado globalmente: `ts-node d:\spiritbear\PROYECTS\FRONT\NEXTJS\portfolio_frontend\scripts\update-experiences.ts`
  */
 
-import { PrismaClient } from '@prisma/client';
+import "dotenv/config";
+import db from '../lib/db';
 import * as fs from 'fs';
 import * as path from 'path';
-
-const prisma = new PrismaClient();
 
 async function main() {
   // const markdownPath = path.join(__dirname, '../../porfolio-data.md');
@@ -99,18 +98,22 @@ async function main() {
   };
 
   for (const exp of experiences) {
-    // Crear nueva experiencia
+    // Crear o actualizar experiencia
     const slug = generateSlug(`${exp.title}-${exp.name}`);
-    const newExperience = await prisma.experience.upsert({
-      where: { slug },
-      update: {
+    const existing = await db.orm.Experience.where({ slug }).first();
+    let experienceId: string;
+    if (existing) {
+      await db.orm.Experience.where({ slug }).update({
         name: exp.name,
         title: exp.title,
         startDate: exp.startDate,
         endDate: exp.endDate,
         location: exp.location,
-      },
-      create: {
+      });
+      experienceId = existing._id;
+      await db.orm.ExperienceInput.where({ experienceId }).deleteAndCount();
+    } else {
+      const created = await db.orm.Experience.create({
         name: exp.name,
         title: exp.title,
         slug,
@@ -118,14 +121,13 @@ async function main() {
         endDate: exp.endDate,
         location: exp.location,
         technologies: [],
-        inputs: {
-          create: exp.descriptionLines.map((content: string) => ({
-            content
-          })),
-        },
-      },
-    });
-    console.log(`Nueva experiencia creada: ${newExperience.name} - ${newExperience.title}`);
+      });
+      experienceId = created._id;
+    }
+    for (const content of exp.descriptionLines as string[]) {
+      await db.orm.ExperienceInput.create({ content, experienceId });
+    }
+    console.log(`Nueva experiencia creada: ${exp.name} - ${exp.title}`);
   }
 }
 
@@ -135,5 +137,5 @@ main()
     process.exit(1);
   })
   .finally(async () => {
-    await prisma.$disconnect();
+    await db.close();
   });
