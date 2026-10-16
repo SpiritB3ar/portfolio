@@ -18,9 +18,8 @@ npm run dev                 # dev server (http://localhost:3000)
 npm run build               # build producción
 npm run lint                # eslint . (flat config)
 npx tsc --noEmit            # typecheck (NO hay `npm run typecheck`)
-npx prisma generate         # regenerar cliente Prisma
-npx prisma db push          # sync schema.prisma → MongoDB (sin migraciones)
-npx prisma db seed          # seed (ts-node, requiere DATABASE_URL)
+pnpm contract:emit          # re-emitir contract.json/.d.ts tras editar prisma/contract.prisma
+npx tsx prisma/seed-profile.ts  # seed (requiere DATABASE_URL)
 ```
 
 **Sin test runner.** No hay Jest/Vitest/Playwright. No afirmes que "los tests pasan": verifica con `npx tsc --noEmit`, `npm run lint` y un smoke manual con `npm run dev`.
@@ -55,12 +54,17 @@ No existe `API_URL` (sin prefijo público) — docs que la mencionan están mal.
 - Slug: usar `generateSlug` de `lib/slug-util.ts` (única fuente de verdad).
 - Al crear registros con slug, check de colisión → `409`.
 
-### Prisma / MongoDB
+### Prisma 8 / MongoDB
 
-- Provider MongoDB: solo `db push` (no hay migraciones SQL). **Prisma pineado en 6.x — v7 no tiene conector MongoDB, no actualizar.**
+- Contrato en `prisma/contract.prisma` (`// use prisma-8`); tras editarlo correr `pnpm contract:emit` y commitear `contract.json` + `contract.d.ts`. Sin `generate`, sin `db push` (lecturas/escrituras directas sobre colecciones existentes).
+- Versiones pineadas: CLI `prisma@8.0.0-rc.22` + `@prisma/orm-mongo@8.0.0-rc.18` + override pnpm `@prisma/orm-toolchain@8.0.0-rc.18` (el CLI trae un toolchain viejo que rompe el descriptor mongo; no tocar sin re-verificar `contract:emit`).
+- Queries vía `db.orm.<Colección>` (nombre exacto de colección: `db.orm.Project`, `db.orm.UserSocialLinks`): `.where({...}).first()`, `.all()`, `.orderBy({ f: 1 | -1 })`, `.limit()`, `.include('rel')`, `.create({...})`, `.where().update()`, `.where().delete()`, `.where().deleteAndCount()`. Sin `findUnique/findFirst/deleteMany`, sin transacciones.
+- Documentos usan `_id` (string), no `id`: normalizar con `withId/withIds` de `lib/mongo-util.ts` en el borde (rutas API, `lib/data.ts`).
+- Sin M2M en PSL (`PSL_ORPHANED_BACKRELATION`): `Project` ↔ `ProjectTool` se joinnea en app con `attachTools()` (`toolIDs`/`projectIDs` como `ObjectId[]` planos).
+- Sin `@default(0)` en PSL mongo: defaults en zod (`lib/validators.ts`) o `?? 0` en rutas.
 - `params` de routes dinámicos y `cookies()`/`headers()` son async: siempre `await`.
-- Siempre importar Prisma desde `lib/db.ts` (singleton) — nunca `new PrismaClient()` en módulos.
-- `Project` ↔ `ProjectTool` es many-to-many vía arrays `String[] @db.ObjectId` (`toolIDs`/`projectIDs`), estilo Mongo.
+- Siempre importar Prisma desde `lib/db.ts` (singleton) — nunca crear clientes en módulos.
+- `next.config.js` tiene `serverExternalPackages: ["@prisma/orm-mongo", "mongodb"]` (Turbopack rompe el parsing del connection string si los bundlers internos).
 
 ### i18n
 
@@ -102,7 +106,8 @@ lib/
   data.ts                   # lecturas server (Prisma directo, prerender)
   db.ts                     # singleton Prisma
   validators.ts             # zod schemas (assistantSchema, etc.)
-prisma/schema.prisma
+  mongo-util.ts             # withId/withIds/attachTools (borde Prisma 8 → app)
+prisma/contract.prisma      # contrato PSL v8 (emit → contract.json/.d.ts)
 ```
 
 ## Flujo de datos (público)
@@ -122,13 +127,16 @@ Lecturas públicas van directo a Prisma (sin HTTP, prerenderizables). Mutaciones
 4. Smoke manual relevante con `npm run dev` (temas, i18n, rutas afectadas).
 5. Si tocaste tokens/paleta: revisar también `/admin` (comparte `globals.css`).
 
-## Rama `cloudflare-opennext` (deploy alternativo en Workers)
+## Rama `cloudflare-opennext` (deploy alternativo en Workers) — DESPLEGADO ✅
 
-- Adapter `@opennextjs/cloudflare` + `wrangler.jsonc` (R2 `portfolio-opennext-cache`, binding `AI`, `nodejs_compat`). Proxy (`proxy.ts`) incluido en el bundle.
-- Asistente con Workers AI: `AI_PROVIDER=cloudflare` usa `lib/ai/cloudflare.ts` (Llama 3.3 70B, override con `CLOUDFLARE_AI_MODEL`); chat + stream por `env.AI`. Sin binding, la factory sigue en Gemini.
-- BD en Workers: Prisma 6 no corre binarios ahí — usar **Accelerate**: `prisma generate --no-engine` + `DATABASE_URL="prisma://accelerate.prisma-data.net/?api_key=…"`. Cero cambios de código Prisma.
-- `pnpm build:cf` / `deploy` / `preview` en `package.json`. El empaquetado esbuild falla en Windows (symlinks pnpm) — correr `preview`/`deploy` desde WSL o CI Linux.
-- Pendiente con tu cuenta: crear proyecto Accelerate, bucket R2, `wrangler secret put DATABASE_URL ADMIN_API_KEY`, `wrangler login`.
+- URL prod: `https://portfolio.cardenascode7.workers.dev` (desplegado 2026-10-16, adapter `@opennextjs/cloudflare@1.20.12`).
+- Adapter + `wrangler.jsonc` (R2 `portfolio-opennext-cache` creado, binding `AI`, `nodejs_compat`). Proxy (`proxy.ts`) incluido en el bundle.
+- Asistente con Workers AI: `AI_PROVIDER=cloudflare` usa `lib/ai/cloudflare.ts` (**Llama 3.3 70B** `@cf/meta/llama-3.3-70b-instruct-fp8-fast`, override con `CLOUDFLARE_AI_MODEL`); verificado en prod con respuesta real. ~127 neurons/mensaje → ~75 msgs/día gratis.
+- BD en Workers: Prisma 8 usa el driver `mongodb` directo (verificado en prod contra Atlas). Accelerate **no soporta MongoDB**; el worker usa `DATABASE_URL` normal vía `wrangler secret put` (ya subidos `DATABASE_URL` + `ADMIN_API_KEY`).
+- `DATABASE_URL` del worker lleva `&maxIdleTimeMS=1000&socketTimeoutMS=5000` (el `.env` local, no): workerd invalida los sockets al terminar cada request y el pool reciclaba conexiones muertas en turnos alternos (50% hangs). Con idle cap bajo cada request abre conexión fresca. Si ves hangs alternados en prod, revisar estos params.
+- `.npmrc` con `node-linker=hoisted`: el layout pnpm aislado rompe esbuild en Windows (`Cannot read directory .pnpm/...`); con hoisted `pnpm build:cf` funciona en Windows. No quitar sin re-verificar el build.
+- Notas de versión: adapter 1.20.12 requerido por Next 16.4 (`preview-props.json` no se incrustaba en 1.20.11 → worker 500 en init).
+- `pnpm build:cf` / `deploy` / `preview` en `package.json`. OAuth con scopes k2 incompletos — si el deploy se queja, `wrangler login` para refrescar.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

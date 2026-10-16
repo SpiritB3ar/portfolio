@@ -3,6 +3,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Prisma 8 Mongo runtime + driver resolve natively in Node (same as tsx);
+  // bundling them under Turbopack breaks their connection-string parsing.
+  serverExternalPackages: ["@prisma/orm-mongo", "mongodb"],
   images: {
     remotePatterns: [
       {
