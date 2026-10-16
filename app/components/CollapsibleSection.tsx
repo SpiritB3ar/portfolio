@@ -1,6 +1,7 @@
 "use client";
 import { useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { useMountedReducedMotion } from "@/app/lib/use-mounted-reduced-motion";
 import { ChevronDown } from 'lucide-react';
 
 interface CollapsibleSectionProps {
@@ -12,7 +13,7 @@ interface CollapsibleSectionProps {
 
 export const CollapsibleSection = ({ title, subtitle, defaultOpen = false, children }: CollapsibleSectionProps) => {
     const [open, setOpen] = useState(defaultOpen);
-    const reduce = useReducedMotion();
+    const reduce = useMountedReducedMotion();
 
     return (
         <section className="border-t border-border">

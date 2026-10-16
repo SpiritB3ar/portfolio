@@ -5,7 +5,8 @@ import { HomeDataType } from "./types/types";
 import { useLanguage } from "../providers/LanguageProvider";
 import { saveAs } from "file-saver";
 import { Download, Sparkles, Loader2, ArrowUpRight, Bot } from "lucide-react";
-import { motion, useReducedMotion, type Variants } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
+import { useMountedReducedMotion } from "@/app/lib/use-mounted-reduced-motion";
 import { toast } from "sonner";
 import { dispatchOpenChat } from "./assistant/chat-events";
 
@@ -16,7 +17,7 @@ interface ContentType {
 const BodyContent = ({ homeData }: ContentType) => {
   const userImage = homeData?.userImage || "";
   const { t } = useLanguage();
-  const reduce = useReducedMotion();
+  const reduce = useMountedReducedMotion();
   const [isDownloading, setIsDownloading] = useState(false);
 
   // Rotating ask suggestions (from the assistant's own suggestion list).

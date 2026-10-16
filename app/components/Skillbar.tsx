@@ -1,7 +1,8 @@
 "use client"
 
 import React, { useState } from 'react'
-import { motion, useReducedMotion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useMountedReducedMotion } from "@/app/lib/use-mounted-reduced-motion";
 import { useLanguage } from '../providers/LanguageProvider';
 import { SkillCategoryType } from './types/types';
 import { ChevronDown, Cloud, Palette, Bot, Award } from 'lucide-react';
@@ -29,7 +30,7 @@ const getCategoryIcon = (name: string) => {
 
 const SkillBars: React.FC<SkillBarsProps> = ({ skillCategories }) => {
     const { t } = useLanguage();
-    const reduce = useReducedMotion();
+    const reduce = useMountedReducedMotion();
     const [expandedCategory, setExpandedCategory] = useState<string | null>(
         skillCategories.length > 0 ? skillCategories[0].id : null
     );

@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { useMountedReducedMotion } from "@/app/lib/use-mounted-reduced-motion";
 import { Sparkles, ArrowUpRight, Loader2 } from 'lucide-react';
 import { useLanguage } from '../providers/LanguageProvider';
 import { askAssistant } from '../components/assistant/RecruiterChat';
@@ -9,7 +10,7 @@ import type { AssistantChatMessage } from '../components/types/types';
 
 export const AiDemo = () => {
     const { lang, t } = useLanguage();
-    const reduce = useReducedMotion();
+    const reduce = useMountedReducedMotion();
     const [asking, setAsking] = useState<string | null>(null);
     const askIdRef = useRef(0);
 

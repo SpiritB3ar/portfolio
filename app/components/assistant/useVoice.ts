@@ -8,6 +8,7 @@ interface SpeechRecognitionResultItem {
 }
 interface SpeechRecognitionResult {
     length: number;
+    isFinal: boolean;
     [index: number]: SpeechRecognitionResultItem | undefined;
 }
 interface SpeechRecognitionResultList {
@@ -15,17 +16,34 @@ interface SpeechRecognitionResultList {
     [index: number]: SpeechRecognitionResult | undefined;
 }
 interface SpeechRecognitionEvent extends Event {
+    resultIndex: number;
     results: SpeechRecognitionResultList;
+}
+interface SpeechRecognitionErrorEvent extends Event {
+    /** 'not-allowed' | 'no-speech' | 'network' | 'audio-capture' | 'aborted' | … */
+    error: string;
 }
 interface SpeechRecognitionInstance extends EventTarget {
     lang: string;
+    continuous: boolean;
     interimResults: boolean;
     start(): void;
     stop(): void;
     onresult: ((e: SpeechRecognitionEvent) => void) | null;
     onend: (() => void) | null;
-    onerror: (() => void) | null;
+    onerror: ((e: SpeechRecognitionErrorEvent) => void) | null;
+    onnomatch: (() => void) | null;
 }
+
+/** Dictation failure kinds surfaced to the UI (toast). */
+export type VoiceErrorKind = "denied" | "no-speech" | "failed";
+
+const mapRecognitionError = (kind: string | undefined): VoiceErrorKind | null => {
+    if (!kind || kind === "aborted") return null; // user stopped it — not an error
+    if (kind === "not-allowed" || kind === "service-not-allowed") return "denied";
+    if (kind === "no-speech") return "no-speech";
+    return "failed";
+};
 type SpeechRecognitionCtor = new () => SpeechRecognitionInstance;
 
 const getCtor = (): SpeechRecognitionCtor | null => {
@@ -48,6 +66,7 @@ export function useVoice(lang: "en" | "es") {
     const recogRef = useRef<SpeechRecognitionInstance | null>(null);
     const [listening, setListening] = useState(false);
     const [speakOn, setSpeakOn] = useState(false);
+    const [error, setError] = useState<VoiceErrorKind | null>(null);
     // Mounted-only feature detection: avoids SSR/client hydration mismatch.
     const mounted = useSyncExternalStore(
         () => () => {},
@@ -63,23 +82,39 @@ export function useVoice(lang: "en" | "es") {
             recogRef.current?.stop();
             return;
         }
+        setError(null);
         const rec = new Ctor();
         rec.lang = lang === "es" ? "es-ES" : "en-US";
-        rec.interimResults = false;
+        // continuous: survive pauses in speech (single-utterance mode ends
+        // the session at the first pause, often before any final result).
+        rec.continuous = true;
+        rec.interimResults = true;
         rec.onresult = (e) => {
-            const text = Array.from(
-                { length: e.results.length },
-                (_, i) => e.results[i]?.[0]?.transcript ?? ""
-            )
-                .join(" ")
-                .trim();
-            if (text) onText(text);
+            // Only final segments — interim ones would duplicate as they settle.
+            let chunk = "";
+            for (let i = e.resultIndex; i < e.results.length; i++) {
+                const r = e.results[i];
+                if (r?.isFinal) chunk += `${r[0]?.transcript ?? ""} `;
+            }
+            chunk = chunk.trim();
+            if (chunk) onText(chunk);
         };
         rec.onend = () => setListening(false);
-        rec.onerror = () => setListening(false);
+        rec.onerror = (e) => {
+            setListening(false);
+            const kind = mapRecognitionError(e?.error);
+            if (kind) setError(kind);
+        };
+        rec.onnomatch = () => setError("no-speech");
         recogRef.current = rec;
         setListening(true);
-        rec.start();
+        try {
+            rec.start();
+        } catch {
+            // e.g. rapid double-tap while the previous session still tears down
+            setListening(false);
+            setError("failed");
+        }
     };
 
     const toggleSpeak = () => {
@@ -106,5 +141,7 @@ export function useVoice(lang: "en" | "es") {
         };
     }, []);
 
-    return { supported, listening, speakOn, toggleListening, toggleSpeak, speak };
+    const clearError = () => setError(null);
+
+    return { supported, listening, speakOn, toggleListening, toggleSpeak, speak, error, clearError };
 }

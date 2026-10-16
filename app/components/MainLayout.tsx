@@ -5,6 +5,7 @@ import Header from "./header";
 import SiteAtmosphere from "./SiteAtmosphere";
 import RecruiterChat from "./assistant/RecruiterChat";
 import CommandPalette from "./assistant/CommandPalette";
+import { Toaster } from "./ui/toaster";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -43,6 +44,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
         onClose={() => setPaletteOpen(false)}
       />
       <RecruiterChat />
+      <Toaster position="top-center" />
     </div>
   );
 }

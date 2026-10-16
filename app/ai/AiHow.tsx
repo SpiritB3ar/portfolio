@@ -1,10 +1,11 @@
 "use client";
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { useMountedReducedMotion } from "@/app/lib/use-mounted-reduced-motion";
 import { useLanguage } from '../providers/LanguageProvider';
 
 export const AiHow = () => {
     const { t } = useLanguage();
-    const reduce = useReducedMotion();
+    const reduce = useMountedReducedMotion();
 
     return (
         <motion.section

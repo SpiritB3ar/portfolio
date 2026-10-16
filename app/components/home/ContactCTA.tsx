@@ -1,5 +1,6 @@
 "use client";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useMountedReducedMotion } from "@/app/lib/use-mounted-reduced-motion";
 import { Download, ArrowUpRight } from "lucide-react";
 import { HomeDataType, SocialLinkType } from "../types/types";
 import SocialLink from "../SocialLink";
@@ -12,7 +13,7 @@ interface ContactCTAProps {
 
 export const ContactCTA = ({ homeData, socialLinks }: ContactCTAProps) => {
   const { t } = useLanguage();
-  const reduce = useReducedMotion();
+  const reduce = useMountedReducedMotion();
   const cvFile = homeData?.cvFile;
 
   return (

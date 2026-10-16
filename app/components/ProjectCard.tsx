@@ -3,7 +3,8 @@ import { useState } from "react";
 import { ExternalLink, Code2, X, Calendar, Folder } from "lucide-react";
 import { GithubIcon } from "./BrandIcons";
 import { ProjectType } from "./types/types";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useMountedReducedMotion } from "@/app/lib/use-mounted-reduced-motion";
 import Image from "next/image";
 import { useLanguage } from "../providers/LanguageProvider";
 import { format } from "date-fns";
@@ -12,7 +13,7 @@ import { es, enUS } from "date-fns/locale";
 const ProjectCard = ({ project, index = 0, isNew = false, featured = false }: { project: ProjectType; index?: number; isNew?: boolean; featured?: boolean }) => {
     const [showTool, setShowTool] = useState(false);
     const { lang, t } = useLanguage();
-    const reduce = useReducedMotion();
+    const reduce = useMountedReducedMotion();
 
     const cover = project.cover || project.coverImage || "";
     const description = project.about || project.description || "";

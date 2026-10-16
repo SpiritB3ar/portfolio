@@ -4,8 +4,9 @@ import type { AIProvider, ChatMessage } from "./types";
  * Cloudflare Workers AI provider. Server only — never import from client code.
  *
  * Runs on Cloudflare Workers via the `AI` binding (wrangler.jsonc) instead of
- * an external API key. Default model: Llama 3.3 70B Instruct. Override with
- * CLOUDFLARE_AI_MODEL (any Workers AI text-generation model id).
+ * an external API key. Default model: Llama 3.3 70B Instruct (fp8-fast).
+ * Override with CLOUDFLARE_AI_MODEL (any Workers AI text-generation
+ * model id).
  *
  * The binding is resolved lazily per request through
  * `getCloudflareContext()`, so this module is safe to import anywhere

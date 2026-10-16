@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useMountedReducedMotion } from "@/app/lib/use-mounted-reduced-motion";
 import { ArrowUpRight } from "lucide-react";
 import { AboutType, HomeDataType } from "../types/types";
 import { useLanguage } from "../../providers/LanguageProvider";
@@ -12,7 +13,7 @@ interface AboutTeaserProps {
 
 export const AboutTeaser = ({ homeData, about }: AboutTeaserProps) => {
   const { t } = useLanguage();
-  const reduce = useReducedMotion();
+  const reduce = useMountedReducedMotion();
 
   // Prefer a real About paragraph; gracefully fall back to the hero blurb.
   const statement =

@@ -4,7 +4,8 @@ import { AboutType, SkillCategoryType } from './types/types';
 import Skillbar from './Skillbar';
 import { Mail, MapPin, Briefcase, Calendar, Code2, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../providers/LanguageProvider';
-import { motion, useReducedMotion, type Variants } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
+import { useMountedReducedMotion } from "@/app/lib/use-mounted-reduced-motion";
 import { PageHeader } from './PageHeader';
 
 interface ContentType {
@@ -14,7 +15,7 @@ interface ContentType {
 
 const AboutBody = ({ paragraphs, skillCategories }: ContentType) => {
     const { t } = useLanguage();
-    const reduce = useReducedMotion();
+    const reduce = useMountedReducedMotion();
 
     const fade: Variants = {
         hidden: { opacity: 0, y: reduce ? 0 : 24 },

@@ -1,6 +1,7 @@
 "use client"
 import React from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { useMountedReducedMotion } from "@/app/lib/use-mounted-reduced-motion";
 import { format } from 'date-fns';
 import { es, enUS } from 'date-fns/locale';
 import { useLanguage } from '../providers/LanguageProvider';
@@ -21,7 +22,7 @@ const formatDate = (date: Date, lang: Locale) => {
 };
 
 const EducationTimeline = ({ educations }: EducationTimelineProps) => {
-    const reduce = useReducedMotion();
+    const reduce = useMountedReducedMotion();
     const { lang, t } = useLanguage();
 
     if (!educations || educations.length === 0) return null;

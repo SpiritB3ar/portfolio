@@ -1,5 +1,6 @@
 "use client";
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { useMountedReducedMotion } from "@/app/lib/use-mounted-reduced-motion";
 import { useLanguage } from '../providers/LanguageProvider';
 import { SkillCategoryType } from '../components/types/types';
 
@@ -9,7 +10,7 @@ interface AiStackProps {
 
 export const AiStack = ({ aiCategory }: AiStackProps) => {
     const { t } = useLanguage();
-    const reduce = useReducedMotion();
+    const reduce = useMountedReducedMotion();
     const skills = (aiCategory?.skills ?? []).slice().sort((a, b) => a.order - b.order);
 
     return (

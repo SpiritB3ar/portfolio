@@ -1,5 +1,6 @@
 "use client";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useMountedReducedMotion } from "@/app/lib/use-mounted-reduced-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
@@ -12,7 +13,7 @@ interface FeaturedProjectsProps {
 
 export const FeaturedProjects = ({ projects }: FeaturedProjectsProps) => {
   const { t } = useLanguage();
-  const reduce = useReducedMotion();
+  const reduce = useMountedReducedMotion();
   const featuredProjects = (projects || []).slice(0, 3);
 
   if (featuredProjects.length === 0) return null;
@@ -46,7 +47,9 @@ export const FeaturedProjects = ({ projects }: FeaturedProjectsProps) => {
         {featuredProjects.map((project, index) => {
           const cover = project.cover || project.coverImage || "";
           const description = project.about || project.description || "";
-          const href = project.link || project.liveUrl || `/projects/${project.slug}` || "#";
+          // No project detail page exists (only /api/projects/[slug]): fall back to
+          // "#" like ProjectCard instead of linking to a non-existent route.
+          const href = project.link || project.liveUrl || "#";
           const isExternal = /^https?:\/\//.test(href);
           const tags = [
             ...((project.tools || []).map((tool) => tool?.name) ?? []),

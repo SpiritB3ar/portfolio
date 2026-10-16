@@ -1,6 +1,7 @@
 "use client"
 import React from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { useMountedReducedMotion } from "@/app/lib/use-mounted-reduced-motion";
 import { Briefcase, MapPin, Calendar, ChevronRight } from 'lucide-react';
 import { format } from 'date-fns';
 import { es, enUS } from 'date-fns/locale';
@@ -42,7 +43,7 @@ const TechBadge = ({ name }: { name: string }) => (
 );
 
 const ExperienceCard = ({ item, index, isLast }: { item: ExperiencePathProps; index: number; isLast: boolean }) => {
-    const reduce = useReducedMotion();
+    const reduce = useMountedReducedMotion();
     const { lang, t } = useLanguage();
 
     const dateLabel = item.endDate

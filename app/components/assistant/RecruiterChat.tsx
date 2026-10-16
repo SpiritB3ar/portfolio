@@ -10,6 +10,7 @@ import type { AssistantMode } from "@/lib/ai/types";
 import { listenOpenChat } from "./chat-events";
 import { useVoice } from "./useVoice";
 import { readErrorMessage } from "@/lib/request-util";
+import { toast } from "sonner";
 
 const MAX_HISTORY = 12;
 
@@ -243,6 +244,21 @@ export default function RecruiterChat() {
     useEffect(() => {
         if (!open && typeof window !== "undefined") window.speechSynthesis?.cancel();
     }, [open ]);
+
+    // Dictation failures used to die silently (mic closed, no text).
+    // Surface them so the user knows what to do next.
+    const { error: voiceError, clearError: clearVoiceError } = voice;
+    useEffect(() => {
+        if (!voiceError) return;
+        toast.error(
+            voiceError === "denied"
+                ? t.assistant.voiceDenied
+                : voiceError === "no-speech"
+                  ? t.assistant.voiceNoSpeech
+                  : t.assistant.voiceError
+        );
+        clearVoiceError();
+    }, [voiceError, clearVoiceError, t]);
 
     const [mode, setMode] = useState<AssistantMode>("chat");
 

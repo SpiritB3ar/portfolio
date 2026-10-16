@@ -1,5 +1,6 @@
 "use client";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useMountedReducedMotion } from "@/app/lib/use-mounted-reduced-motion";
 
 interface PageHeaderProps {
   /** Localized page title (rendered in Poiret display). */
@@ -16,7 +17,7 @@ interface PageHeaderProps {
  * section headers so every surface reads as one design system.
  */
 export const PageHeader = ({ title, subtitle, center }: PageHeaderProps) => {
-  const reduce = useReducedMotion();
+  const reduce = useMountedReducedMotion();
 
   return (
     <motion.header

@@ -1,7 +1,7 @@
 "use client";
 import { ProjectType } from "../types/types";
 import { useLanguage } from "../../providers/LanguageProvider";
-import { useReducedMotion } from "framer-motion";
+import { useMountedReducedMotion } from "@/app/lib/use-mounted-reduced-motion";
 
 interface TechMarqueeProps {
   projects: ProjectType[];
@@ -23,7 +23,7 @@ const FALLBACK_TECH = [
 
 export const TechMarquee = ({ projects }: TechMarqueeProps) => {
   const { t } = useLanguage();
-  const reduce = useReducedMotion();
+  const reduce = useMountedReducedMotion();
 
   const derived = Array.from(
     new Set(
