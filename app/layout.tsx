@@ -19,10 +19,37 @@ import "@fontsource/ibm-plex-mono/latin-400.css";
 import "@fontsource/ibm-plex-mono/latin-500.css";
 import "@fontsource/ibm-plex-mono/latin-600.css";
 
-export const metadata: Metadata = {
-  title: "dranzr",
-  description: "dranzr — building modern digital products and experiences.",
-};
+const SITE_URL = "https://dranzr.com";
+const SITE_DESCRIPTION = "dranzr — building modern digital products and experiences.";
+
+/** OG/Twitter metadata so shared links (LinkedIn, X, Slack) render a real
+ *  preview card instead of a bare URL. Image comes from the profile photo. */
+export async function generateMetadata(): Promise<Metadata> {
+  const home = await getHomeData().catch(() => null);
+  const image = home?.userImage;
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: "dranzr",
+    description: SITE_DESCRIPTION,
+    alternates: { canonical: "/" },
+    openGraph: {
+      type: "website",
+      siteName: "dranzr",
+      title: "dranzr",
+      description: SITE_DESCRIPTION,
+      url: SITE_URL,
+      images: image
+        ? [{ url: image, width: 1200, height: 630, alt: "dranzr" }]
+        : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "dranzr",
+      description: SITE_DESCRIPTION,
+      images: image ? [image] : undefined,
+    },
+  };
+}
 
 export default async function RootLayout({
   children,
@@ -54,7 +81,7 @@ export default async function RootLayout({
     jobTitle,
     description: homeData?.welcomeDescription ?? undefined,
     image: homeData?.userImage ?? undefined,
-    url: "https://www.corleo.dev",
+    url: SITE_URL,
     sameAs: socialLinks.map((s) => s.link).filter((l) => l.startsWith("http")),
   };
 
