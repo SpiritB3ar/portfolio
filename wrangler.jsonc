@@ -8,6 +8,17 @@
 		"directory": ".open-next/assets",
 		"binding": "ASSETS"
 	},
+	"workers_dev": true,
+	"routes": [
+		{
+			"pattern": "dranzr.com/*",
+			"zone_name": "dranzr.com"
+		},
+		{
+			"pattern": "www.dranzr.com/*",
+			"zone_name": "dranzr.com"
+		}
+	],
 	"services": [
 		{
 			"binding": "WORKER_SELF_REFERENCE",
