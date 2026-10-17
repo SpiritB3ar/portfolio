@@ -83,6 +83,12 @@ typings/
 .dev.vars
 .wrangler/
 
+# AI agent tooling (generated per-machine, not project code)
+.agents/
+.claude/skills/
+.cursor/
+.devin/
+
 # Nuxt.js build / generate output
 .nuxt
 dist
