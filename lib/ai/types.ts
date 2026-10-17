@@ -13,15 +13,11 @@ export interface ChatMessage {
 
 export type AssistantLang = "en" | "es";
 
-/** Conversation mode: free Q&A or mock technical interview. */
-export type AssistantMode = "chat" | "interview";
-
 /** POST /api/assistant request body. */
 export interface AssistantRequest {
     messages: ChatMessage[];
     lang: AssistantLang;
     stream?: boolean;
-    mode?: AssistantMode;
 }
 
 /** POST /api/assistant success body. `cached` is true when the reply

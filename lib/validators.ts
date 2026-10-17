@@ -116,6 +116,5 @@ export const assistantSchema = z.object({
     messages: z.array(assistantMessageSchema).min(1).max(20),
     lang: z.enum(["en", "es"]).default("en"),
     stream: z.boolean().optional(),
-    mode: z.enum(["chat", "interview"]).optional(),
 });
 export type AssistantInput = z.infer<typeof assistantSchema>;

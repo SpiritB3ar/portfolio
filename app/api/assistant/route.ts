@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
             return fail(503, "Assistant is not configured yet. Please contact via the links on this page.");
         }
 
-        const system = await buildSystemMessage(data.lang ?? "en", data.mode ?? "chat");
+        const system = await buildSystemMessage(data.lang ?? "en");
         const messages: ChatMessage[] = [system, ...data.messages];
 
         const provider = getProvider();

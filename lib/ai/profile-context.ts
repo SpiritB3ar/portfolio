@@ -1,6 +1,6 @@
 import db from "@/lib/db";
 import { attachTools } from "@/lib/mongo-util";
-import type { AssistantLang, AssistantMode, ChatMessage } from "./types";
+import type { AssistantLang, ChatMessage } from "./types";
 
 /**
  * Builds the grounded profile context injected as the system prompt.
@@ -138,10 +138,7 @@ function systemPrompt(lang: AssistantLang, context: string): string {
 }
 
 /** System message + grounded context, ready to prepend to the user history. */
-export async function buildSystemMessage(
-    lang: AssistantLang,
-    mode: AssistantMode = "chat"
-): Promise<ChatMessage> {
+export async function buildSystemMessage(lang: AssistantLang): Promise<ChatMessage> {
     const now = Date.now();
     if (!cache || now - cache.at > CACHE_TTL_MS) {
         const raw = await buildRawContext().catch(() => "No profile data available.");
@@ -149,29 +146,6 @@ export async function buildSystemMessage(
         cache = { at: now, en: truncated, es: truncated };
     }
     const context = lang === "es" ? cache.es : cache.en;
-    const content =
-        mode === "interview"
-            ? systemPromptInterview(lang, context)
-            : systemPrompt(lang, context);
-    return { role: "system", content };
+    return { role: "system", content: systemPrompt(lang, context) };
 }
 
-function systemPromptInterview(lang: AssistantLang, context: string): string {
-    const languageRule =
-        lang === "es"
-            ? "Responde SIEMPRE en español."
-            : "Always respond in English.";
-    return [
-        "You are a senior technical interviewer hiring for backend/AI roles. The candidate's profile is in PROFILE CONTEXT below.",
-        languageRule,
-        "Rules:",
-        "1. Ask ONE question per turn, numbered (Pregunta 1/5, …), grounded in their actual stack and experience. Ramp difficulty: start from what they claim, then probe one level deeper. Start with question 1 when there is no interview history yet; never repeat a question already asked in this conversation.",
-        "2. After each candidate answer: 1-2 sentence assessment (correct/partial/incorrect + why, citing the relevant experience when possible), then the next question. Max 6 sentences per turn.",
-        "3. After about 5 questions (or when they ask to stop), give a final verdict with this structure: decision (**hire** / **no-hire**), 2-3 strengths, 2-3 gaps, one closing line.",
-        "4. Use ONLY the PROFILE CONTEXT for facts about the candidate. Never invent jobs, dates, or skills. The context may be truncated (marked); treat missing parts as unknown, not as weaknesses.",
-        "5. No greetings, no closings, no filler. When you mention a site section, link it with a relative markdown link, e.g. [mis proyectos](/projects).",
-        "",
-        "PROFILE CONTEXT:",
-        context,
-    ].join("\n");
-}

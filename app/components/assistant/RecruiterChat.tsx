@@ -3,10 +3,9 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { Bot, Send, X, RotateCcw, Trash2, Mic, Volume2, VolumeX, GraduationCap, Loader2 } from "lucide-react";
+import { Bot, Send, X, RotateCcw, Trash2, Mic, Volume2, VolumeX, Loader2 } from "lucide-react";
 import { useLanguage } from "@/app/providers/LanguageProvider";
 import type { AssistantChatMessage, AssistantReply } from "@/app/components/types/types";
-import type { AssistantMode } from "@/lib/ai/types";
 import { listenOpenChat } from "./chat-events";
 import { useVoice } from "./useVoice";
 import { readErrorMessage } from "@/lib/request-util";
@@ -99,13 +98,12 @@ export { renderMessage };
 export async function askAssistantStream(
     messages: AssistantChatMessage[],
     lang: "en" | "es",
-    mode: AssistantMode,
     onDelta: (fullText: string) => void
 ): Promise<string> {
     const res = await fetch("/api/assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: messages.slice(-MAX_HISTORY), lang, mode, stream: true }),
+        body: JSON.stringify({ messages: messages.slice(-MAX_HISTORY), lang, stream: true }),
     });
     if (!res.ok || !res.body) {
         throw new Error(await readErrorMessage(res, `HTTP ${res.status}`));
@@ -291,10 +289,7 @@ export default function RecruiterChat() {
         clearVoiceError();
     }, [voiceError, clearVoiceError, t]);
 
-    const [mode, setMode] = useState<AssistantMode>("chat");
-
-    const send = async (text?: string, overrideMode?: AssistantMode) => {
-        const activeMode = overrideMode ?? mode;
+    const send = async (text?: string) => {
         const content = (text ?? input).trim();
         if (!content || loading) return;
         const next: AssistantChatMessage[] = [...messages, { role: "user" as const, content }].slice(-MAX_HISTORY);
@@ -307,7 +302,7 @@ export default function RecruiterChat() {
             [...prev, { role: "assistant" as const, content: "" }].slice(-MAX_HISTORY)
         );
         try {
-            const full = await askAssistantStream(next, lang, activeMode, (partial) => {
+            const full = await askAssistantStream(next, lang, (partial) => {
                 setMessages((prev): AssistantChatMessage[] => {
                     const copy = [...prev];
                     copy[copy.length - 1] = { role: "assistant" as const, content: partial };
@@ -325,15 +320,6 @@ export default function RecruiterChat() {
         } finally {
             setLoading(false);
         }
-    };
-
-    const toggleInterview = () => {
-        if (mode === "interview") {
-            setMode("chat");
-            return;
-        }
-        setMode("interview");
-        void send(t.assistant.interviewStart, "interview");
     };
 
     const clearConversation = () => {
@@ -356,18 +342,6 @@ export default function RecruiterChat() {
                             </p>
                         </div>
                         <div className="flex items-center gap-1">
-                            <button
-                                aria-label={t.assistant.interview}
-                                title={t.assistant.interview}
-                                onClick={toggleInterview}
-                                className={`rounded-full p-1.5 transition-colors hover:bg-muted ${
-                                    mode === "interview"
-                                        ? "text-brand-medium dark:text-brand-green"
-                                        : "text-muted-foreground hover:text-foreground"
-                                }`}
-                            >
-                                <GraduationCap size={16} />
-                            </button>
                             <button
                                 aria-label={t.assistant.readAloud}
                                 title={t.assistant.readAloud}
@@ -399,13 +373,6 @@ export default function RecruiterChat() {
                     </div>
 
                     <div className="flex-1 overflow-x-hidden overflow-y-auto px-4 py-3 space-y-3">
-                        {mode === "interview" && (
-                            <div className="flex justify-center">
-                                <span className="rounded-full border border-brand-green/30 bg-brand-green/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-brand-medium dark:text-brand-green">
-                                    {t.assistant.interviewActive}
-                                </span>
-                            </div>
-                        )}
                         {messages.map((m, i) => {
                             // Oculta el placeholder vacío mientras llega el primer token.
                             if (m.role === "assistant" && !m.content) return null;
