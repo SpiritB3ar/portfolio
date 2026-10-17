@@ -129,7 +129,9 @@ Lecturas públicas van directo a Prisma (sin HTTP, prerenderizables). Mutaciones
 
 ## Rama `cloudflare-opennext` (deploy alternativo en Workers) — DESPLEGADO ✅
 
-- URL prod: `https://portfolio.cardenascode7.workers.dev` (desplegado 2026-10-16, adapter `@opennextjs/cloudflare@1.20.12`).
+- URL prod: `https://dranzr.com` (custom domain, route de zona `dranzr.com/*` → worker `portfolio`, declarado en `wrangler.jsonc`); alias técnico `https://portfolio.cardenascode7.workers.dev`. Desplegado 2026-10-16, adapter `@opennextjs/cloudflare@1.20.12`.
+- Custom domain NO usar: el apex tiene registros DNS gestionados externamente, así que `custom_domain: true` falla. Va por `routes` con `zone_name`. Nunca declarar `workers_dev: false` sin querer: un deploy parcial con custom domain lo apagó una vez y tumbó el subdominio.
+- `next.config.js` `images.qualities: [75, 90]` (Next 16 exige allowlist de quality); el retrato del hero usa `quality={90}` + `preload` (`priority` está deprecado en Next 16). Cloudflare Images re-encoda: sirve WebP (~150KB) con `Vary: Accept`.
 - Adapter + `wrangler.jsonc` (R2 `portfolio-opennext-cache` creado, binding `AI`, `nodejs_compat`). Proxy (`proxy.ts`) incluido en el bundle.
 - Asistente con Workers AI: `AI_PROVIDER=cloudflare` usa `lib/ai/cloudflare.ts` (**Llama 3.3 70B** `@cf/meta/llama-3.3-70b-instruct-fp8-fast`, override con `CLOUDFLARE_AI_MODEL`); verificado en prod con respuesta real. ~127 neurons/mensaje → ~75 msgs/día gratis.
 - BD en Workers: Prisma 8 usa el driver `mongodb` directo (verificado en prod contra Atlas). Accelerate **no soporta MongoDB**; el worker usa `DATABASE_URL` normal vía `wrangler secret put` (ya subidos `DATABASE_URL` + `ADMIN_API_KEY`).
