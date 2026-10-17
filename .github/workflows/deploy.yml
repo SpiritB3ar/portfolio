@@ -1,0 +1,58 @@
+name: Deploy to Cloudflare Workers
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Never run two production deploys at once; queue them instead of cancelling.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Build & deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # Build-time env: the public pages are prerendered at build time by
+      # reading Prisma directly, so the build needs a reachable DATABASE_URL.
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      # NEXT_PUBLIC_* are inlined into the client bundle at build time.
+      NEXT_PUBLIC_ADMIN_API_KEY: ${{ secrets.ADMIN_API_KEY }}
+      NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
+      NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET }}
+      # Wrangler auth. Runtime secrets (DATABASE_URL, ADMIN_API_KEY on the
+      # worker) already live on Cloudflare and persist across deploys.
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Build & deploy (OpenNext → Cloudflare)
+        run: pnpm run deploy
