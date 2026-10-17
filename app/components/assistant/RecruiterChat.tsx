@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { Bot, Send, X, RotateCcw, Trash2, Mic, Volume2, VolumeX, GraduationCap } from "lucide-react";
+import { Bot, Send, X, RotateCcw, Trash2, Mic, Volume2, VolumeX, GraduationCap, Loader2 } from "lucide-react";
 import { useLanguage } from "@/app/providers/LanguageProvider";
 import type { AssistantChatMessage, AssistantReply } from "@/app/components/types/types";
 import type { AssistantMode } from "@/lib/ai/types";
@@ -13,6 +13,21 @@ import { readErrorMessage } from "@/lib/request-util";
 import { toast } from "sonner";
 
 const MAX_HISTORY = 12;
+
+/** Routes the assistant may link to; anything else is a hallucinated href. */
+const INTERNAL_ROUTES = new Set(["/", "/about", "/experience", "/projects", "/ai"]);
+
+/**
+ * Accepts a model-emitted internal href only when it points at a real page.
+ * The model invents paths and casing ("/SKILLS"), and an unknown route 404s
+ * on click and on Next's RSC prefetch.
+ */
+function resolveInternalHref(href: string): string | null {
+    if (!href.startsWith("/") || href.startsWith("//")) return null;
+    const [path] = href.split(/[?#]/);
+    const normalised = path.replace(/\/+$/, "").toLowerCase() || "/";
+    return INTERNAL_ROUTES.has(normalised) ? href : null;
+}
 
 /** Minimal markdown renderer for model replies: **bold** + [label](url).
  *  url acepta http(s) (nueva pestaña) y rutas relativas `/…` (next/link,
@@ -47,16 +62,19 @@ function renderInline(text: string, keyPrefix: string): ReactNode[] {
                         {lm[1]}
                     </a>
                 );
-            } else if (lm && href.startsWith("/") && !href.startsWith("//")) {
+            } else if (lm && resolveInternalHref(href)) {
                 parts.push(
                     <Link
                         key={`${keyPrefix}-a${k++}`}
-                        href={href}
+                        href={resolveInternalHref(href) as string}
                         className="underline underline-offset-2 hover:opacity-80"
                     >
                         {lm[1]}
                     </Link>
                 );
+            } else if (lm) {
+                // Unknown internal route: keep the label, drop the link.
+                parts.push(lm[1]);
             } else {
                 parts.push(tok);
             }
@@ -183,6 +201,17 @@ export default function RecruiterChat() {
     const [failedQuery, setFailedQuery] = useState<string | null>(null);
     const voice = useVoice(lang);
     const { speakOn, speak } = voice;
+    // Label/state of the mic button: live dictation, recording fallback, or
+    // a server-side transcription in flight.
+    const micLabel =
+        voice.micState === "listening"
+            ? t.assistant.listening
+            : voice.micState === "recording"
+              ? t.assistant.recording
+              : voice.micState === "transcribing"
+                ? t.assistant.transcribing
+                : t.assistant.dictate;
+    const micActive = voice.micState !== "idle";
     // First-visit discovery: ping ring + proactive teaser bubble. Mounted-only
     // localStorage read (no SSR/hydration mismatch, no setState-in-effect).
     const seenAssistant = useSyncExternalStore(
@@ -255,7 +284,9 @@ export default function RecruiterChat() {
                 ? t.assistant.voiceDenied
                 : voiceError === "no-speech"
                   ? t.assistant.voiceNoSpeech
-                  : t.assistant.voiceError
+                  : voiceError === "unavailable"
+                    ? t.assistant.voiceUnavailable
+                    : t.assistant.voiceError
         );
         clearVoiceError();
     }, [voiceError, clearVoiceError, t]);
@@ -444,27 +475,32 @@ export default function RecruiterChat() {
                             ref={inputRef}
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
-                            placeholder={voice.listening ? t.assistant.listening : t.assistant.placeholder}
+                            placeholder={micActive ? micLabel : t.assistant.placeholder}
                             maxLength={2000}
                             className="focus-ring min-w-0 flex-1 rounded-xl border border-border bg-background/70 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-brand-green"
                         />
                         {voice.supported && (
                             <button
                                 type="button"
-                                aria-label={voice.listening ? t.assistant.listening : t.assistant.dictate}
-                                title={voice.listening ? t.assistant.listening : t.assistant.dictate}
+                                aria-label={micLabel}
+                                title={micLabel}
+                                aria-busy={voice.busy}
                                 onClick={() =>
                                     voice.toggleListening((text) =>
                                         setInput((prev) => (prev ? `${prev} ` : "") + text)
                                     )
                                 }
                                 className={`rounded-xl p-2.5 transition-colors pressable active:scale-90 ${
-                                    voice.listening
-                                        ? "bg-red-500/15 text-red-500 animate-pulse"
+                                    micActive
+                                        ? "bg-red-500/15 text-red-500 animate-pulse motion-reduce:animate-none"
                                         : "text-muted-foreground hover:bg-muted hover:text-foreground"
                                 }`}
                             >
-                                <Mic size={16} />
+                                {voice.busy ? (
+                                    <Loader2 size={16} className="animate-spin motion-reduce:animate-none" />
+                                ) : (
+                                    <Mic size={16} />
+                                )}
                             </button>
                         )}
                         <button

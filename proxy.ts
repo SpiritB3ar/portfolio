@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // POST/PUT/DELETE on every other `/api/*` route is authoring-only and
 // requires `x-api-key`. These are the deliberate exceptions: the recruiter
-// assistant is public (rate-limited in its own route) and health is a probe.
-const PUBLIC_API = new Set(['/api/assistant', '/api/health']);
+// assistant and its dictation endpoint are public (both rate-limited by IP
+// in their own route) and health is a probe.
+const PUBLIC_API = new Set(['/api/assistant', '/api/transcribe', '/api/health']);
 
 // Canonical host is the apex. `www.dranzr.com` still carries a legacy Vercel
 // CNAME, so requests there are 301'd to the apex (path + query preserved)

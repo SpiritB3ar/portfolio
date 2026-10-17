@@ -45,12 +45,22 @@ No existe `API_URL` (sin prefijo público) — docs que la mencionan están mal.
 - RAG **estático**: contexto completo de perfil (~7KB) cacheado 5 min, límite ~12k. No vectorizar.
 - Modelo por defecto `gemini-3.8-flash`; provider agnóstico (`provider.ts` factory) por si llega Cloudflare después.
 - Prompt en **primera persona** ("eres el dueño del portfolio"), respuestas 1-4 frases, idioma según UI.
-- `renderInline` en `RecruiterChat.tsx` acepta `**bold**`, `[label](https://…)` **y rutas relativas `/…`** (con `next/link`) — el chat es la navegación.
+- `renderInline` en `RecruiterChat.tsx` acepta `**bold**`, `[label](https://…)` **y rutas relativas `/…`** (con `next/link`) — el chat es la navegación. Las rutas internas pasan por la allowlist `INTERNAL_ROUTES` (`/`, `/about`, `/experience`, `/projects`, `/ai`) vía `resolveInternalHref`: todo lo demás se renderiza como texto plano, porque el modelo alucinaba links internos inexistentes (`/SKILLS`) que provocaban 404 de prefetch.
+
+### Dictado por voz (`app/components/assistant/useVoice.ts`)
+
+- **Híbrido**, con dos modos: `speech` (Web Speech API en vivo, solo Chrome) y `recorder` (`MediaRecorder` → POST a `/api/transcribe` → Workers AI Whisper).
+- **Motivo:** Edge/Brave exponen `SpeechRecognition` y conceden el micrófono, pero `start()` nunca dispara `onstart`/`onerror`/`onresult` — fallo silencioso y botón colgado en "Escuchando…" para siempre. `needsRecorder()` (UA `/Edg\/|Brave\//`) prefiere `recorder` ahí; en Chrome hay un watchdog (`SPEECH_WATCHDOG_MS = 1200`) que degrada a `recorder` si `onstart` no llega o si el error es `network`.
+- `MicState = 'idle' | 'listening' | 'recording' | 'transcribing'`; el hook expone `{ supported, micState, busy, speakOn, toggleListening, toggleSpeak, speak, error, clearError }` (ya no expone `listening`).
+- **Un tap para parar transcribe** (`recorder.stop()` → `onstop` → upload). Solo el unmount marca `abortRef` para descartar el clip; nunca el stop normal.
+- Auto-stop a `RECORD_MAX_MS = 30_000`. El dictado solo escribe en el input: no envía el mensaje.
+- `MediaRecorder.isTypeSupported` decide el mime (`audio/webm;codecs=opus` → fallback). Edge soporta webm/opus; verificado con audio real.
 
 ### API routes
 
 - `parseBody` + zod para validar; `fail`/`serverError` de `lib/api.ts`.
 - Errores: `{ message }` al cliente; nunca exponer detalles internos (stack, provider errors).
+- Públicas (sin `x-api-key`, en `PUBLIC_API` del proxy): `/api/assistant`, `/api/transcribe`, `/api/health`. `/api/transcribe` valida tamaño (`MIN_BYTES = 512` / `MAX_BYTES = 8 MB`), `Content-Type` de audio y rate-limit por IP; mapea a 400/413/415/422/429/502/503 sin exponer errores del provider.
 - Slug: usar `generateSlug` de `lib/slug-util.ts` (única fuente de verdad).
 - Al crear registros con slug, check de colisión → `409`.
 
@@ -97,12 +107,14 @@ app/
     MainLayout.tsx          # layout público (monta SiteAtmosphere, RecruiterChat)
     SiteAtmosphere.tsx      # canvas fondo
     assistant/RecruiterChat.tsx
+    assistant/useVoice.ts   # dictado híbrido (speech | recorder→Whisper)
     home/                   # AboutTeaser, ContactCTA, TechMarquee
     types/types.ts          # tipos compartidos — actualizar al cambiar modelos/respuestas
   api/assistant/route.ts    # endpoint del asistente
+  api/transcribe/route.ts   # transcripción de audio (Whisper), público
   lib/dictionary.ts         # i18n en/es
 lib/
-  ai/                       # gemini.ts, provider.ts, profile-context.ts, rate-limit.ts
+  ai/                       # gemini.ts, cloudflare.ts, provider.ts, profile-context.ts, transcribe.ts, rate-limit.ts
   data.ts                   # lecturas server (Prisma directo, prerender)
   db.ts                     # singleton Prisma
   validators.ts             # zod schemas (assistantSchema, etc.)
@@ -126,6 +138,7 @@ Lecturas públicas van directo a Prisma (sin HTTP, prerenderizables). Mutaciones
 3. `npm run build` exitoso.
 4. Smoke manual relevante con `npm run dev` (temas, i18n, rutas afectadas).
 5. Si tocaste tokens/paleta: revisar también `/admin` (comparte `globals.css`).
+6. Tocaste el dictado por voz: abrir Edge con `--remote-debugging-port=9222 --use-fake-ui-for-media-stream --use-fake-device-for-media-stream --use-file-for-fake-audio-capture=<wav>` y comprobar el ciclo (Grabando… → Transcribiendo… → texto en el input). Un WAV de prueba se genera con SAPI (`Add-Type -AssemblyName System.Speech` + `SetOutputToWaveFile`).
 
 ## Rama `cloudflare-opennext` (deploy alternativo en Workers) — DESPLEGADO ✅
 
@@ -134,6 +147,7 @@ Lecturas públicas van directo a Prisma (sin HTTP, prerenderizables). Mutaciones
 - `next.config.js` `images.qualities: [75, 90]` (Next 16 exige allowlist de quality); el retrato del hero usa `quality={90}` + `preload` (`priority` está deprecado en Next 16). Cloudflare Images re-encoda: sirve WebP (~150KB) con `Vary: Accept`.
 - Adapter + `wrangler.jsonc` (R2 `portfolio-opennext-cache` creado, binding `AI`, `nodejs_compat`). Proxy (`proxy.ts`) incluido en el bundle.
 - Asistente con Workers AI: `AI_PROVIDER=cloudflare` usa `lib/ai/cloudflare.ts` (**Llama 3.3 70B** `@cf/meta/llama-3.3-70b-instruct-fp8-fast`, override con `CLOUDFLARE_AI_MODEL`); verificado en prod con respuesta real. ~127 neurons/mensaje → ~75 msgs/día gratis.
+- Dictado en Workers: `lib/ai/transcribe.ts` usa el mismo binding `AI` con `@cf/openai/whisper-large-v3-turbo` (lee `transcription_info.text` y el `text` del whisper antiguo). Verificado en prod con audio es-MX real.
 - BD en Workers: Prisma 8 usa el driver `mongodb` directo (verificado en prod contra Atlas). Accelerate **no soporta MongoDB**; el worker usa `DATABASE_URL` normal vía `wrangler secret put` (ya subidos `DATABASE_URL` + `ADMIN_API_KEY`).
 - `DATABASE_URL` del worker lleva `&maxIdleTimeMS=1000&socketTimeoutMS=5000` (el `.env` local, no): workerd invalida los sockets al terminar cada request y el pool reciclaba conexiones muertas en turnos alternos (50% hangs). Con idle cap bajo cada request abre conexión fresca. Si ves hangs alternados en prod, revisar estos params.
 - `.npmrc` con `node-linker=hoisted`: el layout pnpm aislado rompe esbuild en Windows (`Cannot read directory .pnpm/...`); con hoisted `pnpm build:cf` funciona en Windows. No quitar sin re-verificar el build.
