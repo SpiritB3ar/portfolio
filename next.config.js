@@ -7,6 +7,9 @@ const nextConfig = {
   // bundling them under Turbopack breaks their connection-string parsing.
   serverExternalPackages: ["@prisma/orm-mongo", "mongodb"],
   images: {
+    // Next 16 whitelists quality values; the hero portrait uses 90 for
+    // crisper rendering of the profile photo.
+    qualities: [75, 90],
     remotePatterns: [
       {
         protocol: 'https',

@@ -150,7 +150,8 @@ const BodyContent = ({ homeData }: ContentType) => {
             {userImage && (
               <Image
                 fill
-                priority
+                preload
+                quality={90}
                 sizes="(max-width: 1024px) 100vw, 28rem"
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                 alt={homeData?.welcomeTitle || "profile"}
